@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#5f6a66"/></marker></defs>
+<rect width="1000" height="520" fill="#fbfaf6"/>
+<text x="40" y="40" font-size="21" font-weight="bold" fill="#1d2321">Trail Tally · concept</text>
+<text x="40" y="62" fill="#5f6a66">A $3 motion counter that sleeps for weeks and remembers which hours the trail gets used.</text>
+<rect x="40" y="100" width="200" height="96" rx="10" fill="#eef3f6" stroke="#2f6f9f" stroke-width="1.5"/>
+<text x="54" y="124" font-weight="bold" fill="#1d2321">PIR sensor</text>
+<text x="54" y="146" fill="#5f6a66" font-size="12.5">AM312 / HC-SR501</text>
+<text x="54" y="164" fill="#5f6a66" font-size="12.5">aimed down the trail</text>
+<rect x="40" y="230" width="200" height="76" rx="10" fill="#eef3f6" stroke="#2f6f9f" stroke-width="1.5"/>
+<text x="54" y="254" font-weight="bold" fill="#1d2321">2×AA</text>
+<text x="54" y="276" fill="#5f6a66" font-size="12.5">months of standby</text>
+<rect x="300" y="100" width="260" height="206" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+<text x="314" y="124" font-weight="bold" fill="#1d2321">Pro Mini 3.3 V</text>
+<text x="314" y="146" fill="#5f6a66" font-size="12.5">sleeps at microamps</text>
+<text x="314" y="164" fill="#5f6a66" font-size="12.5">wakes on motion (interrupt)</text>
+<text x="314" y="182" fill="#5f6a66" font-size="12.5">60 s lockout: one deer = one count</text>
+<text x="314" y="200" fill="#5f6a66" font-size="12.5">watchdog keeps hour of day</text>
+<text x="314" y="218" fill="#5f6a66" font-size="12.5">adds 1 to this hour's bin</text>
+<text x="314" y="236" fill="#5f6a66" font-size="12.5">bins saved in EEPROM (~6 weeks)</text>
+<text x="314" y="254" fill="#5f6a66" font-size="12.5">(battery dies, data stays)</text>
+<rect x="40" y="340" width="520" height="130" rx="10" fill="#eef1ea" stroke="#4d7c0f" stroke-width="1.5"/>
+<text x="54" y="364" font-weight="bold" fill="#1d2321">Reading it</text>
+<text x="54" y="386" fill="#5f6a66" font-size="12.5">Plug in a $1 USB-serial adapter → CSV of counts per hour per day.</text>
+<text x="54" y="404" fill="#5f6a66" font-size="12.5">tools/plot.py turns that into the 24-hour "deer clock" on the right.</text>
+<text x="54" y="422" fill="#5f6a66" font-size="12.5">No adapter? Press the button and the LED blinks the busiest hour.</text>
+<path d="M240 148 H296" stroke="#5f6a66" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="252" y="140" fill="#5f6a66" font-size="11.5">wake</text>
+<path d="M240 268 H296" stroke="#5f6a66" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="250" y="260" fill="#5f6a66" font-size="11.5">power</text>
+<text x="780" y="100" text-anchor="middle" font-weight="bold" fill="#1d2321">Deer clock: counts by hour</text>
+<circle cx="780" cy="290" r="53" fill="none" stroke="#e3e1d8"/>
+<circle cx="780" cy="290" r="106" fill="none" stroke="#e3e1d8"/>
+<circle cx="780" cy="290" r="160" fill="none" stroke="#e3e1d8"/>
+<path d="M780.4 272.0 L780.5 266.9 A23.1 23.1 0 0 1 785.5 267.6 L784.3 272.5 A18 18 0 0 0 780.4 272.0z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M785.0 272.7 L786.4 267.9 A23.1 23.1 0 0 1 791.1 269.8 L788.7 274.2 A18 18 0 0 0 785.0 272.7z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M789.3 274.6 L792.4 269.5 A24.0 24.0 0 0 1 796.6 272.7 L792.5 277.0 A18 18 0 0 0 789.3 274.6z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M793.0 277.5 L796.6 274.0 A23.1 23.1 0 0 1 799.7 278.1 L795.4 280.7 A18 18 0 0 0 793.0 277.5z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M795.8 281.3 L800.2 278.9 A23.1 23.1 0 0 1 802.1 283.6 L797.3 285.0 A18 18 0 0 0 795.8 281.3z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M797.5 285.7 L832.6 277.0 A54.1 54.1 0 0 1 834.1 288.9 L798.0 289.6 A18 18 0 0 0 797.5 285.7z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M798.0 290.4 L910.0 292.6 A130.1 130.1 0 0 1 906.3 321.1 L797.5 294.3 A18 18 0 0 0 798.0 290.4z" fill="#b45309" opacity="0.9"/>
+<path d="M797.3 295.0 L903.2 325.7 A128.3 128.3 0 0 1 892.4 351.9 L795.8 298.7 A18 18 0 0 0 797.3 295.0z" fill="#b45309" opacity="0.9"/>
+<path d="M795.4 299.3 L831.1 320.9 A59.7 59.7 0 0 1 823.0 331.3 L793.0 302.5 A18 18 0 0 0 795.4 299.3z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M792.5 303.0 L796.8 307.4 A24.2 24.2 0 0 1 792.5 310.7 L789.3 305.4 A18 18 0 0 0 792.5 303.0z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M788.7 305.8 L792.7 313.0 A26.2 26.2 0 0 1 787.3 315.2 L785.0 307.3 A18 18 0 0 0 788.7 305.8z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M784.3 307.5 L785.5 312.4 A23.1 23.1 0 0 1 780.5 313.1 L780.4 308.0 A18 18 0 0 0 784.3 307.5z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M779.6 308.0 L779.5 313.1 A23.1 23.1 0 0 1 774.5 312.4 L775.7 307.5 A18 18 0 0 0 779.6 308.0z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M775.0 307.3 L773.6 312.1 A23.1 23.1 0 0 1 768.9 310.2 L771.3 305.8 A18 18 0 0 0 775.0 307.3z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M770.7 305.4 L768.1 309.7 A23.1 23.1 0 0 1 764.0 306.6 L767.5 303.0 A18 18 0 0 0 770.7 305.4z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M767.0 302.5 L756.8 312.2 A32.1 32.1 0 0 1 752.5 306.6 L764.6 299.3 A18 18 0 0 0 767.0 302.5z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M764.2 298.7 L752.0 305.4 A32.0 32.0 0 0 1 749.3 298.9 L762.7 295.0 A18 18 0 0 0 764.2 298.7z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M762.5 294.3 L733.1 301.6 A48.3 48.3 0 0 1 731.7 291.0 L762.0 290.4 A18 18 0 0 0 762.5 294.3z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M762.0 289.6 L666.4 287.7 A113.6 113.6 0 0 1 669.7 262.8 L762.5 285.7 A18 18 0 0 0 762.0 289.6z" fill="#b45309" opacity="0.9"/>
+<path d="M762.7 285.0 L626.3 245.5 A160.0 160.0 0 0 1 639.9 212.8 L764.2 281.3 A18 18 0 0 0 762.7 285.0z" fill="#b45309" opacity="0.9"/>
+<path d="M764.6 280.7 L689.1 235.1 A106.2 106.2 0 0 1 703.4 216.4 L767.0 277.5 A18 18 0 0 0 764.6 280.7z" fill="#b45309" opacity="0.9"/>
+<path d="M767.5 277.0 L748.4 257.1 A45.6 45.6 0 0 1 756.4 251.0 L770.7 274.6 A18 18 0 0 0 767.5 277.0z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M771.3 274.2 L765.3 263.3 A30.5 30.5 0 0 1 771.5 260.7 L775.0 272.7 A18 18 0 0 0 771.3 274.2z" fill="#2f6f9f" opacity="0.9"/>
+<path d="M775.7 272.5 L772.6 259.9 A31.0 31.0 0 0 1 779.4 259.0 L779.6 272.0 A18 18 0 0 0 775.7 272.5z" fill="#2f6f9f" opacity="0.9"/>
+<text x="780" y="112" text-anchor="middle" fill="#5f6a66" font-size="12">midnight</text>
+<text x="962" y="294" text-anchor="middle" fill="#5f6a66" font-size="12">6 am</text>
+<text x="780" y="476" text-anchor="middle" fill="#5f6a66" font-size="12">noon</text>
+<text x="598" y="294" text-anchor="middle" fill="#5f6a66" font-size="12">6 pm</text>
+<text x="780" y="498" text-anchor="middle" fill="#5f6a66" font-size="12">orange = busiest hours: plan to be on stand before them</text>
+<rect x="700" y="66" width="195.20000000000002" height="22" rx="11" fill="#fdecd3"/>
+<text x="708" y="81" fill="#9a3412" font-size="11.5">illustration · not real data</text>
+</svg>

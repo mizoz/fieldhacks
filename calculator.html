@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Ballistics Calculator and Range Card (G1/G7) · HoldPoint</title>
+<meta name="description" content="Free online ballistics calculator for hunters, in yards or metres, with a shot check that works out your maximum ethical range from your group, wind and ranging errors. Enter BC (G1 or G7), muzzle velocity, zero, weather and wind to get bullet drop, holdover in MIL and MOA, wind drift, velocity and energy. Print a range card. Same solver as the $5 HoldPoint device.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/calculator.html">
+<meta name="theme-color" content="#1d2321">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Free ballistics calculator and printable range card">
+<meta property="og:description" content="Drop, holdover in MIL/MOA, wind drift and energy for your load. G1/G7, weather and look angle. ">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/calculator.html">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M16 4v8M16 20v8M4 16h8M20 16h8' stroke='%23f59e0b' stroke-width='2.5'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "HoldPoint Ballistics Calculator",
+  "url": "https://lab.zalastack.com/fieldhacks/calculator.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "description": "Point-mass ballistics calculator with G1/G7 drag, weather and look-angle correction. Produces a printable range card."
+}
+</script>
+<link rel="stylesheet" href="style.css">
+<style>
+.calc{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start;margin-top:24px}
+@media (max-width:760px){.calc{grid-template-columns:1fr}}
+form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+fieldset{border:0;margin:0 0 14px;padding:0}
+legend{font-weight:700;margin-bottom:6px;font-size:15px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:13px;color:var(--muted);min-width:0}
+.calc>*{min-width:0}
+input,select{width:100%;min-width:0;margin-top:3px;padding:7px 8px;font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{font:inherit;font-size:14px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+button:hover{border-color:var(--accent)}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+#card td,#card th{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#card td:first-child,#card th:first-child{text-align:left}
+#card tr.low td{background:var(--accent-bg);color:var(--accent)}
+.stat.ethic{grid-column:1/-1;border-color:var(--accent);background:var(--accent-bg)}
+.stat.ethic b{color:var(--accent)}
+#card tr.sel td{font-weight:700}
+#card tbody tr{cursor:pointer}
+form summary{font-size:14px;color:var(--muted)}
+#chart{width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:14px}
+.err{color:#b91c1c;font-weight:600}
+@media print{
+  nav.nav,header.hero,form,.actions,.noprint,footer,#chart,.summary{display:none!important}
+  body{background:#fff;color:#000;font-size:11px}
+  .calc{display:block;margin:0}
+  #printhead{display:block!important}
+  #card th,#card td{padding:2px 6px;border-bottom:1px solid #ccc}
+  #card tr.low td{background:#eee;color:#000}
+}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="./">fieldhacks lab</a>
+  <a href="holdpoint/">HoldPoint</a>
+  <a href="trail-tally/">Trail Tally</a>
+  <a href="trail-finder/">Trail Finder</a>
+  <a href="slopeshift/">SlopeShift</a>
+  <a href="legal-light/">Legal Light</a>
+  <a href="calculator.html" aria-current="page">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+<header class="hero"><div class="in">
+  <h1>Ballistics calculator and range card</h1>
+  <p>Bullet drop, holdover in MIL and MOA, wind drift, velocity and energy for your load, in imperial or metric. Runs the same solver as the <a href="./" style="color:#f59e0b">$5 HoldPoint device</a>, checked against py-ballisticcalc. Free, and nothing leaves your browser.</p>
+</div></header>
+<main>
+<div class="calc">
+  <form id="f" autocomplete="off" novalidate>
+    <fieldset>
+      <legend>Units</legend>
+      <select id="sys" aria-label="Units"><option value="imp">Imperial: yd, fps, in, ft·lb</option><option value="met">Metric: m, m/s, cm, J</option></select>
+    </fieldset>
+    <fieldset>
+      <legend>Load</legend>
+      <label>Preset
+        <select id="preset">
+          <option value="">Custom</option>
+          <option value="0.462,G1,2650,168">.308 Win 168 gr (G1 0.462, 2650 fps)</option>
+          <option value="0.379,G1,3100,95">.243 Win 95 gr (G1 0.379, 3100 fps)</option>
+          <option value="0.315,G7,2700,143">6.5 Creedmoor 143 gr (G7 0.315, 2700 fps)</option>
+          <option value="0.480,G1,2700,180">.30-06 180 gr (G1 0.480, 2700 fps)</option>
+          <option value="0.390,G1,3000,130">.270 Win 130 gr (G1 0.390, 3000 fps)</option>
+          <option value="0.255,G1,3200,55">.223 Rem 55 gr (G1 0.255, 3200 fps)</option>
+        </select>
+      </label>
+      <p class="hint">Presets are typical published numbers. Use your own BC and measured velocity.</p>
+      <div class="row">
+        <label>BC<input id="bc" type="number" step="0.001" min="0.05" max="1.2" value="0.462"></label>
+        <label>Drag model<select id="model"><option>G1</option><option>G7</option></select></label>
+        <label><span data-imp="Muzzle velocity, fps" data-met="Muzzle velocity, m/s">Muzzle velocity, fps</span><input id="mv" type="number" step="5" value="2650"></label>
+        <label><span data-imp="Bullet weight, gr" data-met="Bullet weight, g">Bullet weight, gr</span><input id="wt" type="number" step="1" value="168"></label>
+        <label><span data-imp="Sight height, in" data-met="Sight height, cm">Sight height, in</span><input id="sight" type="number" step="0.05" value="1.5"></label>
+        <label><span data-imp="Zero, yd" data-met="Zero, m">Zero, yd</span><input id="zero" type="number" step="25" value="100"></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Conditions</legend>
+      <div class="row">
+        <label><span data-imp="Temperature, °F" data-met="Temperature, °C">Temperature, °F</span><input id="temp" type="number" step="1" value="59"></label>
+        <label><span data-imp="Station pressure, inHg" data-met="Station pressure, hPa">Station pressure, inHg</span><input id="press" type="number" step="0.01" value="29.92"></label>
+        <label><span data-imp="Crosswind, mph" data-met="Crosswind, km/h">Crosswind, mph</span><input id="wind" type="number" step="1" value="10"></label>
+        <label>Look angle, °<input id="angle" type="number" step="1" min="-60" max="60" value="0"></label>
+      </div>
+      <p class="hint">Station pressure is what a barometer reads where you are, not the sea-level number from a weather app. Look angle: + uphill, − downhill.</p>
+      <details>
+        <summary>Zero-day weather (if different)</summary>
+        <div class="row">
+          <label><span data-imp="Zero temp, °F" data-met="Zero temp, °C">Zero temp, °F</span><input id="ztemp" type="number" step="1" placeholder="same"></label>
+          <label><span data-imp="Zero pressure, inHg" data-met="Zero pressure, hPa">Zero pressure, inHg</span><input id="zpress" type="number" step="0.01" placeholder="same"></label>
+        </div>
+      </details>
+    </fieldset>
+    <fieldset>
+      <legend>Range card</legend>
+      <div class="row">
+        <label><span data-imp="Max range, yd" data-met="Max range, m">Max range, yd</span><input id="max" type="number" step="50" value="600"></label>
+        <label><span data-imp="Step, yd" data-met="Step, m">Step, yd</span><input id="step" type="number" step="5" value="50"></label>
+        <label>Hold units<select id="unit"><option>MIL</option><option>MOA</option></select></label>
+        <label><span data-imp="Min energy, ft·lb" data-met="Min energy, J">Min energy, ft·lb</span><input id="mine" type="number" step="50" value="1000"></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Shot check: your ethical range today</legend>
+      <label>Animal
+        <select id="species">
+          <option value="">Custom</option>
+          <option value="6">Pronghorn (≈6 in vitals)</option>
+          <option value="8" selected>Deer (≈8 in vitals)</option>
+          <option value="10">Black bear (≈10 in vitals)</option>
+          <option value="12">Elk / moose (≈12 in vitals)</option>
+        </select>
+      </label>
+      <div class="row">
+        <label><span data-imp="Vital zone, in" data-met="Vital zone, cm">Vital zone, in</span><input id="vital" type="number" step="1" value="8"></label>
+        <label>Your group, MOA<input id="grp" type="number" step="0.25" value="2"></label>
+        <label><span data-imp="Wind-call error, mph" data-met="Wind-call error, km/h">Wind-call error, mph</span><input id="werr" type="number" step="1" value="3"></label>
+        <label>Range error, %<input id="rerr" type="number" step="0.5" value="2"></label>
+        <label>Confidence<select id="conf"><option value="0.8">80% of shots</option><option value="0.9" selected>90% of shots</option><option value="0.95">95% of shots</option></select></label>
+      </div>
+      <p class="hint">Group = a 5-shot group you can shoot from a hunting position, not the bench. Errors are typical misses in your wind call and ranging (a laser rangefinder is about 1–2%; guessing is 10% or worse). Vital sizes are rough rules of thumb.</p>
+    </fieldset>
+  </form>
+
+  <section aria-live="polite">
+    <div id="printhead" style="display:none"></div>
+    <div class="summary" id="summary"></div>
+    <svg id="chart" viewBox="0 0 640 220" role="img" aria-label="Bullet path relative to line of sight"></svg>
+    <div class="actions">
+      <button type="button" id="print">Print range card</button>
+      <button type="button" id="csv">Download CSV</button>
+      <button type="button" id="share">Copy link to this load</button>
+      <span id="msg" class="hint" role="status"></span>
+    </div>
+    <div class="table-wrap"><table id="card"></table></div>
+    <p class="hint noprint">Tap a row to show it in the summary. Highlighted rows are below your minimum energy or your hit-confidence threshold.</p>
+  </section>
+</div>
+
+<div class="noprint">
+<h2>How this calculator works</h2>
+<p>It is a point-mass trajectory solver: it steps the bullet through the air every 3 feet, applying gravity and drag from the standard <b>G1</b> or <b>G7</b> drag table at the bullet's current speed, with air density from your temperature and station pressure. It first finds the barrel angle that hits your zero in zero-day air, then flies the bullet in today's air. Wind drift uses the Didion lag-time rule.</p>
+<p>This page runs a direct port of the HoldPoint firmware solver. Automated tests check it against the firmware on every change (within 0.01 in), and the firmware is checked against <a href="https://github.com/o-murphy/py_ballisticcalc">py-ballisticcalc</a> (level shots within a few hundredths of an inch to 800 yd).</p>
+<p><b>Not modelled:</b> spin drift, Coriolis, aerodynamic jump and humidity, which are a few inches at most inside 500 yd. Your inputs matter far more: measure your muzzle velocity and sight height, and confirm holds on paper before you hunt.</p>
+
+<h2>The shot check: how "max ethical range" is worked out</h2>
+<p>A hold tells you where to aim. It doesn't tell you whether you should take the shot. Three errors stack up every time you do: your own wobble and the rifle's group, how far off your wind call might be, and how far off your range might be. The shot check turns them into one number, the chance that a dead-centre hold lands in the vital zone, at every range on the card.</p>
+<ul>
+  <li><b>You + rifle:</b> your 5-shot group from a field position, spread evenly in all directions (a 5-shot group's extreme spread is about 3 standard deviations).</li>
+  <li><b>Wind call:</b> your typical wind error × this load's drift per mph at that range, left and right.</li>
+  <li><b>Range:</b> your typical ranging error × how fast the bullet is dropping at that range, up and down.</li>
+</ul>
+<p>The <b>max ethical range today</b> is the furthest range before the hit chance first falls below your confidence (and, if you set one, before the energy falls below your floor). Change the wind error from 3 to 6 mph and watch it shrink: on a gusty day your honest range is shorter, even with the same rifle.</p>
+<p class="note">Long-range software such as Applied Ballistics' WEZ already does this kind of hit-probability analysis for precision shooters. Here it's free, built for hunting, and phrased as the question a hunter actually asks: <i>how far is too far, today?</i> It is a planning aid, not permission. If you're unsure, don't shoot.</p>
+
+<h2>Frequently asked questions</h2>
+<details><summary>What is a realistic group size for the shot check?</summary><p>Shoot five rounds from the positions you actually hunt from (sitting with sticks, prone off a pack, standing against a tree) at 100 yards and measure the widest spread, centre to centre. Most hunters are surprised: 2 to 4 MOA from field positions is common, versus under 1 MOA off a bench.</p></details>
+<details><summary>Does it work in metric?</summary><p>Yes. Switch Units to Metric for metres, m/s, grams, centimetres, °C, hPa, km/h and joules. Holds stay in MIL or MOA, which are angles and work in either system.</p></details>
+<details><summary>Should I use G1 or G7?</summary><p>Use G7 if the bullet maker publishes a G7 BC; it fits long boat-tail bullets better across the whole flight. Otherwise use the G1 number from the box.</p></details>
+<details><summary>What's the difference between MIL and MOA?</summary><p>Both are angles. 1 MIL is 3.6 inches at 100 yards; 1 MOA is about 1.047 inches at 100 yards. Use whichever your scope's turrets or reticle use.</p></details>
+<details><summary>Why station pressure and not the weather report?</summary><p>Weather reports adjust pressure to sea level. The bullet only cares about the actual air where you are, which is what an uncorrected barometer (station pressure) shows. At altitude the two can differ by several inHg.</p></details>
+<details><summary>How much energy do I need for deer or elk?</summary><p>Common rules of thumb are about 1000 ft·lb for deer and 1500 ft·lb for elk. They are guidelines, not law; shot placement and bullet construction matter more.</p></details>
+<details><summary>Can I carry this in the field without a phone?</summary><p>Yes: print the range card, or use HoldPoint, a pocket version of this calculator on a $2 Arduino Nano clone and a $1.50 OLED screen.</p></details>
+</div>
+
+<footer>
+  <p>Part of <a href="./">fieldhacks</a>, hunting electronics by ZalaStack. This is a holdover aid; confirm on paper and know your local regulations. © 2026 ZalaStack. All rights reserved.</p>
+</footer>
+</main>
+
+<script type="module">
+import { Solver } from "./holdpoint-solver.js";
+import { shotCheck } from "./shotcheck.js";
+
+const $ = (id) => document.getElementById(id);
+const FIELDS = ["sys", "bc", "model", "mv", "wt", "sight", "zero", "temp", "press", "wind", "angle", "ztemp", "zpress", "max", "step", "unit", "mine", "vital", "grp", "werr", "rerr", "conf"];
+
+// Metric conversions. The solver works in its native imperial units; we convert at the edges.
+// [toMetric(imperial), toImperial(metric), metric decimals, imperial decimals, metric step]
+const lin = (k) => [(x) => x * k, (x) => x / k];
+const CONV = {
+  mv:     [...lin(0.3048), 1, 0, 1],
+  wt:     [...lin(0.06479891), 2, 0, 0.1],
+  sight:  [...lin(2.54), 2, 2, 0.1],
+  zero:   [...lin(0.9144), 0, 0, 25],
+  max:    [...lin(0.9144), 0, 0, 50],
+  step:   [...lin(0.9144), 0, 0, 5],
+  temp:   [(f) => (f - 32) / 1.8, (c) => c * 1.8 + 32, 1, 0, 1],
+  ztemp:  [(f) => (f - 32) / 1.8, (c) => c * 1.8 + 32, 1, 0, 1],
+  press:  [...lin(33.8639), 1, 2, 1],
+  zpress: [...lin(33.8639), 1, 2, 1],
+  wind:   [...lin(1.609344), 1, 0, 1],
+  mine:   [...lin(1.35582), 0, 0, 50],
+  werr:   [...lin(1.609344), 1, 0, 1],
+  vital:  [...lin(2.54), 0, 0, 1],
+};
+const IMP_STEP = { mv: 5, wt: 1, sight: 0.05, zero: 25, max: 50, step: 5, temp: 1, ztemp: 1, press: 0.01, zpress: 0.01, wind: 1, mine: 50, werr: 1, vital: 1 };
+const metric = () => $("sys").value === "met";
+let rows = [], sel = null, last = null, sys = "imp", check = null;
+
+// Value of a field in imperial units (what the solver wants).
+function imp(k) {
+  const raw = $(k).value;
+  if (raw === "") return NaN;
+  const x = parseFloat(raw);
+  return metric() && CONV[k] ? CONV[k][1](x) : x;
+}
+
+function setSystem(next) {
+  if (next === sys) return;
+  for (const k of Object.keys(CONV)) {
+    const el = $(k), [toM, toI, dm, di, ms] = CONV[k];
+    if (el.value !== "") {
+      const x = parseFloat(el.value);
+      let y = next === "met" ? toM(x) : toI(x);
+      // Range-card spacing: snap to round numbers in the new system (it's a display choice, not a load input).
+      if (k === "max") y = Math.max(100, Math.round(y / 50) * 50);
+      if (k === "step") y = [5, 10, 25, 50, 100].reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a));
+      el.value = +y.toFixed(next === "met" ? dm : di);
+    }
+    el.step = next === "met" ? ms : IMP_STEP[k];
+    el.removeAttribute("min"); el.removeAttribute("max");
+  }
+  document.querySelectorAll("[data-met]").forEach((e) => (e.textContent = e.dataset[next === "met" ? "met" : "imp"]));
+  sys = next;
+}
+
+function read() {
+  const p = { bc: parseFloat($("bc").value), model: $("model").value, mv: imp("mv"), wt: imp("wt"), sight: imp("sight"),
+              zero: imp("zero"), temp: imp("temp"), press: imp("press"), wind: imp("wind") || 0,
+              angle: parseFloat($("angle").value) || 0, max: imp("max"), step: imp("step"), unit: $("unit").value,
+              mine: imp("mine") || 0, vital: imp("vital"), grp: parseFloat($("grp").value), werr: imp("werr"),
+              rerr: parseFloat($("rerr").value), conf: parseFloat($("conf").value) };
+  p.ztemp = $("ztemp").value === "" ? p.temp : imp("ztemp");
+  p.zpress = $("zpress").value === "" ? p.press : imp("zpress");
+  const bad = [];
+  const show = (k, x) => (metric() && CONV[k] ? +CONV[k][0](x).toFixed(CONV[k][2] + 1) : x);
+  const chk = (k, lo, hi, label) => { if (!(p[k] >= lo - 1e-9 && p[k] <= hi + 1e-9)) bad.push(`${label} (${show(k, lo)}–${show(k, hi)})`); };
+  chk("bc", 0.05, 1.2, "BC"); chk("mv", 500, 4500, "velocity"); chk("wt", 20, 750, "weight");
+  chk("sight", 0.5, 4, "sight height"); chk("zero", 25, 550, "zero"); chk("temp", -40, 120, "temperature");
+  chk("press", 17, 31.5, "pressure"); chk("ztemp", -40, 120, "zero temp"); chk("zpress", 17, 31.5, "zero pressure");
+  chk("wind", 0, 45, "wind"); chk("angle", -60, 60, "angle"); chk("max", 100, 1650, "max range"); chk("step", 5, 110, "step");
+  chk("vital", 3, 30, "vital zone"); chk("grp", 0.25, 12, "group"); chk("werr", 0, 25, "wind-call error"); chk("rerr", 0, 25, "range error");
+  return { p, bad };
+}
+
+const fmt = (x, d) => (Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d);
+
+// Display units for results.
+function U() {
+  return metric()
+    ? { r: (yd) => yd * 0.9144, ru: "m", d: (inch) => inch * 2.54, du: "cm", v: (fps) => fps * 0.3048, vu: "m/s",
+        e: (fl) => fl * 1.35582, eu: "J", w: (mph) => mph * 1.609344, wu: "km/h" }
+    : { r: (x) => x, ru: "yd", d: (x) => x, du: "in", v: (x) => x, vu: "fps", e: (x) => x, eu: "ft·lb", w: (x) => x, wu: "mph" };
+}
+
+function compute() {
+  setSystem($("sys").value);
+  const { p, bad } = read();
+  if (bad.length) { $("summary").innerHTML = `<p class="err">Check: ${bad.join(", ")}</p>`; $("card").innerHTML = ""; $("chart").innerHTML = ""; return; }
+  const s = new Solver().setup({ bc: p.bc, model: p.model, mv_fps: p.mv, weight_gr: p.wt, sight_in: p.sight, zero_yd: p.zero },
+    { temp_f: p.ztemp, press_inhg: p.zpress }, { temp_f: p.temp, press_inhg: p.press });
+  const n = Math.floor(p.max / p.step + 1e-6);
+  rows = s.solveSteps(p.step, p.step, n, p.wind, p.angle);
+  const perMph = s.solveSteps(p.step, p.step, n, 1, p.angle).map((r) => r.wind_in);
+  check = shotCheck(rows, perMph, { groupMoa: p.grp, windErrMph: p.werr, rangeErrPct: p.rerr, vitalIn: p.vital, conf: p.conf, minEnergy: p.mine });
+  last = p;
+  if (sel === null || sel >= rows.length) sel = Math.min(rows.length - 1, Math.max(0, Math.round(300 / p.step) - 1));
+  render();
+  history.replaceState(null, "", "#" + new URLSearchParams(Object.fromEntries(FIELDS.map((k) => [k, $(k).value]))));
+}
+
+function render() {
+  const p = last, mil = p.unit === "MIL", u = U();
+  const hold = (r) => (mil ? Solver.holdMIL(r) : Solver.holdMOA(r));
+  const wh = (r) => (mil ? Solver.windMIL(r) : Solver.windMOA(r));
+  const d = mil ? 2 : 1, hu = mil ? "mil" : "moa", dd = metric() ? 0 : 1;
+  const rng = (r) => u.r(r.range_yd).toFixed(0);
+  if (!rows.length) { $("summary").innerHTML = `<p class="err">The bullet slows below 300 fps before the first range. Check the inputs.</p>`; return; }
+  const r = rows[sel];
+  const up = hold(r) >= 0 ? "up" : "down";
+  $("summary").innerHTML = [
+    [`${rng(r)} ${u.ru}`, "range"],
+    [`${fmt(Math.abs(hold(r)), d)} ${hu}`, `hold ${up} (${fmt(u.d(-r.drop_in), dd)} ${u.du})`],
+    [`${fmt(wh(r), d)} ${hu}`, `wind hold (${fmt(u.d(r.wind_in), dd)} ${u.du} at ${fmt(u.w(p.wind), 0)} ${u.wu})`],
+    [`${u.v(r.vel_fps).toFixed(0)} ${u.vu}`, "velocity"],
+    [`${u.e(r.energy_ftlb).toFixed(0)} ${u.eu}`, p.mine && r.energy_ftlb < p.mine ? "energy · below your minimum" : "energy"],
+    [`${Math.round(check.rows[sel].p * 100)}%`, `vital hits at this range · biggest error: ${check.rows[sel].biggest}`],
+  ].map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("") +
+  `<div class="stat ethic"><b>${check.maxYd ? u.r(check.maxYd).toFixed(0) + " " + u.ru : "under " + rng(rows[0]) + " " + u.ru}</b><span>max ethical range today: ${Math.round(p.conf * 100)}% of shots in a ${fmt(u.d(p.vital), 0)} ${u.du} vital zone${p.mine ? ", with enough energy" : ""}</span></div>`;
+
+  $("card").innerHTML = `<thead><tr><th>Range ${u.ru}</th><th>Drop ${u.du}</th><th>Hold ${hu}</th><th>Wind ${u.du}</th><th>Wind ${hu}</th><th>Vel ${u.vu}</th><th>Energy ${u.eu}</th><th>Time s</th><th>Vital hit</th></tr></thead><tbody>` +
+    rows.map((r, i) => `<tr data-i="${i}" class="${(p.mine && r.energy_ftlb < p.mine) || check.rows[i].p < p.conf ? "low" : ""}${i === sel ? " sel" : ""}"><td>${rng(r)}</td><td>${fmt(u.d(r.drop_in), dd)}</td><td>${fmt(hold(r), d)}</td><td>${fmt(u.d(r.wind_in), dd)}</td><td>${fmt(wh(r), d)}</td><td>${u.v(r.vel_fps).toFixed(0)}</td><td>${u.e(r.energy_ftlb).toFixed(0)}</td><td>${r.tof_s.toFixed(2)}</td><td>${Math.round(check.rows[i].p * 100)}%</td></tr>`).join("") +
+    (rows.length < Math.floor(p.max / p.step + 1e-6) ? `<tr><td colspan="9" style="text-align:left">Stops here: bullet below 300 fps.</td></tr>` : "") + "</tbody>";
+
+  const v = (k) => $(k).value;
+  $("printhead").innerHTML = metric()
+    ? `<b>Range card</b> · BC ${v("bc")} ${p.model} · ${v("mv")} m/s · ${v("wt")} g · sight ${v("sight")} cm · zero ${v("zero")} m · ${v("temp")} °C, ${v("press")} hPa · wind ${v("wind")} km/h · angle ${v("angle")}° · HoldPoint calculator, lab.zalastack.com/fieldhacks`
+    : `<b>Range card</b> · BC ${v("bc")} ${p.model} · ${v("mv")} fps · ${v("wt")} gr · sight ${v("sight")} in · zero ${v("zero")} yd · ${v("temp")} °F, ${v("press")} inHg · wind ${v("wind")} mph · angle ${v("angle")}° · HoldPoint calculator, lab.zalastack.com/fieldhacks`;
+
+  // Chart: path relative to line of sight, in display units.
+  const W = Math.round(Math.max(320, Math.min(640, $("chart").clientWidth || 640))), H = 220, L = 46, R = 12, T = 14, B = 28;
+  $("chart").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const pts = [{ x: 0, y: u.d(-p.sight) }, ...rows.map((q) => ({ x: u.r(q.range_yd), y: u.d(q.drop_in) }))];
+  const xmax = pts[pts.length - 1].x;
+  const ymin = Math.min(...pts.map((q) => q.y)), ymax = Math.max(u.d(2), ...pts.map((q) => q.y));
+  const sx = (x) => L + (x / xmax) * (W - L - R), sy = (y) => T + ((ymax - y) / (ymax - ymin)) * (H - T - B);
+  const step = Math.pow(10, Math.floor(Math.log10((ymax - ymin) / 3)));
+  const ticks = []; for (let y = Math.ceil(ymin / step) * step; y <= ymax; y += step * (ymax - ymin > 6 * step ? 2 : 1)) ticks.push(y);
+  const css = getComputedStyle(document.documentElement);
+  const c = (k) => css.getPropertyValue(k).trim();
+  $("chart").innerHTML =
+    ticks.map((y) => `<line x1="${L}" x2="${W - R}" y1="${sy(y)}" y2="${sy(y)}" stroke="${c("--line")}"/><text x="${L - 6}" y="${sy(y) + 4}" text-anchor="end" font-size="11" fill="${c("--muted")}">${+y.toFixed(1)}</text>`).join("") +
+    `<line x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}" stroke="${c("--fg")}" stroke-dasharray="5 4"/>` +
+    `<text x="${W - R}" y="${sy(0) - 6}" text-anchor="end" font-size="11" fill="${c("--fg")}">line of sight</text>` +
+    `<path d="${pts.map((q, i) => `${i ? "L" : "M"}${sx(q.x).toFixed(1)} ${sy(q.y).toFixed(1)}`).join(" ")}" fill="none" stroke="${c("--accent")}" stroke-width="2.5"/>` +
+    `<circle cx="${sx(u.r(r.range_yd))}" cy="${sy(u.d(r.drop_in))}" r="5" fill="${c("--accent")}"/>` +
+    `<text x="${L}" y="${H - 8}" font-size="11" fill="${c("--muted")}">0 ${u.ru}</text><text x="${W - R}" y="${H - 8}" text-anchor="end" font-size="11" fill="${c("--muted")}">${xmax.toFixed(0)} ${u.ru} · ${u.du} above/below crosshair</text>`;
+}
+
+function load() {
+  const q = new URLSearchParams(location.hash.slice(1));
+  if (q.get("sys") === "met") { $("sys").value = "met"; setSystem("met"); }
+  for (const k of FIELDS) if (q.has(k) && k !== "sys") $(k).value = q.get(k);
+}
+
+$("preset").addEventListener("change", (e) => {
+  if (!e.target.value) return;
+  const [bc, model, mv, wt] = e.target.value.split(",").map((x, i) => (i === 1 ? x : parseFloat(x)));
+  $("bc").value = bc; $("model").value = model;
+  $("mv").value = metric() ? +CONV.mv[0](mv).toFixed(1) : mv;
+  $("wt").value = metric() ? CONV.wt[0](wt).toFixed(2) : wt;
+  compute();
+});
+$("f").addEventListener("input", (e) => {
+  if (["bc", "model", "mv", "wt"].includes(e.target.id)) $("preset").value = "";
+  if (e.target.id === "vital") $("species").value = "";
+  if (e.target.id !== "preset" && e.target.id !== "species") compute();
+});
+$("species").addEventListener("change", (e) => {
+  if (!e.target.value) return;
+  const inch = parseFloat(e.target.value);
+  $("vital").value = metric() ? Math.round(inch * 2.54) : inch;
+  compute();
+});
+$("card").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-i]"); if (tr) { sel = +tr.dataset.i; render(); } });
+$("print").addEventListener("click", () => window.print());
+$("csv").addEventListener("click", () => {
+  const p = last, u = U(), m = metric();
+  const head = `range_${u.ru},drop_${u.du},hold_mil,hold_moa,wind_${u.du},wind_mil,wind_moa,vel_${m ? "mps" : "fps"},energy_${m ? "j" : "ftlb"},tof_s,vital_hit_pct\n`;
+  const body = rows.map((r, i) => [u.r(r.range_yd).toFixed(0), u.d(r.drop_in).toFixed(2), Solver.holdMIL(r).toFixed(2), Solver.holdMOA(r).toFixed(2), u.d(r.wind_in).toFixed(2), Solver.windMIL(r).toFixed(2), Solver.windMOA(r).toFixed(2), u.v(r.vel_fps).toFixed(0), u.e(r.energy_ftlb).toFixed(0), r.tof_s.toFixed(3), Math.round(check.rows[i].p * 100)].join(",")).join("\n");
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([head + body + "\n"], { type: "text/csv" })), download: `range-card-${p.bc}${p.model}.csv` });
+  a.click(); URL.revokeObjectURL(a.href);
+});
+$("share").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(location.href); $("msg").textContent = "Link copied."; }
+  catch { $("msg").textContent = "Copy the address bar to share this load."; }
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => last && rows.length && render());
+addEventListener("resize", () => last && rows.length && render());
+
+load();
+compute();
+</script>
+</body>
+</html>

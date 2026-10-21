@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Thin air shoots flatter</text>
+<text x="78" y="54" fill="#5f6a66">.308 Win 168 gr at 500 yd, zeroed at 100 yd in the same air. Drop shrinks as pressure falls (altitude) and as air warms.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">50</text>
+<line x1="78" x2="630" y1="355.7" y2="355.7" stroke="#e3e1d8"/>
+<text x="70" y="359.7" text-anchor="end" fill="#5f6a66">52</text>
+<line x1="78" x2="630" y1="309.4" y2="309.4" stroke="#e3e1d8"/>
+<text x="70" y="313.4" text-anchor="end" fill="#5f6a66">54</text>
+<line x1="78" x2="630" y1="263.1" y2="263.1" stroke="#e3e1d8"/>
+<text x="70" y="267.1" text-anchor="end" fill="#5f6a66">56</text>
+<line x1="78" x2="630" y1="216.9" y2="216.9" stroke="#e3e1d8"/>
+<text x="70" y="220.9" text-anchor="end" fill="#5f6a66">58</text>
+<line x1="78" x2="630" y1="170.6" y2="170.6" stroke="#e3e1d8"/>
+<text x="70" y="174.6" text-anchor="end" fill="#5f6a66">60</text>
+<line x1="78" x2="630" y1="124.3" y2="124.3" stroke="#e3e1d8"/>
+<text x="70" y="128.3" text-anchor="end" fill="#5f6a66">62</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">64</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">22</text>
+<text x="207.9" y="422" text-anchor="middle" fill="#5f6a66">24</text>
+<text x="337.8" y="422" text-anchor="middle" fill="#5f6a66">26</text>
+<text x="467.6" y="422" text-anchor="middle" fill="#5f6a66">28</text>
+<text x="597.5" y="422" text-anchor="middle" fill="#5f6a66">30</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">station pressure (inHg)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">drop at 500 yd (inches)</text>
+<line x1="592.3" x2="592.3" y1="78" y2="402" stroke="#e3e1d8" stroke-width="2"/><text x="592.3" y="394" text-anchor="middle" fill="#5f6a66" font-size="11">sea level</text><line x1="389.7" x2="389.7" y1="78" y2="402" stroke="#e3e1d8" stroke-width="2"/><text x="389.7" y="394" text-anchor="middle" fill="#5f6a66" font-size="11">≈3,000 ft</text><line x1="207.9" x2="207.9" y1="78" y2="402" stroke="#e3e1d8" stroke-width="2"/><text x="207.9" y="394" text-anchor="middle" fill="#5f6a66" font-size="11">≈6,000 ft</text>
+<path d="M78.0 213.6 L110.5 204.1 L142.9 194.4 L175.4 184.7 L207.9 175.0 L240.4 165.0 L272.8 155.1 L305.3 145.1 L337.8 134.9 L370.2 124.5 L402.7 114.1 L435.2 103.7 L467.6 93.0 L500.1 82.2 L532.6 71.3 L565.1 60.4 L597.5 49.3" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">0 °F</text>
+<path d="M78.0 239.8 L110.5 231.0 L142.9 222.4 L175.4 213.6 L207.9 204.6 L240.4 195.6 L272.8 186.5 L305.3 177.5 L337.8 168.3 L370.2 159.0 L402.7 149.5 L435.2 140.0 L467.6 130.3 L500.1 120.8 L532.6 110.9 L565.1 101.1 L597.5 91.2" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">40 °F</text>
+<path d="M78.0 261.5 L110.5 253.7 L142.9 245.6 L175.4 237.5 L207.9 229.4 L240.4 221.3 L272.8 212.9 L305.3 204.6 L337.8 196.0 L370.2 187.5 L402.7 178.9 L435.2 170.3 L467.6 161.5 L500.1 152.8 L532.6 143.7 L565.1 134.7 L597.5 125.7" fill="none" stroke="#4d7c0f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="127" width="14" height="4" rx="2" fill="#4d7c0f"/>
+<text x="670" y="134" fill="#1d2321">80 °F</text>
+</svg>

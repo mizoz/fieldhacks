@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 330" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#5f6a66"/></marker></defs>
+<rect width="1100" height="330" fill="#fbfaf6"/>
+<text x="40" y="38" font-size="21" font-weight="bold" fill="#1d2321">One byte per minute</text>
+<text x="40" y="60" fill="#5f6a66">Direction and speed share a byte, so a 32 KB chip holds about 20 days. A marker with the date anchors the timeline.</text>
+<rect x="40" y="100" width="70" height="50" fill="#dbe7ef" stroke="#1d2321"/>
+<text x="75.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 7</text>
+<rect x="110" y="100" width="70" height="50" fill="#dbe7ef" stroke="#1d2321"/>
+<text x="145.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 6</text>
+<rect x="180" y="100" width="70" height="50" fill="#dbe7ef" stroke="#1d2321"/>
+<text x="215.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 5</text>
+<rect x="250" y="100" width="70" height="50" fill="#dbe7ef" stroke="#1d2321"/>
+<text x="285.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 4</text>
+<rect x="320" y="100" width="70" height="50" fill="#fdecd3" stroke="#1d2321"/>
+<text x="355.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 3</text>
+<rect x="390" y="100" width="70" height="50" fill="#fdecd3" stroke="#1d2321"/>
+<text x="425.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 2</text>
+<rect x="460" y="100" width="70" height="50" fill="#fdecd3" stroke="#1d2321"/>
+<text x="495.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 1</text>
+<rect x="530" y="100" width="70" height="50" fill="#fdecd3" stroke="#1d2321"/>
+<text x="565.0" y="130" text-anchor="middle" fill="#1d2321" font-size="12">bit 0</text>
+<text x="180" y="176" text-anchor="middle" fill="#2f6f9f" font-weight="bold">direction 0–15 (N, NNE … NNW)</text>
+<text x="460" y="176" text-anchor="middle" fill="#b45309" font-weight="bold">speed code 0–15</text>
+<text x="40" y="210" fill="#1d2321">Speed codes (mph): 0 = calm, 1 2 3 4 5 6 7 8 10 12 14 17 20 25 30+.  Fine steps where stand winds live.</text>
+<text x="40" y="232" fill="#1d2321">Example: 0xE3 = 1110 0011 = NW at 3 mph.   0x00 = calm.</text>
+<text x="640" y="90" fill="#1d2321" font-weight="bold">Marker (power-on, time set, top of every hour)</text>
+<rect x="640" y="100" width="70" height="50" fill="#e5e7eb" stroke="#1d2321"/>
+<text x="675" y="130" text-anchor="middle" fill="#1d2321" font-size="12">0xFF</text>
+<rect x="710" y="100" width="70" height="50" fill="#efe7fb" stroke="#1d2321"/>
+<text x="745" y="130" text-anchor="middle" fill="#1d2321" font-size="12">year</text>
+<rect x="780" y="100" width="70" height="50" fill="#efe7fb" stroke="#1d2321"/>
+<text x="815" y="130" text-anchor="middle" fill="#1d2321" font-size="12">month</text>
+<rect x="850" y="100" width="70" height="50" fill="#efe7fb" stroke="#1d2321"/>
+<text x="885" y="130" text-anchor="middle" fill="#1d2321" font-size="12">day</text>
+<rect x="920" y="100" width="70" height="50" fill="#efe7fb" stroke="#1d2321"/>
+<text x="955" y="130" text-anchor="middle" fill="#1d2321" font-size="12">hour</text>
+<rect x="990" y="100" width="70" height="50" fill="#efe7fb" stroke="#1d2321"/>
+<text x="1025" y="130" text-anchor="middle" fill="#1d2321" font-size="12">min</text>
+<text x="640" y="176" fill="#5f6a66" font-size="12">Records after a marker are consecutive minutes from that time.</text>
+<text x="640" y="194" fill="#5f6a66" font-size="12">0xFF never appears as a record (NNW at 30 mph is stored as 25).</text>
+<text x="40" y="280" fill="#1d2321" font-weight="bold">32,768 bytes − 16 header = 32,752 → 1,440 records + 24 markers a day = 1,584 bytes/day → about 20 days.</text>
+</svg>

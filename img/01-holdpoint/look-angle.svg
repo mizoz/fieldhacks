@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Shooting up or down hill</text>
+<text x="78" y="54" fill="#5f6a66">.308 Win 168 gr at 400 yd along the line of sight. Steep shots need less hold; the rifleman's rule gets close.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="337.2" y2="337.2" stroke="#e3e1d8"/>
+<text x="70" y="341.2" text-anchor="end" fill="#5f6a66">2</text>
+<line x1="78" x2="630" y1="272.4" y2="272.4" stroke="#e3e1d8"/>
+<text x="70" y="276.4" text-anchor="end" fill="#5f6a66">4</text>
+<line x1="78" x2="630" y1="207.6" y2="207.6" stroke="#e3e1d8"/>
+<text x="70" y="211.6" text-anchor="end" fill="#5f6a66">6</text>
+<line x1="78" x2="630" y1="142.8" y2="142.8" stroke="#e3e1d8"/>
+<text x="70" y="146.8" text-anchor="end" fill="#5f6a66">8</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">10</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="139.3" y="422" text-anchor="middle" fill="#5f6a66">5</text>
+<text x="200.7" y="422" text-anchor="middle" fill="#5f6a66">10</text>
+<text x="262.0" y="422" text-anchor="middle" fill="#5f6a66">15</text>
+<text x="323.3" y="422" text-anchor="middle" fill="#5f6a66">20</text>
+<text x="384.7" y="422" text-anchor="middle" fill="#5f6a66">25</text>
+<text x="446.0" y="422" text-anchor="middle" fill="#5f6a66">30</text>
+<text x="507.3" y="422" text-anchor="middle" fill="#5f6a66">35</text>
+<text x="568.7" y="422" text-anchor="middle" fill="#5f6a66">40</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">45</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">look angle (degrees, up or down)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">hold (MOA)</text>
+<path d="M78.0 137.0 L114.8 137.3 L151.6 138.9 L188.4 141.2 L225.2 144.7 L262.0 149.3 L298.8 154.8 L335.6 161.6 L372.4 169.0 L409.2 177.5 L446.0 186.9 L482.8 197.2 L519.6 208.6 L556.4 220.6 L593.2 233.5 L630.0 247.1" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">exact (HoldPoint)</text>
+<path d="M78.0 137.0 L114.8 138.3 L151.6 139.2 L188.4 142.8 L225.2 147.3 L262.0 152.8 L298.8 159.6 L335.6 167.4 L372.4 176.2 L409.2 185.9 L446.0 196.9 L482.8 208.6 L519.6 219.9 L556.4 233.2 L593.2 247.1 L630.0 261.1" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">rifleman's rule</text>
+<path d="M78.0 137.0 L114.8 137.0 L151.6 137.0 L188.4 137.0 L225.2 137.0 L262.0 137.0 L298.8 137.0 L335.6 137.0 L372.4 137.0 L409.2 137.0 L446.0 137.0 L482.8 137.0 L519.6 137.0 L556.4 137.0 L593.2 137.0 L630.0 137.0" fill="none" stroke="#4d7c0f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="127" width="14" height="4" rx="2" fill="#4d7c0f"/>
+<text x="670" y="134" fill="#1d2321">ignore the angle</text>
+</svg>

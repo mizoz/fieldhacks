@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlopeShift Classroom Kit · Build a Wind Logger, Then Forecast the Wind · Fieldhacks</title>
+<meta name="description" content="SlopeShift is a wind-logging kit for high-school classes. Students build a vane and anemometer logger, record two weeks of wind, find each day's wind switch and forecast it from the sun. Kit contents, lessons, specs and classroom quotes.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/slopeshift/kit.html">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="SlopeShift classroom kit">
+<meta property="og:description" content="Students build a wind logger, then forecast their own site's wind switch from the sun.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/slopeshift/kit.html">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Cpath d='M5 24 L16 8 L27 24 Z' fill='%23dfe7d5'/%3E%3Cpath d='M9 19 L15 11' stroke='%232f6f9f' stroke-width='2.5'/%3E%3Cpath d='M23 19 L17 11' stroke='%23c2410c' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../style.css">
+<style>
+.warn{border:2px solid #b91c1c;border-radius:12px;padding:12px 18px;margin:22px 0;font:16px/1.55 var(--sans)}
+.warn p{margin:6px 0}
+.warn b{color:#b91c1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{border-color:#f87171}:root:not([data-theme="light"]) .warn b{color:#f87171}}
+.article td,.article th{vertical-align:top}
+.article code{overflow-wrap:anywhere}
+.skus{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0;font-family:var(--sans)}
+.sku{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
+.sku h3{margin:0 0 6px;font-size:18px}
+.sku p{margin:0;font-size:15px;line-height:1.5}
+</style>
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="./" aria-current="page">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">SlopeShift · Classroom kit · Ages 14+</p>
+    <h1>Build a wind logger, then forecast the wind</h1>
+    <p class="dek">SlopeShift is a kit for high-school science and engineering classes. Students build a wind vane and anemometer that log every minute for about 20 days. Then they find when the wind turned each morning and evening, and learn to forecast it from the sun.</p>
+    <p class="actions"><a class="btn" href="https://www.zalastack.com">Ask about classroom quotes</a> <a class="btn alt" href="analyzer.html">Try the Analyzer</a></p>
+  </header>
+
+  <div class="callout"><p><b>In development.</b> The firmware is written, tested on a PC and compiles for the board. The analysis tools work on made-up demo data. No unit has been built and run outdoors yet, so we're not quoting accuracy figures. If you'd like to pilot a kit with a class, get in touch.</p></div>
+
+  <figure class="lead"><img src="../img/04-slopeshift/assembly.svg" width="1100" height="660" alt="Side view of the SlopeShift logger: vane and cups on separate posts on a crossbar, electronics in a PVC tube on the mast"><figcaption><b>Figure 1.</b> The logger students build: a vane and cups on a crossbar, and the electronics in a capped PVC tube.</figcaption></figure>
+
+  <section id="what">
+    <h2>What students do</h2>
+    <ol>
+      <li><strong>Build it.</strong> Solder a reed-switch vane and resistor ladder, fit the cups and magnet, and seal the electronics in a PVC tube. Two or three class periods.</li>
+      <li><strong>Log real wind.</strong> Set the clock, calibrate the cups, and leave it outside for one to two weeks. It records direction and speed every minute.</li>
+      <li><strong>Find the switch.</strong> Load the log in the Analyzer. On calm, clear days, local winds turn around each morning and evening. Students see when, and on which days the weather overrode it.</li>
+      <li><strong>Forecast it.</strong> Describe the site (slope, the direction it faces, any ridges) and the Analyzer learns how the switch follows the sun. Students predict the switch for dates they haven't measured, then test the predictions against new data.</li>
+    </ol>
+    <p>Schoolyards are often flat, and flat ground gets weak slope winds. Near a lake or the sea, students can log the lake or sea breeze instead: the Analyzer has a shore setting for it. For a quick demo in class, the logger's <code>fast</code> mode prints a reading every 2 seconds and flags the switch when you turn a fan or hairdryer around.</p>
+  </section>
+
+  <section id="box">
+    <h2>What's in the box</h2>
+    <ul>
+      <li><strong>Electronics:</strong> Pro Mini 3.3 V board with the firmware already loaded, DS3231 clock with coin cell, 24LC256 memory chip and socket, perfboard and headers.</li>
+      <li><strong>Sensors:</strong> 9 glass reed switches plus spares, 1% ladder resistors, a capacitor, and small neodymium magnets.</li>
+      <li><strong>Mechanical:</strong> bearings, bolts, PVC tube and caps, crossbar, cable, a 2×AA holder with switch, and fittings.</li>
+      <li><strong>Printed parts:</strong> vane, hub, reed ring, cup rotor, clamps and mast bracket.</li>
+      <li><strong>Cable:</strong> a 3.3 V USB-serial adapter for setting it up and reading the log. Classroom packs share three.</li>
+    </ul>
+    <p><strong>You also need:</strong> 2 AA batteries, a stake or pole, a soldering iron and solder, wire cutters, a compass, and a computer with a web browser.</p>
+  </section>
+
+  <section id="options">
+    <h2>Options</h2>
+    <div class="skus">
+      <div class="sku"><h3>Single kit</h3><p>One logger kit and a USB-serial adapter. For a teacher trying it out, a student project or a science fair.</p></div>
+      <div class="sku"><h3>Classroom 10-pack</h3><p>Ten logger kits for a class working in pairs or threes, three shared adapters, a spares bag, and the printed teacher guide.</p></div>
+      <div class="sku"><h3>Assembled unit</h3><p>Built, tested and calibrated, for a demo beside a class set. Available once units have been tested outdoors.</p></div>
+    </div>
+    <p>Prices aren't set yet. <a href="https://www.zalastack.com">Ask for a classroom quote</a> and tell us your class size and when you'd like to start.</p>
+  </section>
+
+  <section id="learn">
+    <h2>What students learn</h2>
+    <p>The teacher guide has five lessons, each with a student worksheet and an answer key:</p>
+    <ol>
+      <li><strong>Why slopes make wind.</strong> Heating, cooling and air density; why the wind turns around twice a day.</li>
+      <li><strong>Sensors.</strong> Reed switches, the resistor ladder, and the maths that turns one analog reading into 16 directions.</li>
+      <li><strong>Build and deploy.</strong> Assembly, calibration, and choosing a good spot.</li>
+      <li><strong>Data.</strong> Why you can't average directions like ordinary numbers, and how to find the switch in a noisy log.</li>
+      <li><strong>Model and predict.</strong> The sun's path and sun on a slope; make predictions, then test them against new data.</li>
+    </ol>
+    <p>It fits Earth science, physics and engineering design units. We're still checking it against specific standards and provincial curricula.</p>
+  </section>
+
+  <section id="analyzer">
+    <h2>The Analyzer</h2>
+    <p>The <a href="analyzer.html">SlopeShift Analyzer</a> runs in a web browser, with nothing to install and no student accounts. The log stays on the student's computer. It shows each day's switch, wind by time of day, and a forecast for any dates you choose. You can try it now with two weeks of demo data (made up, for practice).</p>
+  </section>
+
+  <section id="specs">
+    <h2>Specs</h2>
+    <div class="table-wrap"><table>
+      <tbody>
+        <tr><th>Direction</th><td>16 points, from 8 reed switches on one analog pin</td></tr>
+        <tr><th>Speed</th><td>Cup anemometer, one pulse per turn; calibrated by the class</td></tr>
+        <tr><th>Records</th><td>Direction and speed once a minute, about 20 days per memory chip</td></tr>
+        <tr><th>Clock</th><td>DS3231 with coin-cell backup</td></tr>
+        <tr><th>Power</th><td>2×AA; sleeps between readings</td></tr>
+        <tr><th>Board</th><td>Pro Mini 3.3 V, 8 MHz</td></tr>
+        <tr><th>Data</th><td>CSV over USB-serial; Analyzer in the browser, plus command-line tools</td></tr>
+        <tr><th>Ages</th><td>14+ with a teacher. Contains small magnets.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Want the details? <a href="assembly.html">The assembly guide</a> covers every step, and <a href="./">the SlopeShift article</a> explains the science and the design.</p>
+  </section>
+
+  <section id="compare">
+    <h2>How it compares</h2>
+    <p>Classroom weather and wind kits we found cost roughly $220 to $250. Some are one calibrated sensor for a whole class, and some are paper-plate builds that don't record anything. SlopeShift gives each group its own logger, and the data work keeps going after the build. A calibrated commercial sensor is the better instrument, and SlopeShift's readings depend on how carefully students build and calibrate it. We couldn't find a classroom kit where students forecast their own site's wind from the sun.</p>
+  </section>
+
+  <div class="warn" role="note" lang="en">
+    <p><b>⚠ WARNING: magnets.</b> This kit contains small, strong magnets. If two or more are swallowed, they can pull together inside the intestines and cause serious injury or death. Get medical help right away if a magnet is swallowed. Not for children under 14. Keep loose magnets away from young children.</p>
+    <p lang="fr"><b>⚠ MISE EN GARDE : aimants.</b> Cette trousse contient de petits aimants puissants. Si deux aimants ou plus sont avalés, ils peuvent s'attirer l'un l'autre dans l'intestin et causer des blessures graves ou la mort. Consultez immédiatement un médecin si un aimant est avalé. Ne convient pas aux enfants de moins de 14 ans. Gardez les aimants hors de la portée des jeunes enfants.</p>
+  </div>
+
+  <section id="quote">
+    <h2>Classroom quotes</h2>
+    <p>Teachers and schools: <a href="https://www.zalastack.com">contact ZalaStack</a> with your class size, grade, and when you'd like to run it. We're also looking for a few classes to pilot the first kits.</p>
+  </section>
+
+  <section class="related"><h2>More on SlopeShift</h2><div class="related-grid">
+    <a class="related-card" href="./"><span class="eyebrow">The science</span><b>When does the wind switch?</b><span>Why slopes make their own wind, and how the logger works.</span></a>
+    <a class="related-card" href="assembly.html"><span class="eyebrow">Assembly guide</span><b>Build a SlopeShift wind logger</b><span>Step by step, for students 14+ with a teacher.</span></a>
+    <a class="related-card" href="analyzer.html"><span class="eyebrow">Analyzer</span><b>Find the switch, then forecast it</b><span>Load a log in your browser and forecast any date.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>SlopeShift is a <a href="../">Fieldhacks</a> kit. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

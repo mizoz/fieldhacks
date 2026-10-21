@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5f6a66"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="520" fill="#fbfaf6"/>
+  <text x="40" y="40" font-size="21" font-weight="bold" fill="#1d2321">How HoldPoint works out a hold</text>
+  <text x="40" y="62" fill="#5f6a66">A real trajectory simulation, small enough for a $2 chip. It runs once when you change a setting (about 1 second) and fills a table; scrolling just reads the table.</text>
+
+  <!-- inputs -->
+  <g>
+    <rect x="40" y="100" width="210" height="150" rx="10" fill="#eef3f6" stroke="#2f6f9f" stroke-width="1.5"/>
+    <text x="56" y="126" font-weight="bold" fill="#1d2321">Your load (typed once)</text>
+    <g fill="#1d2321" font-size="12.5">
+      <text x="56" y="150">muzzle velocity</text><text x="56" y="170">ballistic coefficient, G1 or G7</text>
+      <text x="56" y="190">bullet weight</text><text x="56" y="210">scope height over bore</text><text x="56" y="230">zero distance + zero-day air</text>
+    </g>
+    <rect x="40" y="270" width="210" height="110" rx="10" fill="#f3eefa" stroke="#7c3aed" stroke-width="1.5"/>
+    <text x="56" y="296" font-weight="bold" fill="#1d2321">Today's conditions</text>
+    <g fill="#1d2321" font-size="12.5">
+      <text x="56" y="320">temperature + pressure</text><text x="56" y="340">(BMP280 sensor, or typed)</text><text x="56" y="360">wind speed, look angle</text>
+    </g>
+  </g>
+
+  <!-- steps -->
+  <g font-size="12.5">
+    <rect x="290" y="100" width="215" height="80" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+    <text x="306" y="124" font-weight="bold" fill="#1d2321">1  Air density</text>
+    <text x="306" y="146" fill="#5f6a66">Thin or warm air = less drag.</text>
+    <text x="306" y="164" fill="#5f6a66">Scales drag by density ratio.</text>
+
+    <rect x="290" y="200" width="215" height="80" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+    <text x="306" y="224" font-weight="bold" fill="#1d2321">2  Find the zero</text>
+    <text x="306" y="246" fill="#5f6a66">Tilts the barrel until the bullet</text>
+    <text x="306" y="264" fill="#5f6a66">hits at your zero, in zero-day air.</text>
+
+    <rect x="290" y="300" width="215" height="100" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+    <text x="306" y="324" font-weight="bold" fill="#1d2321">3  Fly the bullet</text>
+    <text x="306" y="346" fill="#5f6a66">Every 3 ft: gravity + drag from</text>
+    <text x="306" y="364" fill="#5f6a66">the standard G1/G7 table at the</text>
+    <text x="306" y="382" fill="#5f6a66">bullet's current speed.</text>
+
+    <rect x="550" y="200" width="215" height="100" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+    <text x="566" y="224" font-weight="bold" fill="#1d2321">4  Record every 25 yd</text>
+    <text x="566" y="246" fill="#5f6a66">drop, wind drift (lag rule),</text>
+    <text x="566" y="264" fill="#5f6a66">velocity → 40 rows in RAM,</text>
+    <text x="566" y="282" fill="#5f6a66">out to 1000 yd.</text>
+  </g>
+
+  <!-- outputs -->
+  <rect x="790" y="110" width="170" height="120" rx="10" fill="#161a1d"/>
+  <text x="804" y="136" font-weight="bold" fill="#cdeeff">HOLD screen</text>
+  <g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#cdeeff" font-size="13">
+    <text x="804" y="164" font-size="20">300 yd</text><text x="804" y="192" font-size="20">^ 1.42 MIL</text>
+    <text x="804" y="214">W 0.69mil 1636ft·lb</text>
+  </g>
+  <rect x="790" y="270" width="170" height="120" rx="10" fill="#161a1d"/>
+  <text x="804" y="296" font-weight="bold" fill="#cdeeff">RANGE CARD</text>
+  <g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#cdeeff" font-size="13">
+    <text x="804" y="320">300  1.42  0.69</text><text x="804" y="338">400  2.38  0.96</text>
+    <text x="804" y="356">500  3.48  1.25</text><text x="804" y="374">600  4.73  1.57</text>
+  </g>
+
+  <g stroke="#5f6a66" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M250 175 H286"/><path d="M250 320 C270 320 266 140 286 140"/>
+    <path d="M397 180 V196"/><path d="M397 280 V296"/>
+    <path d="M505 350 C528 350 524 250 546 250"/>
+    <path d="M765 235 C778 235 772 170 786 170"/><path d="M765 265 C778 265 772 330 786 330"/>
+      </g>
+
+  <!-- footer facts -->
+  <g font-size="12.5" fill="#1d2321">
+    <rect x="40" y="430" width="920" height="64" rx="10" fill="#eef1ea"/>
+    <text x="60" y="456"><tspan font-weight="bold">Checked:</tspan> matches py-ballisticcalc within a few hundredths of an inch level, under 0.2 in angled (six loads, 100–800 yd).</text>
+    <text x="60" y="478"><tspan font-weight="bold">Left out on purpose:</tspan> spin drift, Coriolis, aerodynamic jump, humidity — each a few inches at most inside 500 yd.</text>
+  </g>
+</svg>

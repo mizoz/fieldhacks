@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#5f6a66"/></marker></defs>
+<rect width="1000" height="560" fill="#fbfaf6"/>
+<text x="40" y="40" font-size="21" font-weight="bold" fill="#1d2321">SlopeShift · concept</text>
+<text x="40" y="62" fill="#5f6a66">Leave it at the stand for a week. It learns the minute the morning air stops sliding downhill and starts rising.</text>
+<text x="40" y="104" font-weight="bold" fill="#1d2321">Why the wind switches</text>
+<path d="M40 240 L170 160 L300 240 Z" fill="#dfe7d5"/>
+<circle cx="270" cy="150" r="11" fill="#cbd5e1"/>
+<path d="M150 177 L90 214" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<path d="M190 177 L250 214" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<text x="40" y="262" fill="#2f6f9f" font-size="12.5" font-weight="bold">before sunrise: cool air sinks</text>
+<path d="M40 400 L170 320 L300 400 Z" fill="#dfe7d5"/>
+<circle cx="270" cy="310" r="14" fill="#f59e0b"/>
+<path d="M90 374 L150 337" stroke="#c2410c" stroke-width="3" marker-end="url(#a)"/>
+<path d="M250 374 L190 337" stroke="#c2410c" stroke-width="3" marker-end="url(#a)"/>
+<text x="40" y="422" fill="#c2410c" font-size="12.5" font-weight="bold">mid-morning: warm air rises</text>
+<rect x="340" y="100" width="230" height="90" rx="10" fill="#eef3f6" stroke="#2f6f9f" stroke-width="1.5"/>
+<text x="354" y="124" font-weight="bold" fill="#1d2321">Vane: 8 reed switches</text>
+<text x="354" y="146" fill="#5f6a66" font-size="12.5">+ resistor ladder → one analog pin</text>
+<text x="354" y="164" fill="#5f6a66" font-size="12.5">16 directions (2 switches between)</text>
+<rect x="340" y="210" width="230" height="90" rx="10" fill="#eef3f6" stroke="#2f6f9f" stroke-width="1.5"/>
+<text x="354" y="234" font-weight="bold" fill="#1d2321">Cups: 1 reed switch</text>
+<text x="354" y="256" fill="#5f6a66" font-size="12.5">1 pulse per turn → wake pin</text>
+<text x="354" y="274" fill="#5f6a66" font-size="12.5">calibrate out a car window</text>
+<rect x="340" y="320" width="230" height="110" rx="10" fill="#fff" stroke="#1d2321" stroke-width="1.5"/>
+<text x="354" y="344" font-weight="bold" fill="#1d2321">Pro Mini + DS3231 clock + 2×AA</text>
+<text x="354" y="366" fill="#5f6a66" font-size="12.5">clock alarm every minute</text>
+<text x="354" y="384" fill="#5f6a66" font-size="12.5">direction + speed → 1 byte</text>
+<text x="354" y="402" fill="#5f6a66" font-size="12.5">24LC256 chip holds ~20 days</text>
+<path d="M570 255 H596" stroke="#5f6a66" stroke-width="2" fill="none"/>
+<path d="M570 145 H596 V375 H574" stroke="#5f6a66" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="640" y="104" font-weight="bold" fill="#1d2321">One morning: direction the wind comes from</text>
+<line x1="640" x2="960" y1="380" y2="380" stroke="#ecebe4"/>
+<text x="632" y="384" text-anchor="end" fill="#5f6a66" font-size="11">N</text>
+<line x1="640" x2="960" y1="348" y2="348" stroke="#ecebe4"/>
+<text x="632" y="352" text-anchor="end" fill="#5f6a66" font-size="11">NE</text>
+<line x1="640" x2="960" y1="315" y2="315" stroke="#ecebe4"/>
+<text x="632" y="319" text-anchor="end" fill="#5f6a66" font-size="11">E</text>
+<line x1="640" x2="960" y1="282" y2="282" stroke="#ecebe4"/>
+<text x="632" y="286" text-anchor="end" fill="#5f6a66" font-size="11">SE</text>
+<line x1="640" x2="960" y1="250" y2="250" stroke="#ecebe4"/>
+<text x="632" y="254" text-anchor="end" fill="#5f6a66" font-size="11">S</text>
+<line x1="640" x2="960" y1="218" y2="218" stroke="#ecebe4"/>
+<text x="632" y="222" text-anchor="end" fill="#5f6a66" font-size="11">SW</text>
+<line x1="640" x2="960" y1="185" y2="185" stroke="#ecebe4"/>
+<text x="632" y="189" text-anchor="end" fill="#5f6a66" font-size="11">W</text>
+<line x1="640" x2="960" y1="152" y2="152" stroke="#ecebe4"/>
+<text x="632" y="156" text-anchor="end" fill="#5f6a66" font-size="11">NW</text>
+<line x1="640" x2="960" y1="120" y2="120" stroke="#ecebe4"/>
+<text x="632" y="124" text-anchor="end" fill="#5f6a66" font-size="11">N</text>
+<path d="M640.0 139.2 L645.3 139.4 L650.7 165.5 L656.0 164.6 L661.3 142.7 L666.7 145.6 L672.0 147.5 L677.3 158.1 L682.7 149.4 L688.0 149.4 L693.3 150.1 L698.7 162.5 L704.0 154.5 L709.3 155.6 L714.7 146.0 L720.0 138.0 L725.3 139.4 L730.7 151.2 L736.0 154.1 L741.3 159.3 L746.7 166.1 L752.0 166.3 L757.3 153.5 L762.7 157.8 L768.0 156.0 L773.3 141.0 L778.7 151.7 L784.0 150.7 L789.3 160.2 L794.7 166.4 L800.0 157.6 L805.3 180.5 L810.7 186.9 L816.0 189.9 L821.3 216.7 L826.7 248.5 L832.0 245.0 L837.3 265.2 L842.7 275.6 L848.0 270.6 L853.3 274.8 L858.7 274.0 L864.0 286.8 L869.3 268.4 L874.7 269.0 L880.0 292.4 L885.3 275.1 L890.7 276.2 L896.0 283.6 L901.3 281.6 L906.7 282.8 L912.0 270.1 L917.3 282.5 L922.7 272.8 L928.0 286.8 L933.3 271.3 L938.7 270.8 L944.0 283.6 L949.3 280.5 L954.7 270.2 L960.0 276.0" fill="none" stroke="#1d2321" stroke-width="2"/>
+<line x1="820" x2="820" y1="120" y2="380" stroke="#c2410c" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="826" y="136" fill="#c2410c" font-weight="bold" font-size="12.5">switch ≈ 7:15</text>
+<text x="640" y="398" text-anchor="middle" fill="#5f6a66" font-size="11">5 am</text>
+<text x="720" y="398" text-anchor="middle" fill="#5f6a66" font-size="11">6</text>
+<text x="800" y="398" text-anchor="middle" fill="#5f6a66" font-size="11">7</text>
+<text x="880" y="398" text-anchor="middle" fill="#5f6a66" font-size="11">8</text>
+<text x="960" y="398" text-anchor="middle" fill="#5f6a66" font-size="11">9 am</text>
+<rect x="640" y="408" width="195.20000000000002" height="22" rx="11" fill="#fdecd3"/>
+<text x="648" y="423" fill="#9a3412" font-size="11.5">illustration · not real data</text>
+<rect x="340" y="450" width="620" height="80" rx="10" fill="#eef1ea" stroke="#4d7c0f" stroke-width="1.5"/>
+<text x="354" y="474" font-weight="bold" fill="#1d2321">What you get</text>
+<text x="354" y="496" fill="#5f6a66" font-size="12.5">tools/slopeshift.py: per-hour wind roses and each day's switch time across the week,</text>
+<text x="354" y="514" fill="#5f6a66" font-size="12.5">so you walk in on the right side of the ridge before it happens.</text>
+</svg>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When Does the Wind Switch at Your Stand? Thermals, Scent and a $5 Logger · fieldhacks lab</title>
+<meta name="description" content="Why slope winds reverse every morning and evening, what it means for scent at a deer stand, and a $5 DIY logger that measures your stand, learns how its thermal switch follows the sun, and predicts the switch on any future date.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/slopeshift/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="When does the wind switch at your stand?">
+<meta property="og:description" content="Thermals, scent, and a $5 logger that measures the switch time where you actually sit.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/slopeshift/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M16 4v8M16 20v8M4 16h8M20 16h8' stroke='%23f59e0b' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"When does the wind switch at your stand? Thermals, scent and a $5 logger",
+ "datePublished":"2026-10-21","about":["thermal winds","katabatic wind","anabatic wind","deer hunting scent control","cup anemometer","circular statistics","Arduino"],
+ "url":"https://lab.zalastack.com/fieldhacks/slopeshift/","image":"https://lab.zalastack.com/fieldhacks/social-preview.png",
+ "isPartOf":{"@type":"WebSite","name":"fieldhacks","url":"https://lab.zalastack.com/fieldhacks/"},
+ "author":{"@type":"Organization","name":"fieldhacks lab","url":"https://lab.zalastack.com/fieldhacks/"}}
+</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="../slopeshift/" aria-current="page">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">Project 04 · Wind and scent</p>
+    <h1>When does the wind switch at your stand?</h1>
+    <p class="dek">On calm, clear days, hills make their own wind. It drains downhill all night, climbs once the sun arrives, and turns around again at dusk. When it turns decides where your scent goes. Here's the physics, and a $5 logger that measures it where you sit.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026 · 15 min read</p>
+    <p class="actions"><a class="btn" href="analyzer.html">Open the Analyzer</a> <a class="btn alt" href="kit.html">The classroom kit</a> <a class="btn alt" href="#using-it">Jump to using the data</a></p>
+  </header>
+
+  <figure class="lead"><img src="../img/04-slopeshift/thermals.svg" width="1100" height="560" alt="Four panels of a ridge: downslope winds before sunrise, the sunlit east slope switching to upslope mid-morning, both upslope in the afternoon, and the east slope switching back first in the evening"><figcaption><b>Figure 1.</b> The daily cycle of slope winds on one ridge, seen end-on. Which slope switches first depends on where the sun is.</figcaption></figure>
+
+  <aside class="keypoints"><h2>Key points</h2><ul>
+    <li>Slope winds come from temperature: slopes cool at night and the air drains downhill; sun-warmed slopes pull air uphill. The swap between them is "the switch".</li>
+    <li>Its timing shifts with slope aspect, season, cloud and terrain, and big-weather wind can override it completely. Forecasts can't see it at a particular stand.</li>
+    <li>SlopeShift logs direction and speed every minute for about 20 days, then reports each day's morning and evening switch time.</li>
+    <li>On generated test data it finds the switch within 25 minutes, usually much closer. It isn't built on real hardware yet, so treat it as a design to test.</li>
+    <li>Use the spread, not just the average: "08:30 to 09:05" is a plan; "08:51" is a guess.</li>
+    <li><b>New:</b> after a week or two it learns how your stand's switch follows the sun on the slope, and predicts the switch window for any future date. We couldn't find another tool that does this.</li>
+  </ul></aside>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#thermals">Why hills make their own wind</a></li>
+    <li><a href="#pooling">Cold-air pools and the lid</a></li>
+    <li><a href="#timing">What moves the switch</a></li>
+    <li><a href="#weather">When the weather wins</a></li>
+    <li><a href="#scent">Scent rides the air</a></li>
+    <li><a href="#why-measure">Why measure at the stand</a></li>
+    <li><a href="#design">The design</a></li>
+    <li><a href="#vane">Sixteen directions from eight switches</a></li>
+    <li><a href="#averaging">Averaging a direction</a></li>
+    <li><a href="#cups">Measuring speed</a></li>
+    <li><a href="#clock">Why it needs a real clock</a></li>
+    <li><a href="#data">One byte per minute</a></li>
+    <li><a href="#power">Power</a></li>
+    <li><a href="#switch-finder">Finding the switch</a></li>
+    <li><a href="#learn">Learning your stand, then predicting any day</a></li>
+    <li><a href="#using-it">Using it to pick stands</a></li>
+    <li><a href="#limits">Limits and next steps</a></li>
+  </ol></nav>
+
+  <section id="thermals">
+    <h2>Why hills make their own wind</h2>
+    <p>Ground heats and cools much faster than air. On a clear night it radiates heat to the sky and gets cold; on a sunny morning it soaks up sunlight and gets warm. The thin layer of air touching a slope takes on the slope's temperature, while air at the same height out over the valley doesn't. That difference in temperature is a difference in density, and density differences on a slope make air move.</p>
+    <ul>
+      <li><strong>Overnight, slopes cool.</strong> The air against them becomes colder and denser than its surroundings and slides downhill like a very thin, slow river. Meteorologists call this a <em>katabatic</em> or drainage wind.<sup class="ref"><a href="#n1" id="r1">1</a></sup> It's usually light, a few miles per hour, and surprisingly steady in direction.</li>
+      <li><strong>Once the sun reaches a slope, it warms.</strong> The air against it becomes buoyant and creeps upslope: an <em>anabatic</em> or upslope wind. It tends to be gustier than the night flow, because warm air rises in bubbles rather than a smooth sheet.</li>
+      <li><strong>Near sunset it reverses.</strong> Slopes fall into shade and start cooling again, and the drainage flow returns.</li>
+    </ul>
+    <p>Between the two regimes there's often a stretch of light, shifting air while the slope changes over. That's what hunters describe as the wind "swirling".</p>
+    <blockquote class="pull">Between the two regimes there's a stretch of light, shifting air. That's the swirl.</blockquote>
+    <p>Valleys add a second, slower layer to the pattern. Along a valley's length, air tends to flow up-valley during the day and down-valley at night. That flow usually lags the slope winds by an hour or more, because it takes longer to warm or cool a whole valley's worth of air.</p>
+  </section>
+
+  <section id="pooling">
+    <h2>Cold-air pools and the lid</h2>
+    <p>Drainage air has to go somewhere. It collects in hollows, creek bottoms and basins, building a pool of cold air that can be noticeably colder than the slopes above, a familiar feeling walking down into a bottom before dawn. The top of that pool is a temperature <em>inversion</em>, colder air under warmer, which acts like a lid. Smoke, fog and scent released inside the pool tend to stay in it and spread sideways rather than rise.</p>
+    <p>The pool breaks up as the sun warms the slopes and the air at the bottom. That's part of why the morning switch can feel abrupt in a bottom and gradual on a ridge.</p>
+  </section>
+
+  <section id="timing">
+    <h2>What moves the switch</h2>
+    <ul>
+      <li><strong>Slope aspect.</strong> East-facing slopes get sun first and switch first in the morning. West-facing slopes switch later in the morning and hold their upslope wind later into the evening. In the northern hemisphere, north-facing slopes get little direct sun and may barely switch on short winter days.</li>
+      <li><strong>Steepness and cover.</strong> Steep, open slopes heat and cool fastest. Thick timber shades the ground and slows everything down.</li>
+      <li><strong>Season.</strong> Later sunrise and a lower sun in late fall push the morning switch later and weaken the daytime upslope flow.</li>
+      <li><strong>Cloud.</strong> Overcast skies damp both regimes. The switch may come late, be weak, or never happen.</li>
+      <li><strong>Local terrain.</strong> Draws, saddles, benches, field edges and openings in timber channel and delay the flow. That's the part no forecast can tell you.</li>
+    </ul>
+  </section>
+
+  <section id="weather">
+    <h2>When the weather wins</h2>
+    <p>Thermals are gentle forces. When the large-scale wind (the one in the forecast, driven by highs, lows and fronts) is strong, it simply overrides them for the day. The thermal pattern still exists underneath, but you'll feel the big wind instead. A common rule of thumb is that thermals matter most on clear, calm-to-light days; once the forecast wind is brisk, hunt the forecast. SlopeShift's switch finder reports no switch on days where the morning baseline wasn't steady, and those days are usually exactly these.</p>
+  </section>
+
+  <section id="scent">
+    <h2>Scent rides the air</h2>
+    <p>Your scent goes where the air goes. Scent isn't a beam; it's a plume that spreads and meanders as it drifts, and in light air it hugs the ground. Morning drainage tends to carry it down toward bottoms. Daytime upslope air carries it up toward benches and ridges, and evening drainage pours it back down. During the swirl it can go anywhere.</p>
+    <div class="callout"><p><b>The useful question</b> isn't "which way is the wind today?" It's: <em>at this stand, at the time I'll be sitting, which way will the air be moving, and how reliably?</em></p></div>
+    <p>A stand that's perfect at 9:30 can be wrong at 7:30 if the switch comes at 8:30. Knowing the switch window, and how much it wanders from day to day, turns this into a plan. It tells you when to be in, when to leave, and which route keeps your trail out of air moving toward where you expect deer to be.</p>
+  </section>
+
+  <section id="why-measure">
+    <h2>Why measure at the stand</h2>
+    <p>Weather stations and forecast models describe wind about 10 metres off the ground, in the open, often many kilometres away. They're good at the big picture and blind to a thermal draining down one particular draw at nose height under a canopy. A cheap logger left at the exact spot and seated height for a week or two of mornings measures what you actually care about. Two loggers at two candidate stands tell you even more.</p>
+  </section>
+
+  <section id="design">
+    <h2>The design</h2>
+    <figure class="wide"><img src="../img/04-slopeshift/concept.svg" width="1000" height="560" loading="lazy" alt="SlopeShift concept: vane and cups feeding a Pro Mini, with a sample morning showing the switch"><figcaption><b>Figure 2.</b> The whole idea: a vane and cups on reed switches, a sleeping microcontroller, a clock and a memory chip.</figcaption></figure>
+    <p>A wind vane and a cup anemometer, both built from reed switches and small magnets, feed a 3.3 V Pro Mini. A DS3231 clock module wakes it once a minute, and a 24LC256 memory chip stores one byte per minute for about 20 days. The rest is scrap: a plastic jug for the fin, ping-pong ball halves for cups, skateboard bearings, PVC pipe.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/assembly.svg" width="1100" height="660" loading="lazy" alt="Side view of the SlopeShift assembly: vane and cups on separate posts on a crossbar, electronics in a PVC tube on the mast"><figcaption><b>Figure 3.</b> Vane and cups turn on separate posts, so neither disturbs the other. The electronics ride in a capped PVC tube on the mast.</figcaption></figure>
+    <figure class="wide"><img src="../img/04-slopeshift/schematic.svg" width="1100" height="720" loading="lazy" alt="SlopeShift schematic: Pro Mini, DS3231 module, 24LC256 EEPROM, cups reed with capacitor on D2, clock alarm on D3, vane resistor ladder on A0 powered from D4"><figcaption><b>Figure 4.</b> The circuit. The clock and memory share the two-wire I2C bus; the vane is eight switches and eight resistors on one analog pin.</figcaption></figure>
+  </section>
+
+  <section id="vane">
+    <h2>Sixteen directions from eight switches</h2>
+    <p>Eight reed switches sit in a ring under the vane shaft, and a magnet on an arm closes whichever one it sits over. Each switch connects the analog pin to ground through a different resistor, and a 10 kΩ resistor pulls the pin up. One switch closed makes a voltage divider. When the magnet sits between two switches, both close, and their combined (parallel) resistance gives a third value in between. Eight switches give sixteen distinct readings.</p>
+    <div class="eq">ADC reading = 1023 × R / (R + 10 kΩ)
+two switches closed:  R = R₁ × R₂ / (R₁ + R₂)</div>
+    <figure class="wide"><img src="../img/04-slopeshift/vane-ladder.svg" width="1100" height="600" loading="lazy" alt="Ring of eight reed switches with a magnet between N and NE, and a table of the sixteen resistances and ADC readings sorted by value"><figcaption><b>Figure 5.</b> The resistor values, borrowed from SparkFun's weather meter, are chosen so all sixteen readings differ. The closest pair is only 9 counts apart.</figcaption></figure>
+    <p>That 9-count gap is the most demanding number in the build. With ordinary 5% resistors, E and ENE could drift into each other, so the parts list calls for 1%. The firmware decodes by nearest match. A reading near 1023, meaning nothing is closed (a lost magnet or a broken wire), is flagged as unknown rather than guessed. And because the pull-up is powered from a digital pin only during the millisecond it takes to read, the ladder draws nothing while the chip sleeps.</p>
+  </section>
+
+  <section id="averaging">
+    <h2>Averaging a direction</h2>
+    <p>Each minute the vane is read seven or eight times, and those readings have to become one number. The obvious way, adding the angles and dividing, is wrong in a way that matters most exactly when you care. Wind from just west of north and just east of north averages to due south.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/vector-average.svg" width="1100" height="420" loading="lazy" alt="Averaging NNW and NNE as numbers gives south; adding them as arrows gives north"><figcaption><b>Figure 6.</b> Directions are points on a circle, not on a line. Add them as unit arrows and take the direction of the result.</figcaption></figure>
+    <p>The fix comes from circular statistics.<sup class="ref"><a href="#n2" id="r2">2</a></sup> Turn each reading into an arrow of length one, add the arrows, and take the direction of the sum. The length of the averaged arrow, between 0 and 1, is a free bonus. Called the <em>mean resultant length</em> <em>R</em>, it measures how steady the wind was: near 1 when every reading agreed, near 0 when the wind was all over the place. The switch finder uses it to decide whether a morning's baseline wind was steady enough to trust.</p>
+    <div class="eq">x = Σ sin θᵢ,   y = Σ cos θᵢ
+mean direction = atan2(x, y)        R = √(x² + y²) / n</div>
+  </section>
+
+  <section id="cups">
+    <h2>Measuring speed</h2>
+    <p>A cup anemometer spins at a rate roughly proportional to wind speed. One magnet on the hub closes one reed switch per turn, and each closure wakes the chip just long enough to add one to a counter. Speed is turns per second times a calibration factor <em>k</em>: 1.492 mph per turn per second for SparkFun's cups, something else for homemade ones. You measure yours by holding the cups out of a car window at a few steady speeds on a calm day.</p>
+    <p>Real cups have quirks. They need a little wind to start turning (their <em>starting threshold</em>), so readings under about 1 mph mean "calm", not zero. They speed up faster than they slow down, so in gusty wind they read a little high. For finding a switch time, neither matters much: the direction change is the signal.</p>
+    <p>Reed contacts also bounce for a fraction of a millisecond when they close, which could count one turn as several. A 100 nF capacitor across the switch, working with the chip's internal pull-up, smooths that out in hardware. That has to happen in hardware, because the chip is asleep when it happens and can't time anything.</p>
+  </section>
+
+  <section id="clock">
+    <h2>Why it needs a real clock</h2>
+    <p>The whole point is a time of day compared across many days, so the clock has to be good. The ATmega's built-in watchdog oscillator can be off by about 10%, which is hours per day. Its 8 MHz ceramic resonator is better, but at around ±0.5% it can still drift several minutes a day, enough to smear a real 08:30 switch across most of an hour over a week.</p>
+    <p>The DS3231 is a temperature-compensated crystal clock rated at ±2 parts per million, about a minute a year.<sup class="ref"><a href="#n3" id="r3">3</a></sup> It runs from its own coin cell when the AAs are out, and its alarm pin wakes the Pro Mini exactly on each minute. That's worth $1.50.</p>
+  </section>
+
+  <section id="data">
+    <h2>One byte per minute</h2>
+    <figure class="wide"><img src="../img/04-slopeshift/record-format.svg" width="1100" height="330" loading="lazy" alt="Record format: four bits of direction and four bits of speed code per minute, plus a six-byte timestamp marker"><figcaption><b>Figure 7.</b> Four bits of direction, four bits of speed, and a timestamp marker every hour.</figcaption></figure>
+    <p>Direction needs 4 bits for sixteen points. Speed gets the other 4 as a code with fine steps where stand winds live (1, 2, 3 … 8 mph) and coarse ones above. A six-byte timestamp marker is written at power-on, when you set the clock, and at the top of every hour. Records between markers are consecutive minutes, so if anything glitches, the timeline re-anchors within the hour rather than drifting for the rest of the log. 32 KB holds about 20 days.</p>
+  </section>
+
+  <section id="power">
+    <h2>Power</h2>
+    <p>The Pro Mini spends nearly all its time in power-down sleep, drawing a few microamps. It wakes briefly every 8 seconds for the vane, on each cup turn, and once a minute to write a byte. On paper the clock module dominates the budget at roughly a tenth of a milliamp or more by its datasheet. That still puts a pair of AA cells in the months range for a logger you collect after a couple of weeks. The two changes that matter most are removing the module's LED and feeding the Pro Mini on VCC rather than through its regulator. <em>These are estimates; measure your build.</em></p>
+  </section>
+
+  <section id="switch-finder">
+    <h2>Finding the switch</h2>
+    <p>The report tool turns a log into one switch time per morning and evening:</p>
+    <ol>
+      <li><strong>Baseline.</strong> The vector-average direction of non-calm minutes from 03:00 to 06:00 (13:00 to 16:00 for the evening). If its steadiness <em>R</em> is below 0.5, as on a gusty or frontal day, it doesn't guess.</li>
+      <li><strong>Slide</strong> a 20-minute vector average forward from the end of the baseline.</li>
+      <li><strong>Switch</strong> = the first 20-minute window more than 90° from the baseline whose next two windows agree with it within 45°. That stops a single swirl or gust from counting.</li>
+    </ol>
+    <figure class="wide"><img src="../img/04-slopeshift/mornings.svg" width="900" height="350" loading="lazy" alt="Demo data: seven mornings as colour strips by wind direction, with the detected switch marked on 6 days and none on the frontal day"><figcaption><b>Figure 8.</b> Demo data: a made-up week at a stand on a south-east-facing slope. Each row is a morning; the frontal day (Saturday) correctly gets no switch.</figcaption></figure>
+    <figure class="wide"><img src="../img/04-slopeshift/daily.svg" width="900" height="420" loading="lazy" alt="Demo data: heat map of wind direction by time of day, with median morning and evening switch times marked"><figcaption><b>Figure 9.</b> The same week stacked into one day. Downslope from the north-west overnight, upslope from the south-east by day, and the two switches between.</figcaption></figure>
+    <p>To test it, the demo generator writes weeks with known switch times plus realistic noise, calm spells and the occasional frontal day. On 20 such weeks the finder lands within 25 minutes of every true switch, usually within 10 (median 6), and never reports a switch on a frontal day. Real stands will be messier than generated data. The thresholds are named constants at the top of slopeshift.py, meant to be tuned once there's real data.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/windrose.svg" width="900" height="550" loading="lazy" alt="Demo data: wind roses for each hour from 04:00 to 21:00"><figcaption><b>Figure 10.</b> Demo data as hourly wind roses: steady north-west at night, a scatter around 08:00 and 18:00, south-east by day.</figcaption></figure>
+  </section>
+
+  <section id="learn">
+    <h2>Learning your stand, then predicting any day</h2>
+    <p>Measuring a week of switches is useful. Being able to say when the switch will come on a day you never measured is better. The rut is in November; you might only get to scout in October.</p>
+    <p>The physics gives a way in. Slope winds are driven by sunlight on the slope: the upslope flow begins after direct sun reaches it, and the drainage returns after the sun leaves it. Studies of slope flows find the timing tracks that solar forcing, and that shading moves the evening transition by about an hour between opposite slopes. They also find that onset times vary a lot from site to site, which means the lag has to be measured locally.<sup class="ref"><a href="#n4" id="r4">4</a></sup> So SlopeShift's tool doesn't model the atmosphere. It measures one thing at your stand:</p>
+    <div class="eq">lag = measured switch − minute direct sun first reaches the slope        (morning)
+lag = measured switch − minute direct sun last leaves the slope          (evening)
+
+prediction(date) = sun-on-slope(date) + median lag,   window = 10th–90th percentile of lag</div>
+    <p>Working out when direct sun reaches a slope takes the sun's position for that date and place, the slope's angle and the direction it faces, and optionally the height of ridges that block the sun. A 25° slope facing west near Calgary in late October gets direct sun about two hours after sunrise. A 10° ridge to the east delays first light on an east-facing stand by an hour.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/season-forecast.svg" width="900" height="460" loading="lazy" alt="Predicted morning and evening switch windows from October through mid-December, learned from two weeks of demo data, with the measured days shown as circles"><figcaption><b>Figure 11.</b> Two weeks of (demo) measurements in early October, circled, become a forecast through mid-December. The morning switch slides later as the sun rises later; the shaded band is the stand's own day-to-day spread.</figcaption></figure>
+    <p>On generated data, a model learned from two October weeks predicts November's switches with a median error of about 10 minutes, and 95% fall inside the predicted window. That test checks the method, not the physics: real stands are noisier, and cloudy or windy days don't follow the sun. The tool is honest about that. It reports the raw spread of your switch times next to the spread once the sun is accounted for, so you can see how much the sun model actually explains at your stand.</p>
+    <p>You can try all of this in the <a href="analyzer.html">SlopeShift Analyzer</a>. Load a log, or the two weeks of demo data, describe the slope, and it forecasts the switch for any dates you pick. It runs in your browser, so your data never leaves it.</p>
+    <div class="callout"><p><b>What we checked.</b> Hunting apps such as Thermal Scout, HuntWise and onX <em>forecast</em> thermal shifts from weather data and terrain; hunters wanting to <em>record</em> wind changes still improvise. We couldn't find a tool that measures a stand and then learns that stand's own sun-to-switch lag to predict future days. If you know of one, tell us.</p></div>
+    <p class="note">Time zones come from the IANA database, which matters this year: Alberta stays on UTC−6 year-round from 2026 and doesn't fall back on November 1.</p>
+  </section>
+
+  <section id="using-it">
+    <h2>Using it to pick stands</h2>
+    <ol>
+      <li><strong>Scout pre-season, then predict the rut.</strong> Learn the stand from two October weeks and print November's predicted windows.</li>
+      <li><strong>Mount it right.</strong> Put a logger at each candidate stand for at least a week; two is better. Mount it at seated height, clear of the trunk, and line up north with a compass.</li>
+      <li><strong>Read the window, not the average.</strong> "Median 08:51, earliest 08:28, latest 09:04" from one week means plan for about 08:30–09:05, not 08:51 sharp, and widen it if the week was short.</li>
+      <li><strong>Plan mornings around the window.</strong> Decide whether you want to be settled before the switch or arrive after it. Then pick the approach that keeps your scent in air moving away from where you expect deer at that time.</li>
+      <li><strong>Plan evenings the same way.</strong> The evening switch back to drainage is often the more consistent one, and it decides whether your scent pours down into the bottom you're watching.</li>
+      <li><strong>Learn from the no-switch days.</strong> They're weather days. Compare them with what the forecast said, so you learn when to trust the forecast wind over the thermals.</li>
+      <li><strong>Pair it with <a href="../trail-tally/">Trail Tally</a>.</strong> Trail Tally tells you <em>when</em> animals pass; SlopeShift tells you which way the air was moving at that hour.</li>
+      <li><strong>Check the rules.</strong> Some public lands restrict leaving devices out, as with trail cameras. Know yours.</li>
+    </ol>
+  </section>
+
+  <section id="limits">
+    <h2>Limits and next steps</h2>
+    <ul>
+      <li><strong>Not yet built.</strong> The firmware is unit-tested on a PC and compiles for the Pro Mini, but hasn't run on real hardware. Expect to tune debounce, vane balance and cup calibration on the first build.</li>
+      <li><strong>Light air.</strong> Thermals are often 1–3 mph. Heavy homemade cups or a sticky vane may read "calm" when you'd feel a drift. Light parts and good bearings matter more than anything else.</li>
+      <li><strong>One spot, one height.</strong> The wind 20 metres away in a draw can differ. Two loggers at two stands beat one perfect one.</li>
+      <li><strong>Ideas:</strong> a live LED that shows "your scent is blowing toward the trail" from a trail bearing you set; a temperature sensor to watch the slope cool directly; an ESP32 version that sends a morning summary to your phone.</li>
+    </ul>
+    <p>Kits and build details: <a href="https://www.zalastack.com">ZalaStack</a>.</p>
+  </section>
+
+  <section class="notes"><h2>Notes</h2><ol>
+    <li id="n1">Katabatic (downslope) and anabatic (upslope) winds, and the slower valley winds, are standard topics in mountain meteorology; any introductory text on mountain weather covers them, with the caveat that real terrain is always messier than the textbook ridge. <a href="#r1" aria-label="back to text">↩</a></li>
+    <li id="n2">Circular statistics (the mean direction and mean resultant length) are the standard way to summarise angles; see any treatment of directional statistics. SlopeShift's averaging is in wind.cpp and slopeshift.py. <a href="#r2" aria-label="back to text">↩</a></li>
+    <li id="n3">The DS3231's accuracy rating applies over its normal temperature range; see the manufacturer's datasheet. A cold stand at dawn is well within it. <a href="#r3" aria-label="back to text">↩</a></li>
+    <li id="n4">On solar control of slope-flow timing, shading and site-to-site variability, see the review <a href="https://link.springer.com/article/10.1007/s10546-023-00821-1">"Understanding Thermally Driven Slope Winds: Recent Advances and Open Questions"</a> in <em>Boundary-Layer Meteorology</em> (2023), and studies of the evening transition such as those summarised on <a href="https://www.researchgate.net/publication/309093172_The_evolution_and_sensitivity_of_katabatic_flow_dynamics_to_external_influences_through_the_evening_transition_Effect_of_External_Influences_on_Katabatic_Flow">katabatic flow through the evening transition</a>. <a href="#r4" aria-label="back to text">↩</a></li>
+  </ol></section>
+
+  <section class="related"><h2>More from the lab</h2><div class="related-grid">
+    <a class="related-card" href="../trail-tally/"><span class="eyebrow">Project 02</span><b>Trail Tally</b><span>When animals actually use a trail.</span></a>
+    <a class="related-card" href="../holdpoint/"><span class="eyebrow">Project 01</span><b>Where do I hold?</b><span>The physics inside a $5 ballistics calculator.</span></a>
+    <a class="related-card" href="../legal-light/"><span class="eyebrow">Project 05</span><b>Legal Light</b><span>Legal shooting hours, worked out.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>Part of the <a href="../">fieldhacks lab</a>, hunting electronics by ZalaStack. Know your local regulations about devices and scouting. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">How far the bullet falls</text>
+<text x="78" y="54" fill="#5f6a66">Four common hunting loads, all zeroed at 200 yd. HoldPoint tells you how much to hold over for this.</text>
+<line x1="78" x2="630" y1="375.0" y2="375.0" stroke="#e3e1d8"/>
+<text x="70" y="379.0" text-anchor="end" fill="#5f6a66">-100</text>
+<line x1="78" x2="630" y1="321.0" y2="321.0" stroke="#e3e1d8"/>
+<text x="70" y="325.0" text-anchor="end" fill="#5f6a66">-80</text>
+<line x1="78" x2="630" y1="267.0" y2="267.0" stroke="#e3e1d8"/>
+<text x="70" y="271.0" text-anchor="end" fill="#5f6a66">-60</text>
+<line x1="78" x2="630" y1="213.0" y2="213.0" stroke="#e3e1d8"/>
+<text x="70" y="217.0" text-anchor="end" fill="#5f6a66">-40</text>
+<line x1="78" x2="630" y1="159.0" y2="159.0" stroke="#e3e1d8"/>
+<text x="70" y="163.0" text-anchor="end" fill="#5f6a66">-20</text>
+<line x1="78" x2="630" y1="105.0" y2="105.0" stroke="#e3e1d8"/>
+<text x="70" y="109.0" text-anchor="end" fill="#5f6a66">0</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="170.0" y="422" text-anchor="middle" fill="#5f6a66">100</text>
+<text x="262.0" y="422" text-anchor="middle" fill="#5f6a66">200</text>
+<text x="354.0" y="422" text-anchor="middle" fill="#5f6a66">300</text>
+<text x="446.0" y="422" text-anchor="middle" fill="#5f6a66">400</text>
+<text x="538.0" y="422" text-anchor="middle" fill="#5f6a66">500</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">600</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">range (yards)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">inches above / below crosshair</text>
+<line x1="78" x2="630" y1="105.0" y2="105.0" stroke="#1d2321" stroke-dasharray="6 4"/><text x="624" y="99.0" text-anchor="end" fill="#1d2321">line of sight (your crosshair)</text><line x1="262.0" x2="262.0" y1="78" y2="402" stroke="#5f6a66" stroke-dasharray="2 4"/><text x="268.0" y="92" fill="#5f6a66">200 yd zero</text>
+<path d="M78.0 109.0 L101.0 106.1 L124.0 103.8 L147.0 102.1 L170.0 101.2 L193.0 101.0 L216.0 101.5 L239.0 102.8 L262.0 105.0 L285.0 108.0 L308.0 112.0 L331.0 116.9 L354.0 122.8 L377.0 129.7 L400.0 137.8 L423.0 147.0 L446.0 157.4 L469.0 169.1 L492.0 182.1 L515.0 196.6 L538.0 212.5 L561.0 230.0 L584.0 249.1 L607.0 270.0 L630.0 292.7" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">.243 Win 95 gr</text>
+<path d="M78.0 109.0 L101.0 105.5 L124.0 102.7 L147.0 100.8 L170.0 99.8 L193.0 99.7 L216.0 100.5 L239.0 102.3 L262.0 105.0 L285.0 108.7 L308.0 113.5 L331.0 119.3 L354.0 126.3 L377.0 134.3 L400.0 143.6 L423.0 154.0 L446.0 165.7 L469.0 178.6 L492.0 192.8 L515.0 208.4 L538.0 225.4 L561.0 243.9 L584.0 263.8 L607.0 285.2 L630.0 308.2" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">6.5 CM 143 gr (G7)</text>
+<path d="M78.0 109.0 L101.0 105.3 L124.0 102.4 L147.0 100.3 L170.0 99.2 L193.0 99.1 L216.0 100.0 L239.0 101.9 L262.0 105.0 L285.0 109.2 L308.0 114.5 L331.0 121.1 L354.0 129.0 L377.0 138.2 L400.0 148.8 L423.0 160.9 L446.0 174.4 L469.0 189.6 L492.0 206.4 L515.0 224.9 L538.0 245.3 L561.0 267.5 L584.0 291.7 L607.0 317.9 L630.0 346.3" fill="none" stroke="#4d7c0f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="127" width="14" height="4" rx="2" fill="#4d7c0f"/>
+<text x="670" y="134" fill="#1d2321">.308 Win 168 gr</text>
+<path d="M78.0 109.0 L101.0 105.4 L124.0 102.6 L147.0 100.6 L170.0 99.6 L193.0 99.4 L216.0 100.3 L239.0 102.1 L262.0 105.0 L285.0 109.0 L308.0 114.0 L331.0 120.3 L354.0 127.7 L377.0 136.5 L400.0 146.5 L423.0 157.9 L446.0 170.7 L469.0 184.9 L492.0 200.8 L515.0 218.2 L538.0 237.3 L561.0 258.1 L584.0 280.8 L607.0 305.3 L630.0 331.9" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="149" width="14" height="4" rx="2" fill="#7c3aed"/>
+<text x="670" y="156" fill="#1d2321">.30-06 180 gr</text>
+</svg>

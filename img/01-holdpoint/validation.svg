@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Checked against an independent solver</text>
+<text x="78" y="54" fill="#5f6a66">HoldPoint drop minus py-ballisticcalc drop, every 100 yd, six loads and conditions.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">-0.6</text>
+<line x1="78" x2="630" y1="348.0" y2="348.0" stroke="#e3e1d8"/>
+<text x="70" y="352.0" text-anchor="end" fill="#5f6a66">-0.4</text>
+<line x1="78" x2="630" y1="294.0" y2="294.0" stroke="#e3e1d8"/>
+<text x="70" y="298.0" text-anchor="end" fill="#5f6a66">-0.2</text>
+<line x1="78" x2="630" y1="240.0" y2="240.0" stroke="#e3e1d8"/>
+<text x="70" y="244.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="186.0" y2="186.0" stroke="#e3e1d8"/>
+<text x="70" y="190.0" text-anchor="end" fill="#5f6a66">0.2</text>
+<line x1="78" x2="630" y1="132.0" y2="132.0" stroke="#e3e1d8"/>
+<text x="70" y="136.0" text-anchor="end" fill="#5f6a66">0.4</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">0.6</text>
+<text x="112.5" y="422" text-anchor="middle" fill="#5f6a66">100</text>
+<text x="181.5" y="422" text-anchor="middle" fill="#5f6a66">200</text>
+<text x="250.5" y="422" text-anchor="middle" fill="#5f6a66">300</text>
+<text x="319.5" y="422" text-anchor="middle" fill="#5f6a66">400</text>
+<text x="388.5" y="422" text-anchor="middle" fill="#5f6a66">500</text>
+<text x="457.5" y="422" text-anchor="middle" fill="#5f6a66">600</text>
+<text x="526.5" y="422" text-anchor="middle" fill="#5f6a66">700</text>
+<text x="595.5" y="422" text-anchor="middle" fill="#5f6a66">800</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">range (yards)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">difference (inches)</text>
+<rect x="78" y="105.0" width="552" height="270.0" fill="#4d7c0f" opacity="0.10"/><text x="84" y="120.0" fill="#3f6212">pass band: ±0.5 in (or 2% if larger)</text><line x1="78" x2="630" y1="240.0" y2="240.0" stroke="#1d2321"/>
+<circle cx="102.2" cy="240.0" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="171.2" cy="239.7" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="240.2" cy="238.9" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="309.1" cy="240.0" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="378.1" cy="241.1" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="447.1" cy="238.8" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="516.1" cy="237.8" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="585.1" cy="235.5" r="4.5" fill="#2f6f9f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="85" r="4.5" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">.308 168gr SMK</text>
+<circle cx="106.3" cy="240.3" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="175.3" cy="240.0" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="244.3" cy="240.8" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="313.3" cy="238.8" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="382.3" cy="239.6" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="451.3" cy="237.1" r="4.5" fill="#c2410c" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="107" r="4.5" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">.30-06 180gr hunting</text>
+<circle cx="110.4" cy="240.0" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="179.4" cy="239.4" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="248.4" cy="241.1" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="317.4" cy="239.9" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="386.4" cy="238.2" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="455.4" cy="239.2" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="524.4" cy="236.6" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="593.4" cy="236.7" r="4.5" fill="#4d7c0f" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="129" r="4.5" fill="#4d7c0f"/>
+<text x="670" y="134" fill="#1d2321">6.5CM 143 ELD-X (G7)</text>
+<circle cx="114.6" cy="239.5" r="4.5" fill="#7c3aed" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="183.6" cy="240.0" r="4.5" fill="#7c3aed" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="252.6" cy="240.5" r="4.5" fill="#7c3aed" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="321.6" cy="239.2" r="4.5" fill="#7c3aed" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="390.6" cy="236.2" r="4.5" fill="#7c3aed" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="151" r="4.5" fill="#7c3aed"/>
+<text x="670" y="156" fill="#1d2321">.270 130gr, cold</text>
+<circle cx="118.7" cy="263.2" r="4.5" fill="#db2777" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="187.7" cy="264.9" r="4.5" fill="#db2777" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="256.7" cy="267.6" r="4.5" fill="#db2777" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="325.7" cy="272.4" r="4.5" fill="#db2777" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="394.7" cy="288.5" r="4.5" fill="#db2777" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="173" r="4.5" fill="#db2777"/>
+<text x="670" y="178" fill="#1d2321">.243 95gr, uphill 20°</text>
+<circle cx="122.8" cy="263.7" r="4.5" fill="#0f766e" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="191.8" cy="263.9" r="4.5" fill="#0f766e" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="260.9" cy="260.1" r="4.5" fill="#0f766e" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="329.9" cy="254.0" r="4.5" fill="#0f766e" stroke="#fbfaf6" stroke-width="1.5"/>
+<circle cx="655" cy="195" r="4.5" fill="#0f766e"/>
+<text x="670" y="200" fill="#1d2321">.223 55gr, downhill</text>
+</svg>

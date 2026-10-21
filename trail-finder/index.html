@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trail Finder: Finding Game Trails in Drone Imagery · fieldhacks lab</title>
+<meta name="description" content="How to find game trails in drone orthomosaics with classic image processing: vegetation indices, ridge filters, skeletonization, rejecting fences with the Hough transform, finding funnels, and measuring precision and recall honestly.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/trail-finder/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Trail Finder: finding game trails in drone imagery">
+<meta property="og:description" content="Ridge filters, skeletons and a straightness test turn an off-season drone map into game-trail lines and funnels.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/trail-finder/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Cpath d='M5 26c6-2 4-9 10-11s9-6 12-10' stroke='%23f59e0b' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Trail Finder: finding game trails in drone imagery",
+ "datePublished":"2026-10-21","about":["game trails","drone mapping","image processing","ridge detection","GeoJSON"],
+ "url":"https://lab.zalastack.com/fieldhacks/trail-finder/","image":"https://lab.zalastack.com/fieldhacks/social-preview.png",
+ "isPartOf":{"@type":"WebSite","name":"fieldhacks","url":"https://lab.zalastack.com/fieldhacks/"},
+ "author":{"@type":"Organization","name":"ZalaStack","url":"https://www.zalastack.com"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/" aria-current="page">Trail Finder</a>
+  <a href="../slopeshift/">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">Project 03 · Image processing</p>
+    <h1>Finding game trails from the air, without AI</h1>
+    <p class="dek">Game trails are thin, winding lines of packed dirt. From 80 metres up, a drone can see them. Here's how a handful of classic image filters turn an off-season map into trail lines and funnels you can load into your mapping app, and how to tell whether it actually works.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026 · 11 min read</p>
+    
+  </header>
+
+  <figure class="lead"><img src="../img/03-trail-finder/pipeline.png" width="1304" height="346" alt="Four panels: a synthetic drone image of a meadow; the thin-line filter output where winding trails, a fence and an ATV track all glow; the skeleton with straight and short pieces shown in pink as dropped; and the final trails in orange with meeting points circled"><figcaption><b>Figure 1.</b> The test image through the four main stages: the drone image, the thin-line filter, the cleaned-up skeleton (pink pieces are thrown away), and the final trails with their meeting points circled.</figcaption></figure>
+
+  <aside class="keypoints"><h2>Key points</h2><ul>
+    <li>Trails show up in ordinary colour photos as long, thin, winding strips with less green than their surroundings. Each of those three properties becomes one step of the pipeline.</li>
+    <li>A ridge filter finds thin lines. A straightness test separates trails from fences and ATV tracks, which look just as thin but run straight.</li>
+    <li>Where three or more trails meet, the tool marks a funnel: often the best stand site on the map.</li>
+    <li>Add the day's winds, typed in or learned by a SlopeShift at the stand, and it suggests <b>stand sites for each wind window</b> whose scent stays off the trails and funnels.</li>
+    <li>On synthetic test scenes it finds about 91 percent of trail length with about 95 percent precision. It hasn't been tried on real drone imagery yet.</li>
+    <li>Drone scouting is restricted in many places. This is for off-season habitat mapping where you're allowed to fly.</li>
+  </ul></aside>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#law">Read the law first</a></li>
+    <li><a href="#look">What a trail looks like from above</a></li>
+    <li><a href="#green">Step 1: less green</a></li>
+    <li><a href="#thin">Step 2: long and thin</a></li>
+    <li><a href="#skeleton">Step 3: from pixels to lines</a></li>
+    <li><a href="#straight">Step 4: it winds</a></li>
+    <li><a href="#funnels">Step 5: funnels and confidence</a></li>
+    <li><a href="#stands">From trails to stand sites</a></li>
+    <li><a href="#measure">Measuring it honestly</a></li>
+    <li><a href="#fly">Flying for trails</a></li>
+    <li><a href="#limits">Limits, and when to bring in AI</a></li>
+  </ol></nav>
+
+  <section id="law">
+    <h2>Read the law first</h2>
+    <p>Before anything technical: many provinces and states restrict using aircraft, drones included, to locate, track or hunt game. The restrictions are often tied to a window before and during the season, and some places ban it outright. Aviation rules add their own limits on where, how high and how far you can fly.</p>
+    <div class="callout"><p><b>What this tool is for.</b> Off-season habitat mapping on land you have permission to fly, under your aviation authority's rules. Check your hunting regulations before you fly, and again before you hunt.</p></div>
+  </section>
+
+  <section id="look">
+    <h2>What a trail looks like from above</h2>
+    <p>A drone flying at 60 to 120 metres with an ordinary camera captures a few centimetres of ground per pixel. Free software like WebODM stitches hundreds of overlapping photos into one big, map-accurate image called an <b>orthomosaic</b>.<sup class="ref"><a href="#n1" id="r1">1</a></sup> At that resolution, a well-used deer trail 20 to 60 centimetres wide is a line three to ten pixels across.</p>
+    <p>Look at enough of these images and three things give trails away:</p>
+    <ul>
+      <li><b>Less green.</b> Trampled plants and bare dirt reflect less green and slightly more red than the vegetation beside them.</li>
+      <li><b>Long and thin.</b> A trail is many times longer than it is wide. A dry patch, a bush or a deer bed isn't.</li>
+      <li><b>It winds.</b> Animals follow terrain and cover, so trails curve around obstacles and along contours. Fences, ATV tracks, pipelines and survey cuts run straight.</li>
+    </ul>
+    <p>None of those needs machine learning to measure. Each one maps onto a well-understood image-processing step, and the pipeline is just those steps in order.</p>
+    <blockquote class="pull">A trail is less green, long and thin, and it winds. Each property becomes one filter.</blockquote>
+  </section>
+
+  <section id="green">
+    <h2>Step 1: less green</h2>
+    <p>Farm and forestry imaging often uses near-infrared cameras to measure plant health. Trail Finder sticks to ordinary RGB, because that's what most drones carry. The standard RGB-only measure is <b>Excess Green</b>, worked out for every pixel:<sup class="ref"><a href="#n2" id="r2">2</a></sup></p>
+    <div class="eq">ExG = 2·G − R − B          high on plants, low on dirt and dry grass</div>
+    <p>A raw ExG map has a problem: it also changes slowly across the image, from a drier hillside, a patch of different grass or the shadow of a cloud. Those slow changes would swamp the narrow dip a trail makes. So the tool subtracts a heavily blurred copy of the map from itself, which leaves only <i>local</i> dips in green: places noticeably less green than their surroundings.</p>
+    <div class="eq">trail signal = blur(ExG, wide) − ExG</div>
+  </section>
+
+  <section id="thin">
+    <h2>Step 2: long and thin</h2>
+    <p>The trail signal is still full of blobs: bare patches, bushes' shadows, the odd rock. What makes a trail different is its shape, and the tool for finding shapes like that is a <b>ridge filter</b>.</p>
+    <p>Picture the trail signal as a landscape, with trails as long, low ridges. Along a ridge the height barely changes. Across it, the height drops off sharply on both sides. Mathematically, that's about the image's second derivatives, captured in a 2×2 matrix at every pixel called the <b>Hessian</b>. Its two eigenvalues measure the curvature in the sharpest and gentlest directions. A line has one large curvature (across) and one near zero (along). A blob is curved in every direction, and flat ground in none.</p>
+    <p>The Sato filter turns that into a single "how line-like is this pixel" score.<sup class="ref"><a href="#n3" id="r3">3</a></sup> It was designed to find blood vessels in medical scans, which have exactly the same shape problem. Trail Finder runs it at three widths, about 0.3, 0.6 and 1 metre, and keeps the strongest response. That way both narrow deer trails and wider, well-worn ones are picked up.</p>
+  </section>
+
+  <section id="skeleton">
+    <h2>Step 3: from pixels to lines</h2>
+    <p>A threshold turns the filter output into "trail or not" for every pixel. A single threshold is a bad compromise: set it high and faint stretches of real trail break up; set it low and random speckle gets in. So the tool uses two (<b>hysteresis</b>). Pixels above the high threshold start a trail. Pixels above only the low threshold are kept if they connect to one that's above the high threshold. A faint stretch of a strong trail survives; an isolated faint speck doesn't.</p>
+    <p>Next, <b>skeletonization</b> thins every detected strip to a line one pixel wide along its centre. That turns a blotchy mask into a network of paths that can be measured, simplified and exported as map lines. Two clean-ups follow: twigs shorter than 2 metres are pruned off the network, and whole pieces shorter than 15 metres are dropped, because real trails go somewhere.</p>
+  </section>
+
+  <section id="straight">
+    <h2>Step 4: it winds</h2>
+    <p>This is the step that makes the difference. A fence line or a two-rut ATV track can look exactly like a trail in colour: a narrow strip of different vegetation. In the test images they're made that way on purpose, so straightness is the <i>only</i> clue.</p>
+    <p>The tool runs a <b>probabilistic Hough transform</b> on the skeleton, a classic method that finds straight line segments by letting every pixel vote for the lines it could lie on.<sup class="ref"><a href="#n4" id="r4">4</a></sup> Any straight run longer than 20 metres that never strays more than 15 centimetres from its line is treated as man-made. Then every piece along that line, across the whole image, is removed.</p>
+    <p>That last rule came from a failure. An earlier version judged each piece of skeleton on its own: is <i>this</i> branch straight? But wherever a trail crosses a fence, the skeleton splits the fence into short pieces at the crossing. Each short piece was too short to look convincingly straight, and fence fragments leaked through. Removing the entire line fixed it.</p>
+    <p>The cost is a known blind spot: a game trail that runs dead straight for 20 metres, along a fence for instance, gets thrown out with the fence. The 20-metre length is a setting you can raise if that's common where you hunt.</p>
+  </section>
+
+  <section id="funnels">
+    <h2>Step 5: funnels and confidence</h2>
+    <p>Where three or more trails come together within about 6 metres, the tool marks a <b>meeting point</b>. On the ground, these are the funnels, creek crossings, saddles and fence gaps that concentrate movement. They're often the best stand sites on the whole map, and the hardest to spot by eye in a big image.</p>
+    <p>Each trail line then gets a confidence score from three things: how strongly the ridge filter responded along it, how long its connected network is, and how many meeting points it runs into. The GeoJSON output lists lines in confidence order, with the meeting points as separate features. That's a ranked list of places to walk, not a guarantee, and the score is a ranking rather than a probability.</p>
+  </section>
+
+  <section id="stands">
+    <h2>From trails to stand sites</h2>
+    <p>A trail map is a list of places deer walk. The next question is where to sit, and the answer changes through the day with the wind. A stand that's perfect while the wind comes from the northwest can blow your scent straight down the funnel once the afternoon thermals turn it around. <code>standsites.py</code> takes the trails and meeting points and a set of wind windows, and suggests stands for each window.</p>
+    <figure class="wide"><img src="../img/03-trail-finder/stands.png" width="970" height="752" loading="lazy" alt="Four map panels of a 400 by 300 metre block with a creek-bottom trail, two bedding trails meeting it at a funnel and a trail from the south; each panel shows the chosen stands as numbered white squares with blue scent wedges for that time window's wind; the 09:00 to 10:30 switching window has no stands"><figcaption><b>Figure 2.</b> Stand sites on a made-up block, one panel per wind window. Each stand's scent (blue) misses every trail and the funnel. While the wind could be either northwest or southeast, nowhere is clean.</figcaption></figure>
+    <ol>
+      <li><b>Candidates.</b> Every point 10 to 30 metres from a trail: close enough to shoot, not so close you're on top of it. Each is scored by how much trail lies within range, with a bonus for each meeting point.</li>
+      <li><b>Scent cone.</b> For each window, the wind carries scent downwind in a cone 25 degrees either side, plus 10 for swirl, out to 150 metres. A candidate is rejected if more than 2 metres of trail, or any meeting point, falls inside it.</li>
+      <li><b>Pick.</b> The best few safe stands per window, at least 30 metres apart, plus any that stay clean all day.</li>
+    </ol>
+    <p>The wind windows can be typed in, or read from a <a href="../slopeshift/">SlopeShift</a> forecast. SlopeShift learns how long after first direct sun the thermals switch at a particular stand, then predicts the switch for coming days, with an earliest-to-latest band. That band becomes an "either" window: a stand only counts as safe if it's clean for both directions. In practice that often means there's no safe stand during the switch, which is useful to know before you walk in.</p>
+    <blockquote class="pull">A window with no safe stand is an answer too: don't be walking in during the switch.</blockquote>
+    <p><b>What already exists.</b> Several hunting apps draw a scent cone from the forecast wind for a stand you place yourself, including HuntStand, ScoutLook and HuntWise.<sup class="ref"><a href="#n5" id="r5">5</a></sup> This works the other way round: it proposes the stands, from trails found in your own imagery, and can use wind measured at the stand instead of a regional forecast. We didn't find a tool that does that. The scent model is deliberately simple, a straight cone, and real scent eddies around cover and terrain, so treat the suggestions as places to look on the ground.</p>
+  </section>
+
+  <section id="measure">
+    <h2>Measuring it honestly</h2>
+    <p>To know whether a trail finder works, you need images where the true trails are known exactly. Hand-labelling real drone maps is slow and was out of reach for a first version, so the project renders synthetic ones. <code>make_sample.py</code> draws an aerial meadow with textured grass, brush, dry patches and tree crowns with shadows. It adds five faint winding trails, three of which meet at a funnel, plus a fence and an ATV track. It also writes the true trail lines to a file.</p>
+    <p>A detected point within 1 metre of a true trail's centreline counts as correct. Two numbers summarize each scene:</p>
+    <ul>
+      <li><b>Precision:</b> of the trail length the tool reported, how much was real.</li>
+      <li><b>Recall:</b> of the real trail length, how much the tool found.</li>
+    </ul>
+    <figure class="wide"><img src="../img/03-trail-finder/results.svg" width="860" height="400" loading="lazy" alt="Bar chart of precision and recall for the committed sample and twelve synthetic test scenes; precision ranges from about 0.84 to 1.0 and recall from about 0.83 to 0.97, all above the build-failure thresholds"><figcaption><b>Figure 3.</b> Precision and recall on the committed sample and 12 scenes generated from random seeds the settings were never tuned on. The build fails if the averages drop below the dashed lines.</figcaption></figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Scenes</th><th>Precision</th><th>Recall</th><th>Fence/ATV kept</th><th>Funnel found</th></tr></thead>
+      <tbody>
+        <tr><td>Committed sample</td><td>0.99</td><td>0.96</td><td>0%</td><td>0.2 m off</td></tr>
+        <tr><td>12 fresh scenes, mean</td><td>0.95</td><td>0.91</td><td>7% worst</td><td>all within 3.5 m</td></tr>
+      </tbody>
+    </table></div>
+    <p>Those numbers are good, and they flatter the tool, for a simple reason: <b>the same person wrote the scene generator and the detector</b>. Whatever the generator gets wrong about real fields, the detector was never asked to handle. Real imagery has tall grass hiding trails, cattle paths, wind-flattened crops, deer beds and stitching seams. Expect lower numbers on a real flight until the settings are tuned on real data.</p>
+    <blockquote class="pull">The synthetic numbers are a floor for the code's correctness, not a forecast for your field.</blockquote>
+  </section>
+
+  <section id="fly">
+    <h2>Flying for trails</h2>
+    <ul>
+      <li><b>Season.</b> Late fall after leaf drop, or early spring before green-up. Vegetation is low, nothing is overhead, and trails are worn in from the season. A dusting of snow can make trails stand out even more.</li>
+      <li><b>Light.</b> Overcast skies or a high sun give the most even colour. Long, low-sun shadows can hide real trails and draw fake ones.</li>
+      <li><b>Height and overlap.</b> Aim for 2 to 5 centimetres per pixel, typically 60 to 100 metres on a consumer drone, with 70 to 80 percent overlap between photos so the stitching software has enough to work with.</li>
+      <li><b>Scale.</b> For a GeoTIFF, the tool reads the ground resolution and map coordinates from the file. For a plain JPG or PNG, pass the resolution with <code>--gsd</code> in metres per pixel.</li>
+      <li><b>Size.</b> Allow about 2 seconds and 120 MB of memory per megapixel, and crop orthomosaics over about 20 megapixels into tiles.</li>
+      <li><b>Then walk it.</b> Treat the output as a ranked list of places to check on foot. Confirm with tracks, droppings or a <a href="../trail-tally/">Trail Tally</a> counter.</li>
+    </ul>
+  </section>
+
+  <section id="limits">
+    <h2>Limits, and when to bring in AI</h2>
+    <ul>
+      <li><b>Synthetic tests only</b> so far. Results from a real flight, with notes on what it found and missed, would be the most useful contribution.</li>
+      <li><b>Trees hide trails.</b> Anything under canopy or deep shadow is lost. A trail broken into pieces under 15 metres disappears, and meeting points under trees get missed for the same reason.</li>
+      <li><b>Straight trails get dropped</b> with the fences, as described above.</li>
+      <li><b>Confidence is a ranking</b>, not a probability.</li>
+    </ul>
+    <p>A neural network would probably beat these filters on real imagery eventually. It would also need a few hundred hand-labelled trail segments from real flights before it could learn anything. The plan is to collect those first, then train a small segmentation network (a U-Net with a lightweight MobileNet encoder) that runs on a laptop CPU. It would be scored with the same evaluation, so it has to beat the classic pipeline on equal terms before it replaces it.</p>
+  </section>
+
+  <section class="notes"><h2>Notes</h2><ol>
+    <li id="n1"><a href="https://github.com/OpenDroneMap/WebODM">WebODM</a> and the underlying <a href="https://github.com/OpenDroneMap/ODM">OpenDroneMap</a> are free, open-source photogrammetry tools that turn overlapping drone photos into orthomosaics and elevation models. <a href="#r1" aria-label="back to text">↩</a></li>
+    <li id="n2">Excess Green was introduced for separating plants from soil in colour images: D. M. Woebbecke et al., "Color indices for weed identification under various soil, residue, and lighting conditions," <i>Transactions of the ASAE</i> 38(1), 1995. <a href="#r2" aria-label="back to text">↩</a></li>
+    <li id="n3">Y. Sato et al., "Three-dimensional multi-scale line filter for segmentation and visualization of curvilinear structures in medical images," <i>Medical Image Analysis</i> 2(2), 1998. Trail Finder uses the <a href="https://scikit-image.org/docs/stable/api/skimage.filters.html#skimage.filters.sato">scikit-image implementation</a>. <a href="#r3" aria-label="back to text">↩</a></li>
+    <li id="n4">The probabilistic Hough transform: J. Matas, C. Galambos and J. Kittler, "Robust detection of lines using the progressive probabilistic Hough transform," <i>Computer Vision and Image Understanding</i> 78(1), 2000. Implemented in scikit-image as <code>probabilistic_hough_line</code>. <a href="#r4" aria-label="back to text">↩</a></li>
+    <li id="n5">For example HuntStand's scent cone, ScoutLook's scent-cone graphic (<a href="https://www.mossyoak.com/our-obsession/blogs/gear-spotlight/mossy-oak-hunting-weather-app-from-scoutlook">Mossy Oak/ScoutLook</a>) and <a href="https://huntwise.com/field-guide/hunting-tips/how-to-use-windcast-for-scent-control">HuntWise WindCast</a>. <a href="#r5" aria-label="back to text">↩</a></li>
+  </ol></section>
+
+  <section class="related"><h2>More from the lab</h2><div class="related-grid">
+    <a class="related-card" href="../trail-tally/"><span class="eyebrow">Project 02</span><b>Trail Tally</b><span>A $3 counter that learns when deer use a trail.</span></a>
+    <a class="related-card" href="../slopeshift/"><span class="eyebrow">Project 04</span><b>SlopeShift</b><span>When the morning thermals switch at your stand.</span></a>
+    <a class="related-card" href="../legal-light/"><span class="eyebrow">Project 05</span><b>Legal Light</b><span>Legal shooting hours for your exact stand.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>Part of the <a href="../">fieldhacks lab</a>, tools for hunters by ZalaStack. Drone scouting is restricted in many places: check your hunting and aviation regulations. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

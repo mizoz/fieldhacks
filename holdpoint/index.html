@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where Do I Hold? The Physics Inside a $5 Ballistics Calculator · fieldhacks lab</title>
+<meta name="description" content="A plain-language guide to exterior ballistics through a $5 Arduino build: ballistic coefficient and G1 vs G7, air density, zeroing and point-blank range, wind drift, moving animals, uphill shots, MIL vs MOA, and how it fits on an 8-bit chip.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/holdpoint/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Where do I hold? The physics inside a $5 ballistics calculator">
+<meta property="og:description" content="Drag, BC, air, zeroing, wind, moving animals and angles, explained through a pocket Arduino build.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/holdpoint/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M16 4v8M16 20v8M4 16h8M20 16h8' stroke='%23f59e0b' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Where do I hold? The physics inside a $5 ballistics calculator",
+ "datePublished":"2026-10-21","about":["exterior ballistics","ballistic coefficient","G1 and G7 drag models","point-blank range","Arduino"],
+ "url":"https://lab.zalastack.com/fieldhacks/holdpoint/","image":"https://lab.zalastack.com/fieldhacks/social-preview.png",
+ "isPartOf":{"@type":"WebSite","name":"fieldhacks","url":"https://lab.zalastack.com/fieldhacks/"},
+ "author":{"@type":"Organization","name":"fieldhacks lab","url":"https://lab.zalastack.com/fieldhacks/"}}
+</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/" aria-current="page">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="../slopeshift/">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">Project 01 · Ballistics</p>
+    <h1>Where do I hold? The physics inside a $5 ballistics calculator</h1>
+    <p class="dek">Every hunting rifle shot is a small physics problem: gravity, air, wind and angle, solved in the second before you squeeze. Here is how that problem works, and how a two-dollar chip solves it.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026 · 14 min read</p>
+    <p class="actions"><a class="btn alt" href="../calculator.html">Try the calculator</a></p>
+  </header>
+
+  <figure class="lead"><img src="../img/01-holdpoint/screens.svg" width="980" height="700" alt="HoldPoint's four OLED screens: power-on, hold screen showing 1.42 mil at 300 yards, range card and setup menu"><figcaption><b>Figure 1.</b> HoldPoint's screens, drawn from the firmware's exact layout with real solver output for a .308 Win 168 gr load at 2650 fps.</figcaption></figure>
+
+  <aside class="keypoints"><h2>Key points</h2><ul>
+    <li>A bullet flies a curved path through air that slows it. The only honest way to know where it lands is to simulate that flight, which a $2 chip can do in about a second.</li>
+    <li>Ballistic coefficient compares your bullet with a standard shape. Use a G7 number when you can: it matches modern boat-tail bullets across the whole flight.</li>
+    <li>Thin or warm air shoots flatter. Use <em>station</em> pressure, not the weather report.</li>
+    <li>Wind and range are the big errors in the field, not the math. A misjudged 2 mph moves a 400-yard shot more than every small effect the solver leaves out.</li>
+    <li>The answer is only as good as your inputs: measure your muzzle velocity, then confirm on paper.</li>
+    <li><b>New:</b> the shot check turns your field group, wind-call error and ranging error into a "maximum ethical range today", for example 200 yd on deer on a ±3 mph day and 150 on a gusty one.</li>
+  </ul></aside>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#problem">The problem in one picture</a></li>
+    <li><a href="#tables">From artillery tables to a pocket chip</a></li>
+    <li><a href="#model">A bullet as a point in moving air</a></li>
+    <li><a href="#bc">Drag and the ballistic coefficient</a></li>
+    <li><a href="#air">Air: density, altitude and temperature</a></li>
+    <li><a href="#zero">Zeroing and point-blank range</a></li>
+    <li><a href="#wind">Wind drift and the lag rule</a></li>
+    <li><a href="#moving">Moving animals</a></li>
+    <li><a href="#angle">Uphill and downhill</a></li>
+    <li><a href="#energy">Energy: what it does and doesn't tell you</a></li>
+    <li><a href="#units">MIL, MOA and your scope</a></li>
+    <li><a href="#chip">Inside the chip</a></li>
+    <li><a href="#checked">How we know it's right</a></li>
+    <li><a href="#inputs">What really decides accuracy</a></li>
+    <li><a href="#field">In the field</a></li>
+  </ol></nav>
+
+  <section id="problem">
+    <h2>The problem in one picture</h2>
+    <p>Your scope looks along a straight line. The bullet doesn't travel along a straight line. It leaves the barrel tilted very slightly upward, rises through your line of sight, peaks, and falls back across it at the distance you zeroed. Beyond that it falls faster and faster: gravity keeps pulling, and the air keeps stealing speed, so each yard takes a little longer than the last.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/trajectory.svg" width="860" height="460" loading="lazy" alt="Bullet drop for .243 Win, 6.5 Creedmoor, .308 Win and .30-06 loads zeroed at 200 yards, out to 600 yards"><figcaption><b>Figure 2.</b> Four common hunting loads, all zeroed at 200 yards. By 600 yards they're between 70 and 90 inches below the crosshair.</figcaption></figure>
+    <p>"Where do I hold?" means: how far below my crosshair is the bullet at this distance, and which way does the wind carry it? The answer is a pair of angles you either dial on your turrets or hold on your reticle. Getting it right needs four things: how the bullet sheds speed, what the air is like, how your rifle is zeroed, and the geometry of the shot.</p>
+  </section>
+
+  <section id="tables">
+    <h2>From artillery tables to a pocket chip</h2>
+    <p>Gunners have faced this problem since the days of cannon. In the nineteenth century European and American artillery commissions fired thousands of shells, measured how fast they slowed, and boiled the results down to printed tables. The "G" in G1 and G7 is usually traced to one of those efforts, the French Gâvre Commission.<sup class="ref"><a href="#n1" id="r1">1</a></sup> The trick that made the tables useful was to measure a few standard projectile shapes very carefully once, then describe every other projectile by how it compared.</p>
+    <p>That idea survives unchanged. What's new is that we no longer need the printed table. A cheap microcontroller can simulate the flight directly, with your bullet, your rifle and today's air, faster than you can bring the scope up.</p>
+  </section>
+
+  <section id="model">
+    <h2>A bullet as a point in moving air</h2>
+    <p>Once it leaves the muzzle, only two forces matter much at hunting distances: <strong>gravity</strong>, pulling straight down, and <strong>drag</strong>, pushing back against the bullet's motion through the air. If you treat the bullet as a point that feels just those two forces, you have the <em>point-mass model</em>. It sits at the heart of most hunting ballistics solvers, usually with extra corrections bolted on.</p>
+    <div class="eq">dv/dt = −a_drag · (v / |v|)  +  g
+
+a_drag = K · (ρ / ρ₀) · Cd(M) · |v|² / BC</div>
+    <p>In words: the bullet's velocity <em>v</em> changes because of gravity <em>g</em> and a drag deceleration pointing backwards along its path. Drag grows with the square of speed and with air density (ρ/ρ₀ is today's density divided by standard). It depends on a drag coefficient <em>Cd</em> that changes with the Mach number <em>M</em>, the speed divided by the speed of sound. The ballistic coefficient <em>BC</em> scales all of it to your particular bullet, and <em>K</em> just makes the units work.</p>
+    <p>There's no neat formula for the path. So the solver does what you'd do by hand with infinite patience. It takes a small step, works out the forces, moves the bullet, and repeats. HoldPoint steps every 3 feet along the line of sight using a midpoint rule (second-order Runge–Kutta). It looks halfway into each step before committing to it, which keeps errors tiny without thousands of steps.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/how-it-works.svg" width="1000" height="520" loading="lazy" alt="Flow from load and weather inputs through air density, zero finding and trajectory simulation to the hold and range card screens"><figcaption><b>Figure 3.</b> What happens when you change a setting: one flight from muzzle to 1000 yards, saved as a 40-row table that the screens read instantly.</figcaption></figure>
+  </section>
+
+  <section id="bc">
+    <h2>Drag and the ballistic coefficient</h2>
+    <p>Two things decide how well a bullet holds its speed: how heavy it is for its width, and how slippery its shape is. The first is <strong>sectional density</strong>, the weight divided by the diameter squared. The second is the <strong>form factor</strong> <em>i</em>, how much draggier the bullet is than the standard shape. The ballistic coefficient folds them together:</p>
+    <div class="eq">SD = weight (lb) / diameter² (in²)        weight in lb = grains / 7000
+BC = SD / i</div>
+    <p>A long, heavy bullet with a sleek nose has a high SD and a low <em>i</em>, so a high BC: it slows down less, drops less and drifts less. Here are the four loads used throughout this article:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Load</th><th>Weight</th><th>Diameter</th><th>Sectional density</th><th>BC</th><th>Form factor</th></tr></thead>
+      <tbody>
+        <tr><td>.243 Win</td><td>95 gr</td><td>0.243 in</td><td>0.230</td><td>0.379 G1</td><td>0.61</td></tr>
+        <tr><td>6.5 Creedmoor</td><td>143 gr</td><td>0.264 in</td><td>0.293</td><td>0.315 G7</td><td>0.93 (vs G7)</td></tr>
+        <tr><td>.308 Win</td><td>168 gr</td><td>0.308 in</td><td>0.253</td><td>0.462 G1</td><td>0.55</td></tr>
+        <tr><td>.30-06</td><td>180 gr</td><td>0.308 in</td><td>0.271</td><td>0.480 G1</td><td>0.57</td></tr>
+      </tbody>
+    </table></div>
+    <p>A form factor only means something next to the standard it's measured against. The 6.5's 0.93 is close to the G7 shape, which is itself far sleeker than G1. That's the whole G1-versus-G7 story.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/drag-curves.svg" width="860" height="460" loading="lazy" alt="Drag coefficient against Mach number for the G1 and G7 standard projectiles, both rising sharply near Mach 1"><figcaption><b>Figure 4.</b> Drag coefficient of the two standard shapes against speed. Both spike near the speed of sound; the G7 boat-tail is much lower everywhere.</figcaption></figure>
+    <p>The curves differ in <em>shape</em>, not just height. A modern boat-tail bullet's real drag curve looks like the G7 curve scaled down, not the G1 curve. Give it a G1 BC and that number is only exactly right at one speed, which is why some makers list several G1 numbers, each for a velocity band. A G7 BC stays nearly constant across the flight.</p>
+    <blockquote class="pull">A G1 number for a boat-tail bullet is only exactly right at one speed. A G7 number is right all the way down.</blockquote>
+    <p>Both curves climb steeply between about Mach 0.8 and 1.2. That's the transonic zone, where shock waves form and flight gets less predictable. Hunting shots stay well above it, and HoldPoint stops calculating at 300 fps, far past any sensible range.</p>
+  </section>
+
+  <section id="air">
+    <h2>Air: density, altitude and temperature</h2>
+    <p>Drag is proportional to air density. Thinner air pushes back less, so the bullet keeps more speed, gets there sooner and drops less. Air gets thinner as you go up, and also as it warms. HoldPoint treats air as a dry ideal gas, which is accurate enough to be the smallest error in the chain:</p>
+    <div class="eq">ρ / ρ₀ = (P / 29.92 inHg) × (518.67 / T)          T in °R = °F + 459.67
+speed of sound ≈ 49.02 × √T  ft/s</div>
+    <figure class="wide"><img src="../img/01-holdpoint/air-density.svg" width="860" height="460" loading="lazy" alt="Drop at 500 yards against station pressure for 0, 40 and 80 degrees F, from about 64 inches at sea level to 56 inches high up"><figcaption><b>Figure 5.</b> Drop at 500 yards for the .308 load, zeroed at 100 yards in the same air, as pressure falls with altitude and as temperature rises. Sea level to 6,000 feet is worth about 4 inches here; a 40 °F swing is worth about 1.5.</figcaption></figure>
+    <div class="callout"><p><b>Station pressure, not the weather report.</b> Weather services adjust pressure to what it would be at sea level, so maps of highs and lows line up. The bullet only feels the actual air around it, which is what an uncorrected barometer reads where you stand: the <em>station</em> pressure. At 6,000 feet the two differ by about 6 inHg, the full width of Figure 5. HoldPoint's optional BME280 sensor reads station pressure directly.</p></div>
+    <p>Humidity is left out. Counter to intuition, damp air is slightly <em>less</em> dense than dry air, because water molecules are lighter than nitrogen and oxygen. But the effect on a hunting trajectory is a small fraction of an inch.</p>
+  </section>
+
+  <section id="zero">
+    <h2>Zeroing and point-blank range</h2>
+    <p>Zeroing sets the angle between scope and barrel. HoldPoint doesn't need to know that angle in advance: it finds it. It fires a test trajectory, measures the miss at your zero distance, tilts the barrel by miss ÷ distance, and fires again. Three or four tries usually land within six thousandths of an inch.</p>
+    <p>It does that in <strong>zero-day air</strong>, the temperature and pressure you record when you confirm your zero, then flies the hunting shot in <strong>today's air</strong>. A rifle zeroed at 500 feet in August is corrected for 7,000 feet in November without re-zeroing.</p>
+    <h3>Point-blank range</h3>
+    <p>A useful hunting trick is to zero a little further out, so the bullet never rises or falls more than half the height of the vital zone. Then you can hold dead-on from the muzzle out to some distance without thinking about it. That distance is the <em>maximum point-blank range</em>.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/point-blank.svg" width="860" height="460" loading="lazy" alt="The .308 path zeroed at 245 yards stays within plus or minus 4 inches until about 290 yards"><figcaption><b>Figure 6.</b> With the .308 load zeroed at 245 yards, the bullet peaks about 3.8 inches high near 135 yards and crosses 4 inches low at about 290. Inside that, hold on the middle of the vitals.</figcaption></figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Load (8 in vital zone)</th><th>Best zero</th><th>Highest point</th><th>Point-blank range</th></tr></thead>
+      <tbody>
+        <tr><td>.243 Win 95 gr</td><td>275 yd</td><td>+3.7 in</td><td>325 yd</td></tr>
+        <tr><td>6.5 CM 143 gr</td><td>260 yd</td><td>+4.0 in</td><td>305 yd</td></tr>
+        <tr><td>.308 Win 168 gr</td><td>245 yd</td><td>+3.8 in</td><td>290 yd</td></tr>
+        <tr><td>.30-06 180 gr</td><td>255 yd</td><td>+4.0 in</td><td>300 yd</td></tr>
+      </tbody>
+    </table></div>
+    <p>Point-blank zeroing trades precision for simplicity. It's a fine way to hunt woods and fields inside 300 yards; past that, a range card or HoldPoint's hold readout is the better tool.</p>
+  </section>
+
+  <section id="wind">
+    <h2>Wind drift and the lag rule</h2>
+    <p>The intuitive model of wind, "the air carries the bullet sideways for as long as it's flying", badly overstates drift. A bullet isn't a leaf. It's moving at 2,500 feet per second and mostly ignores the air's motion. What actually happens is subtler. Drag acts relative to the moving air, so a crosswind tilts the drag force slightly sideways. The result, often called <strong>Didion's lag rule</strong>,<sup class="ref"><a href="#n2" id="r2">2</a></sup> is that drift equals the crosswind times the bullet's <em>lag</em>: how much longer it took to reach the target than it would have in a vacuum.</p>
+    <div class="eq">drift = W × ( t − x / V₀ )
+        W = crosswind,  t = actual time of flight,  x / V₀ = time with no drag</div>
+    <figure class="wide"><img src="../img/01-holdpoint/wind-drift.svg" width="860" height="460" loading="lazy" alt="Wind drift in a 10 mph crosswind for four hunting loads out to 800 yards"><figcaption><b>Figure 7.</b> Drift in a full-value 10 mph crosswind. It grows faster than range, because the bullet both spends longer in the wind and slows down more. Every 1 mph you misjudge is about a tenth of these numbers.</figcaption></figure>
+    <p>That's why high-BC bullets drift less even at the same speed: they lose less velocity, so they lag less. Drift scales linearly with wind speed, so HoldPoint stores the drift for 1 mph and multiplies. Only the part of the wind blowing across the shot counts:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Wind from</th><th>Counts as</th><th>Clock shorthand</th></tr></thead>
+      <tbody>
+        <tr><td>Straight across (90°)</td><td>100%</td><td>3 or 9 o'clock</td></tr>
+        <tr><td>45° across</td><td>≈ 70%</td><td>halfway between, e.g. 1:30</td></tr>
+        <tr><td>30° across</td><td>50%</td><td>1, 5, 7 or 11 o'clock</td></tr>
+        <tr><td>Head or tail</td><td>≈ 0% drift</td><td>12 or 6 o'clock</td></tr>
+      </tbody>
+    </table></div>
+    <blockquote class="pull">The math is the easy part. Misjudging 10 mph as 8 moves a 400-yard shot more than every effect the solver leaves out, combined.</blockquote>
+  </section>
+
+  <section id="moving">
+    <h2>Moving animals</h2>
+    <p>Time of flight is about a third of a second at 300 yards. That sounds instant, but an animal walking at 3 mph covers about 4.4 feet per second. Multiply them and you get the lead:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>.308 Win 168 gr</th><th>100 yd</th><th>200 yd</th><th>300 yd</th><th>400 yd</th></tr></thead>
+      <tbody>
+        <tr><td>Time of flight</td><td>0.12 s</td><td>0.25 s</td><td>0.38 s</td><td>0.53 s</td></tr>
+        <tr><td>Lead, walking (3 mph)</td><td>6 in</td><td>13 in</td><td>20 in</td><td>28 in</td></tr>
+      </tbody>
+    </table></div>
+    <p>At 300 yards a walking deer moves most of the width of its chest between trigger and impact. That's why most hunters wait for it to stop. The decision is about ethics, not ballistics; the numbers just show why waiting is right.</p>
+  </section>
+
+  <section id="angle">
+    <h2>Uphill and downhill</h2>
+    <p>Gravity always pulls straight down. On a steep shot the bullet's path is tilted, so only part of gravity acts across the path, and the bullet "drops" less relative to the line of sight. Steep shots, up <em>or</em> down, need less hold than the same distance on the flat. HoldPoint handles this exactly by rotating gravity into the frame of the line of sight.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/look-angle.svg" width="860" height="460" loading="lazy" alt="Hold at 400 yards against look angle: exact solution, rifleman's rule, and ignoring the angle"><figcaption><b>Figure 8.</b> Hold for the .308 at 400 yards along the line of sight. Ignoring the angle shoots high; the rifleman's rule gets close but under-holds at steep angles.</figcaption></figure>
+    <p>The classic shortcut, the <strong>rifleman's rule</strong>, says to use the hold for the horizontal distance (range × cosine of the angle). It works well up to about 20°. At 45° and 400 yards it calls 4.35 MOA where the full solution says 4.78, about 1.8 inches low. Ignoring the angle entirely is worse, and its error climbs quickly past 15°. Mountain hunters should use a solver or a rangefinder that reports angle-corrected distance.</p>
+  </section>
+
+  <section id="energy">
+    <h2>Energy: what it does and doesn't tell you</h2>
+    <p>Kinetic energy is easy to compute: half the mass times the velocity squared. In hunting units:</p>
+    <div class="eq">energy (ft·lb) = weight (gr) × velocity (fps)² / 450,436</div>
+    <figure class="wide"><img src="../img/01-holdpoint/energy.svg" width="860" height="460" loading="lazy" alt="Remaining energy against range for four loads, with 1000 and 1500 ft-lb guidelines"><figcaption><b>Figure 9.</b> Remaining energy. The 1000 and 1500 ft·lb lines are common rules of thumb for deer and elk.</figcaption></figure>
+    <p>Energy is a rough proxy, not a guarantee. What kills cleanly is a bullet that reaches the vitals and expands, or holds together, as designed. That depends on its construction, on impact velocity being inside its design window, and above all on shot placement. Treat an energy floor as one sanity check among several. HoldPoint lets you set your own floor and flags ranges below it as LOW. Some bullet makers publish a minimum impact velocity for reliable expansion, which is often the more useful number.</p>
+  </section>
+
+  <section id="units">
+    <h2>MIL, MOA and your scope</h2>
+    <p>Holds are angles, so the same hold works whatever size the target appears. Two units are common:</p>
+    <div class="eq">1 MOA (minute of angle) = 1/60 degree    ≈ 1.047 in at 100 yd   ≈ 2.9 cm at 100 m
+1 MIL (milliradian)      = 1/1000 radian  ≈ 3.6 in at 100 yd    = 10 cm at 100 m</div>
+    <p>Use whatever your scope uses. If the turret says "1/4 MOA per click", think in MOA; if the reticle has mil hash marks, think in MIL. HoldPoint shows your chosen unit large and the other small underneath. It also shows inches of drop for hunters who hold off by eye on a plain duplex reticle.</p>
+  </section>
+
+  <section id="chip">
+    <h2>Inside the chip</h2>
+    <p>The ATmega328P on a Nano clone runs at 16 MHz, with 32 KB of program memory, 2 KB of RAM and no floating-point hardware. A ballistics solver fits because of a handful of decisions:</p>
+    <ul>
+      <li><strong>Solve once, read many.</strong> The whole 25–1000 yard table (40 rows of drop, drift per mph and velocity: 480 bytes) is rebuilt only when a setting changes, in about 1.1 seconds. Scrolling just reads the table.</li>
+      <li><strong>Stream, don't store, the path.</strong> The integrator hands each row to the screen code as the bullet crosses each 25-yard mark, instead of keeping the whole trajectory.</li>
+      <li><strong>Tables in flash.</strong> The 79-point G1 and 84-point G7 drag tables live in program memory, and a binary search finds the pair to interpolate between.</li>
+      <li><strong>A text-only display.</strong> A graphics library would need a 1 KB frame buffer, half the chip's RAM. A text library writes characters straight to the screen and needs none.</li>
+      <li><strong>32-bit floats are plenty.</strong> Single precision costs far less than a hundredth of an inch.</li>
+    </ul>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Budget</th><th>Used</th><th>Available</th></tr></thead>
+      <tbody>
+        <tr><td>Program memory</td><td>≈ 24 KB (74%)</td><td>30 KB</td></tr>
+        <tr><td>RAM</td><td>≈ 1.2 KB</td><td>2 KB</td></tr>
+        <tr><td>Time to rebuild the table</td><td>≈ 1.1 s at 16 MHz</td><td>≈ 2.2 s on an 8 MHz Pro Mini</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="checked">
+    <h2>How we know it's right</h2>
+    <p>The solver is ordinary C++, so the same source file also compiles on a PC. An automated test compares it with <a href="https://github.com/o-murphy/py_ballisticcalc">py-ballisticcalc</a>, an established open-source solver,<sup class="ref"><a href="#n3" id="r3">3</a></sup> on six loads covering cold air, thin air, uphill and downhill shots. The same solver also runs on a simulated ATmega328P, and the online calculator's JavaScript copy is checked against the C++ version. All of it re-runs on every change.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/validation.svg" width="860" height="460" loading="lazy" alt="HoldPoint minus py-ballisticcalc drop for six loads out to 800 yards, all within 0.2 inches"><figcaption><b>Figure 10.</b> HoldPoint's drop minus the reference solver's, every 100 yards. Level shots agree within a few hundredths of an inch. Angled shots agree within 0.2 in, because the two solvers sample the slant path slightly differently.</figcaption></figure>
+    <p>Left out on purpose: spin drift (a right-hand twist walks the bullet slightly right), Coriolis (the earth turning underneath the bullet), aerodynamic jump (a crosswind nudging the nose up or down) and humidity. Inside 500 yards they add up to a few inches at most. That's less than one honest mistake in a wind call.</p>
+  </section>
+
+  <section id="inputs">
+    <h2>What really decides accuracy</h2>
+    <p>A solver turns inputs into answers; it can't improve them. The single biggest input is muzzle velocity, and it's the one most people guess.</p>
+    <figure class="wide"><img src="../img/01-holdpoint/velocity-error.svg" width="860" height="460" loading="lazy" alt="Impact shift out to 600 yards if the real muzzle velocity is 50 fps higher or lower than entered"><figcaption><b>Figure 11.</b> Where the .308 bullet lands if its real velocity is 50 fps off from the number you entered: about 1.6 inches at 400 yards and 4.7 at 600.</figcaption></figure>
+    <ul>
+      <li><strong>Muzzle velocity.</strong> Factory boxes quote velocities from long test barrels, often 50–150 fps above what a hunting rifle gives. A chronograph is the best accuracy upgrade you can buy.</li>
+      <li><strong>Sight height.</strong> Measure from the centre of the scope to the centre of the bore. It matters most at close range.</li>
+      <li><strong>Range.</strong> At 400 yards a 25-yard misjudgment is about 4 inches. Use a rangefinder or known distances.</li>
+      <li><strong>Wind.</strong> No solver fixes a bad call.</li>
+      <li><strong>Confirm on paper</strong> at the distances you'll actually shoot, and believe the paper over the screen.</li>
+    </ul>
+  </section>
+
+  <section id="field">
+    <h2>In the field</h2>
+    <ol>
+      <li><strong>Before the season:</strong> chronograph your load, measure sight height, set up a HoldPoint profile and record zero-day weather at the range.</li>
+      <li><strong>Confirm</strong> the holds on paper at 200, 300 and 400 yards (or whatever you'll shoot). If they disagree, adjust velocity in the profile until they match.</li>
+      <li><strong>Print a range card</strong> from the <a href="../calculator.html">calculator</a> with the same numbers and tape it to the stock. Batteries die.</li>
+      <li><strong>On the hunt:</strong> range, read the angle, check the wind, then read the hold. If the animal is moving or the wind is gusting, wait.</li>
+      <li><strong>Know your limits and the rules.</strong> Stay inside the range where you can reliably hit a vital-zone-size target from a field position, and check whether your jurisdiction restricts electronic aids in the field.</li>
+    </ol>
+
+    <h3>Should you take the shot? The shot check</h3>
+    <p>Every number above assumes you know the range and the wind exactly. You don't, and neither does anyone. The <a href="../calculator.html">calculator's shot check</a> adds three honest errors: your own 5-shot group from a field position, your typical wind-call error, and your typical ranging error. It combines them into the chance that a centred hold lands in the vital zone at each range, and reports your <strong>maximum ethical range today</strong>. For the .308 load with a 2 MOA field group, a ±3 mph wind call and a laser rangefinder, that's about 200 yards on deer-sized vitals. A gusty day (±6 mph) cuts it to 150. Practising to a 1 MOA field group buys 50 more yards. Long-range software already does this kind of analysis for target shooters; here it's free and phrased as the hunter's question.</p>
+    <p>Build details (parts, wiring, schematic, flashing and setup) are available from <a href="https://www.zalastack.com">ZalaStack</a>.</p>
+  </section>
+
+  <section class="notes"><h2>Notes</h2><ol>
+    <li id="n1">Naming the standard drag functions after the Gâvre Commission is the conventional account in the ballistics literature. For the history and mathematics of drag functions, see Robert L. McCoy, <em>Modern Exterior Ballistics</em>. <a href="#r1" aria-label="back to text">↩</a></li>
+    <li id="n2">The lag-time result for crosswind deflection is commonly attributed to the nineteenth-century French artillerist Isidore Didion. It follows from the point-mass equations when drag is applied relative to the moving air. <a href="#r2" aria-label="back to text">↩</a></li>
+    <li id="n3"><a href="https://github.com/o-murphy/py_ballisticcalc">py-ballisticcalc</a> is an open-source point-mass solver with the standard drag tables. HoldPoint's drag tables are generated from its G1 and G7 data, and HoldPoint's test suite uses it as the reference. <a href="#r3" aria-label="back to text">↩</a></li>
+  </ol></section>
+
+  <section class="related"><h2>More from the lab</h2><div class="related-grid">
+    <a class="related-card" href="../calculator.html"><span class="eyebrow">Tool</span><b>Ballistics calculator</b><span>This article's solver in your browser, with a printable range card.</span></a>
+    <a class="related-card" href="../slopeshift/"><span class="eyebrow">Project 04</span><b>When do the thermals switch at your stand?</b><span>Slope winds, scent and a $5 logger.</span></a>
+    <a class="related-card" href="../trail-tally/"><span class="eyebrow">Project 02</span><b>Trail Tally</b><span>When animals actually use a trail.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>Part of the <a href="../">fieldhacks lab</a>, hunting electronics by ZalaStack. HoldPoint is a holdover aid: confirm on paper and know your local regulations. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

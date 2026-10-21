@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <rect width="900" height="560" fill="#fbfaf6"/>
+  <text x="30" y="38" font-size="22" font-weight="bold" fill="#222">HoldPoint — wiring</text>
+  <text x="30" y="60" fill="#555">Arduino Nano (or Pro Mini) + SSD1306 OLED + 3 buttons. BMP280 is optional. Nothing else.</text>
+
+  <!-- Nano -->
+  <rect x="330" y="110" width="200" height="330" rx="8" fill="#1f5f8b"/>
+  <text x="430" y="140" fill="#fff" font-weight="bold" text-anchor="middle">Arduino Nano</text>
+  <text x="430" y="158" fill="#cfe3f1" text-anchor="middle" font-size="12">ATmega328P</text>
+  <g fill="#fff" font-size="13">
+    <text x="345" y="200">5V</text>
+    <text x="345" y="235">GND</text>
+    <text x="345" y="290">A4 / SDA</text>
+    <text x="345" y="325">A5 / SCL</text>
+    <text x="515" y="200" text-anchor="end">D2  UP</text>
+    <text x="515" y="250" text-anchor="end">D3  DOWN</text>
+    <text x="515" y="300" text-anchor="end">D4  OK</text>
+    <text x="515" y="390" text-anchor="end">GND</text>
+  </g>
+
+  <!-- OLED -->
+  <rect x="40" y="110" width="180" height="150" rx="6" fill="#222"/>
+  <rect x="58" y="128" width="144" height="72" fill="#0b2233"/>
+  <text x="130" y="170" fill="#7fd3ff" text-anchor="middle" font-family="monospace">^ 1.42 MIL</text>
+  <text x="130" y="225" fill="#fff" text-anchor="middle" font-size="13">0.96" SSD1306 I2C</text>
+  <text x="130" y="245" fill="#aaa" text-anchor="middle" font-size="12">VCC GND SCL SDA</text>
+
+  <!-- BMP280 -->
+  <rect x="40" y="320" width="180" height="90" rx="6" fill="#5b3f8c"/>
+  <text x="130" y="352" fill="#fff" text-anchor="middle" font-weight="bold">BMP280 / BME280</text>
+  <text x="130" y="372" fill="#ddd" text-anchor="middle" font-size="12">optional · buy a 5V (regulated) board</text>
+  <text x="130" y="392" fill="#ddd" text-anchor="middle" font-size="12">VCC GND SCL SDA</text>
+
+  <!-- power rails -->
+  <g stroke-width="3" fill="none">
+    <path d="M330 195 H260 V140 H220" stroke="#c0392b"/>
+    <path d="M260 195 V345 H220" stroke="#c0392b"/>
+    <path d="M330 230 H275 V160 H220" stroke="#222"/>
+    <path d="M275 230 V362 H220" stroke="#222"/>
+    <path d="M330 285 H290 V180 H220" stroke="#1e8449"/>
+    <path d="M290 285 V378 H220" stroke="#1e8449"/>
+    <path d="M330 320 H305 V200 H220" stroke="#d68910"/>
+    <path d="M305 320 V395 H220" stroke="#d68910"/>
+  </g>
+  <g font-size="12" fill="#444">
+    <text x="232" y="136">VCC</text><text x="232" y="156">GND</text><text x="232" y="176">SDA</text><text x="232" y="196">SCL</text>
+  </g>
+
+  <!-- buttons -->
+  <g stroke="#222" stroke-width="3" fill="none">
+    <path d="M530 195 H640"/><path d="M530 245 H640"/><path d="M530 295 H640"/>
+    <path d="M700 195 H760 V385 H530"/><path d="M700 245 H760"/><path d="M700 295 H760"/>
+  </g>
+  <g>
+    <rect x="640" y="180" width="60" height="30" rx="4" fill="#eee" stroke="#222" stroke-width="2"/>
+    <rect x="640" y="230" width="60" height="30" rx="4" fill="#eee" stroke="#222" stroke-width="2"/>
+    <rect x="640" y="280" width="60" height="30" rx="4" fill="#eee" stroke="#222" stroke-width="2"/>
+    <text x="670" y="200" text-anchor="middle" font-size="12">UP</text>
+    <text x="670" y="250" text-anchor="middle" font-size="12">DOWN</text>
+    <text x="670" y="300" text-anchor="middle" font-size="12">OK</text>
+  </g>
+  <text x="775" y="290" fill="#444" font-size="12">all to GND</text>
+  <text x="775" y="306" fill="#444" font-size="12">(internal pull-ups,</text>
+  <text x="775" y="322" fill="#444" font-size="12">no resistors)</text>
+
+  <!-- power -->
+  <rect x="600" y="440" width="260" height="56" rx="6" fill="#fff" stroke="#999" stroke-dasharray="5 4"/>
+  <text x="730" y="464" text-anchor="middle" fill="#333">Power: USB power bank, or</text>
+  <text x="730" y="482" text-anchor="middle" fill="#333">3×AA (4.5 V) → 5V pin + GND</text>
+  <text x="40" y="520" fill="#555" font-size="12">Colors: red = VCC, black = GND, green = SDA, orange = SCL.</text>
+  <text x="40" y="538" fill="#555" font-size="12">3.3 V / 8 MHz Pro Mini: feed VCC from 2×AA and power OLED + BMP280 from VCC.</text>
+</svg>

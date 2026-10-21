@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build a SlopeShift Wind Logger · Assembly Guide · Fieldhacks</title>
+<meta name="description" content="Step-by-step assembly guide for the SlopeShift wind logger kit: vane ring, resistor ladder, cups and magnet, housing, flashing, setting the clock, calibrating speed, testing and deploying. For students 14+ with a teacher.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/slopeshift/assembly.html">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Build a SlopeShift wind logger">
+<meta property="og:description" content="The SlopeShift assembly guide, from a bag of parts to a logger in the field.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/slopeshift/assembly.html">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Cpath d='M5 24 L16 8 L27 24 Z' fill='%23dfe7d5'/%3E%3Cpath d='M9 19 L15 11' stroke='%232f6f9f' stroke-width='2.5'/%3E%3Cpath d='M23 19 L17 11' stroke='%23c2410c' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../style.css">
+<style>
+.warn{border:2px solid #b91c1c;border-radius:12px;padding:12px 18px;margin:22px 0;font:16px/1.55 var(--sans)}
+.warn p{margin:6px 0}
+.warn b{color:#b91c1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{border-color:#f87171}:root:not([data-theme="light"]) .warn b{color:#f87171}}
+.article td,.article th{vertical-align:top}
+.article code{overflow-wrap:anywhere}
+</style>
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="./" aria-current="page">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">SlopeShift · Assembly guide</p>
+    <h1>Build a SlopeShift wind logger</h1>
+    <p class="dek">From a bag of parts to a logger standing in a field. Written for students 14 and up, working with a teacher. Plan on two or three class periods: one for the vane and cups, one for soldering, one for flashing and testing.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026</p>
+    <p class="actions"><a class="btn" href="analyzer.html">Open the Analyzer</a> <a class="btn alt" href="./">Read the science</a></p>
+  </header>
+
+  <div class="callout"><p><b>Not yet built.</b> The firmware is tested on a PC and compiles for the Pro Mini, but no unit has run on real hardware yet. This guide follows the design. Where a size or distance isn't fixed yet, it says <b>check</b>: try it, then test with <code>live</code>. Tell us what worked.</p></div>
+
+  <div class="warn" role="note" lang="en">
+    <p><b>⚠ WARNING: magnets.</b> This kit contains small, strong magnets. If two or more are swallowed, they can pull together inside the intestines and cause serious injury or death. Get medical help right away if a magnet is swallowed. Not for children under 14. Keep loose magnets away from young children.</p>
+    <p lang="fr"><b>⚠ MISE EN GARDE : aimants.</b> Cette trousse contient de petits aimants puissants. Si deux aimants ou plus sont avalés, ils peuvent s'attirer l'un l'autre dans l'intestin et causer des blessures graves ou la mort. Consultez immédiatement un médecin si un aimant est avalé. Ne convient pas aux enfants de moins de 14 ans. Gardez les aimants hors de la portée des jeunes enfants.</p>
+  </div>
+
+  <figure class="lead"><img src="../img/04-slopeshift/assembly.svg" width="1100" height="660" alt="Side view of the SlopeShift assembly: vane and cups on separate posts on a crossbar, electronics in a PVC tube on the mast"><figcaption><b>Figure 1.</b> How it goes together. Vane and cups turn on separate posts; the electronics ride in a capped PVC tube on the mast.</figcaption></figure>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#parts">Tools and parts</a></li>
+    <li><a href="#vane">The vane ring</a></li>
+    <li><a href="#ladder">Solder the resistor ladder</a></li>
+    <li><a href="#cups">Cups and magnet</a></li>
+    <li><a href="#housing">The housing</a></li>
+    <li><a href="#flash">Flash the firmware</a></li>
+    <li><a href="#time">Set the clock: <code>time</code></a></li>
+    <li><a href="#k">Calibrate speed: <code>k</code></a></li>
+    <li><a href="#live">The <code>live</code> check</a></li>
+    <li><a href="#deploy">Deploy it</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+  </ol></nav>
+
+  <section id="parts">
+    <h2>1. Tools and parts</h2>
+    <h3>Tools</h3>
+    <ul>
+      <li>Soldering iron, solder, and a damp sponge or brass wool</li>
+      <li>Safety glasses for everyone soldering or cutting</li>
+      <li>Wire strippers, side cutters, small pliers</li>
+      <li>Multimeter (resistance and continuity)</li>
+      <li>Hot glue gun, craft knife or scissors, a drill for the PVC caps</li>
+      <li>A computer with the Arduino IDE, and a 3.3 V USB-serial adapter</li>
+      <li>A phone compass</li>
+    </ul>
+    <h3>Parts</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Qty</th><th>Part</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Pro Mini 328, 3.3 V / 8 MHz</td></tr>
+        <tr><td>1</td><td>DS3231 clock module (ZS-042) + CR2032 coin cell</td></tr>
+        <tr><td>1</td><td>24LC256 memory chip, 8-pin DIP</td></tr>
+        <tr><td>9</td><td>Glass reed switches, normally open (8 vane, 1 cups)</td></tr>
+        <tr><td>8</td><td>1% resistors: 33k, 8.2k, 1k, 2.2k, 3.9k, 16k, 120k, 64.9k</td></tr>
+        <tr><td>1</td><td>10k resistor (pull-up)</td></tr>
+        <tr><td>1</td><td>100 nF ceramic capacitor</td></tr>
+        <tr><td>2</td><td>Small neodymium disc magnets, about 6×3 mm</td></tr>
+        <tr><td>2</td><td>608 bearings</td></tr>
+        <tr><td>1</td><td>2×AA holder with switch, and 2 AA cells</td></tr>
+        <tr><td>–</td><td>Plastic jug (vane fin), 3 ping-pong ball halves (cups), pen barrels or dowel (shafts), 1½" PVC tube and two caps, a stake or tripod, hookup wire</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Safety</h3>
+    <ul>
+      <li>Hot iron: put it back in its stand every time. Hold parts with pliers, not fingers.</li>
+      <li>Solder in a ventilated room. Wash your hands after handling solder.</li>
+      <li>Glass reed switches crack easily. Bend their leads with pliers, a few millimetres from the glass, never at the glass.</li>
+      <li>Count the magnets in and out at every session. Store them on a steel plate or in a closed box.</li>
+    </ul>
+  </section>
+
+  <section id="vane">
+    <h2>2. The vane ring</h2>
+    <p>Eight reed switches sit in a ring under the vane shaft. A magnet on an arm turns with the shaft and closes the switch it sits over. Halfway between two switches it closes both, which is how eight switches give sixteen directions.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/vane-ladder.svg" width="1100" height="600" loading="lazy" alt="Ring of eight reed switches with a magnet between N and NE, and a table of the sixteen resistances and ADC readings sorted by value"><figcaption><b>Figure 2.</b> Eight switches, each with its own resistor. A magnet between two switches closes both and gives a third reading.</figcaption></figure>
+    <ol>
+      <li>Cut a disc of stiff plastic or thin plywood for the ring base. Mark its centre and draw eight lines 45° apart. Label them, going clockwise seen from above: <b>N, NE, E, SE, S, SW, W, NW</b>.</li>
+      <li>Glue a reed switch along each line, the same distance from the centre. The magnet must pass close over each one. Ring diameter and gap: <b>check</b>. Start with the switches about 2–3 cm from the centre and the magnet a few millimetres above the glass.</li>
+      <li>Fit the 608 bearing at the centre so the shaft turns freely.</li>
+      <li>Glue one magnet to a short arm on the shaft. <b>Point the magnet arm the same way as the vane's pointer.</b> Then when the pointer faces north, the magnet sits over the N switch.</li>
+      <li>Make the vane: a light fin cut from a jug at the back, a pointer at the front. Balance it on the shaft so it doesn't lean. A balanced, light vane turns in the 1–3 mph winds that slope thermals bring.</li>
+    </ol>
+    <p><b>Test before wiring.</b> Put the multimeter on continuity across one switch and move a magnet over it. It should beep. Move the magnet away. It should stop. Test all eight.</p>
+  </section>
+
+  <section id="ladder">
+    <h2>3. Solder the resistor ladder</h2>
+    <p>Each switch connects pin <b>A0</b> to ground through its own resistor. A 10k pull-up, powered from pin <b>D4</b> only while reading, completes the divider.</p>
+    <figure class="wide"><img src="../img/04-slopeshift/schematic.svg" width="1100" height="720" loading="lazy" alt="SlopeShift schematic: Pro Mini, DS3231 module, 24LC256 EEPROM, cups reed with capacitor on D2, clock alarm on D3, vane resistor ladder on A0 powered from D4"><figcaption><b>Figure 3.</b> The circuit. Wires ending in the same label are connected.</figcaption></figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Switch</th><th>Resistor</th><th>Multimeter should read</th></tr></thead>
+      <tbody>
+        <tr><td>N</td><td>33k</td><td>33.0 kΩ</td></tr>
+        <tr><td>NE</td><td>8.2k</td><td>8.2 kΩ</td></tr>
+        <tr><td>E</td><td>1k</td><td>1.0 kΩ</td></tr>
+        <tr><td>SE</td><td>2.2k</td><td>2.2 kΩ</td></tr>
+        <tr><td>S</td><td>3.9k</td><td>3.9 kΩ</td></tr>
+        <tr><td>SW</td><td>16k</td><td>16.0 kΩ</td></tr>
+        <tr><td>W</td><td>120k</td><td>120 kΩ</td></tr>
+        <tr><td>NW</td><td>64.9k</td><td>64.9 kΩ</td></tr>
+      </tbody>
+    </table></div>
+    <ol>
+      <li><b>Measure every resistor before you solder it.</b> Mixing up two values gives wrong directions that are hard to find later. Use 1% resistors: E and ENE are only 9 ADC counts apart.</li>
+      <li>Join one lead of all eight switches into a common <b>ground</b> wire.</li>
+      <li>Solder each switch's other lead to its resistor. Join the far ends of all eight resistors into a common <b>A0</b> wire.</li>
+      <li>Insulate each joint with heat-shrink or tape.</li>
+      <li><b>Check the ladder.</b> Measure between the A0 wire and the ground wire. With no magnet it should read open (no value). Hold the magnet over N: about 33 kΩ. Between N and NE: about 6.6 kΩ (the two in parallel). Go around the ring.</li>
+      <li>Solder the 10k pull-up from <b>D4</b> to <b>A0</b> on the Pro Mini.</li>
+    </ol>
+  </section>
+
+  <section id="cups">
+    <h2>4. Cups and magnet</h2>
+    <ol>
+      <li>Cut three ping-pong balls in half. You need three halves.</li>
+      <li>Fix three equal arms to a hub, 120° apart. Glue a cup to the end of each arm, all open sides facing the same way around the circle.</li>
+      <li>Put the hub on its shaft through the second 608 bearing. It should spin for a few seconds after a flick.</li>
+      <li>Glue the second magnet to the hub, off-centre, so it passes the cups reed switch <b>once per turn</b>.</li>
+      <li>Glue the cups reed switch to the post where the magnet passes over it. Gap: <b>check</b>. Spin it slowly by hand with the multimeter on continuity: one beep per turn.</li>
+      <li>Solder the reed between <b>D2</b> and <b>GND</b>. Solder the 100 nF capacitor across the reed. It stops one closure counting as several.</li>
+      <li>Mount vane and cups at opposite ends of a crossbar, at least 30 cm apart, so neither disturbs the other.</li>
+    </ol>
+  </section>
+
+  <section id="housing">
+    <h2>5. The housing</h2>
+    <p>Wire the clock and memory to the Pro Mini:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>From</th><th>To</th></tr></thead>
+      <tbody>
+        <tr><td>DS3231 VCC / GND, 24LC256 pin 8 / pin 4</td><td>Pro Mini <b>VCC</b> / <b>GND</b></td></tr>
+        <tr><td>DS3231 SDA, 24LC256 pin 5</td><td><b>A4</b></td></tr>
+        <tr><td>DS3231 SCL, 24LC256 pin 6</td><td><b>A5</b></td></tr>
+        <tr><td>24LC256 pins 1, 2, 3, 7</td><td><b>GND</b></td></tr>
+        <tr><td>DS3231 SQW</td><td><b>D3</b></td></tr>
+        <tr><td>2×AA holder</td><td><b>VCC</b> and <b>GND</b> (not RAW)</td></tr>
+      </tbody>
+    </table></div>
+    <ol>
+      <li><b>Two fixes on the ZS-042 clock module.</b> Remove its power LED. Remove its charging resistor (or use a rechargeable LIR2032), because it tries to charge the coin cell and a normal CR2032 must not be charged. Your teacher can show you which parts on your module; boards vary, so <b>check</b> against a photo of yours.</li>
+      <li>Remove the Pro Mini's power LED to save battery.</li>
+      <li>Put the boards and battery holder in the 1½" PVC tube. Leave the Pro Mini's six-pin programming header where you can reach it by taking off the top cap.</li>
+      <li>Drill a small <b>drain hole</b> in the bottom cap so condensation can escape.</li>
+      <li>Run the vane and cups wires along the crossbar and down the mast into the tube. Seal where wires enter with hot glue.</li>
+    </ol>
+  </section>
+
+  <section id="flash">
+    <h2>6. Flash the firmware</h2>
+    <ol>
+      <li>Install the <a href="https://www.arduino.cc/en/software">Arduino IDE</a>. No extra libraries are needed.</li>
+      <li>Open <code>slopeshift.ino</code> (in the <code>firmware/slopeshift</code> folder of the kit files).</li>
+      <li>Choose <b>Board:</b> Arduino Pro or Pro Mini, <b>Processor:</b> ATmega328P (3.3V, 8 MHz).</li>
+      <li><b>Switch the AA holder off.</b> Connect the 3.3 V USB-serial adapter to the six-pin header (GND to GND, matching the pin labels). Use 3.3 V only; a 5 V adapter can damage the clock and memory.</li>
+      <li>Click <b>Upload</b>.</li>
+    </ol>
+  </section>
+
+  <section id="time">
+    <h2>7. Set the clock: <code>time</code></h2>
+    <ol>
+      <li>Open the Serial Monitor at <b>9600 baud</b>, line ending <b>Newline</b>.</li>
+      <li>Press Enter to wake it. It prints <code>slopeshift ready</code> and a list of commands. It goes back to sleep after 30 seconds with no typing.</li>
+      <li>Type the local time, 24-hour, at the moment you press Enter: <code>time 2026-10-21 14:05</code>. It answers <code>ok, logging from the next minute</code>.</li>
+      <li>Type <code>status</code> and check the time is right.</li>
+    </ol>
+    <p>The clock has no daylight saving. Set it to the time you'll use when reading the data. The tools fix the time zone later.</p>
+  </section>
+
+  <section id="k">
+    <h2>8. Calibrate speed: <code>k</code></h2>
+    <p>Speed = cup turns per second (Hz) × <b>k</b>. The default is 1.492 mph per Hz, which fits SparkFun's cups, not homemade ones. To find yours:</p>
+    <ol>
+      <li>On a calm day, a <b>teacher or another adult drives</b> at a steady 10 mph on a quiet, safe road. A student in the passenger seat holds the cups out of the window, well clear of the car, and runs <code>live</code>.</li>
+      <li>Write down the Hz readings. Repeat at 20 mph.</li>
+      <li>k = mph ÷ Hz at each speed. Average them.</li>
+      <li>Save it: <code>k 1.85</code> (use your number). It's stored in memory and kept when the battery is out. Values from 0.1 to 20 are accepted.</li>
+    </ol>
+    <p>No car? Compare against a handheld anemometer in front of a fan, at two or three distances. Or leave the default: switch times come from direction, so they don't need an exact speed.</p>
+  </section>
+
+  <section id="live">
+    <h2>9. The <code>live</code> check</h2>
+    <p>Type <code>live</code>. Every 2 seconds for 30 seconds it prints the direction, the raw reading (<code>adc</code>), the cup rate in Hz and the speed:</p>
+    <div class="eq">NNE  adc 406  0.00 Hz = 0.0 mph</div>
+    <p>Turn the vane slowly through all 16 directions and compare with this table. Within a few counts is fine.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Dir</th><th>adc</th><th>Dir</th><th>adc</th><th>Dir</th><th>adc</th><th>Dir</th><th>adc</th></tr></thead>
+      <tbody>
+        <tr><td>N</td><td>785</td><td>E</td><td>93</td><td>S</td><td>287</td><td>W</td><td>944</td></tr>
+        <tr><td>NNE</td><td>406</td><td>ESE</td><td>66</td><td>SSW</td><td>244</td><td>WNW</td><td>827</td></tr>
+        <tr><td>NE</td><td>461</td><td>SE</td><td>184</td><td>SW</td><td>630</td><td>NW</td><td>886</td></tr>
+        <tr><td>ENE</td><td>84</td><td>SSE</td><td>126</td><td>WSW</td><td>599</td><td>NNW</td><td>702</td></tr>
+      </tbody>
+    </table></div>
+    <p>Then spin the cups by hand: Hz should rise and fall with speed.</p>
+    <p><b>Classroom demo: <code>fast</code>.</b> Point a fan or hairdryer at the vane. Type <code>fast</code>: it prints <code>s,dir,deg,mph</code> every 2 seconds. After 10 seconds it knows the "before" wind. Move the fan to the other side and hold it there. About 8 seconds later it prints a line like <code># switch at 34 s: NW -&gt; SE</code> and blinks three times. That's the same rule the tools use on a real day, sped up. Press any key to stop. Logging carries on underneath. You can paste the lines into a spreadsheet and chart them.</p>
+  </section>
+
+  <section id="deploy">
+    <h2>10. Deploy it</h2>
+    <ol>
+      <li>Put the logger up <b>a week or more</b> before you need the data. A memory chip holds about 20 days.</li>
+      <li>Mount it on a stake or tripod at the height you care about, clear of trunks, walls and branches. They bend the wind.</li>
+      <li>With the phone compass, turn the whole crossbar so that when the <b>pointer faces north, the magnet sits over the N switch</b>.</li>
+      <li>Switch the AA holder on. Watch the LED:
+        <ul>
+          <li><b>2 slow blinks:</b> logging. Good.</li>
+          <li><b>5 fast blinks:</b> the clock isn't set. Run <code>time</code>.</li>
+          <li><b>8 fast blinks:</b> memory full. Read the log, then <code>clear yes</code>.</li>
+        </ul></li>
+      <li>Note the place, latitude and longitude, the slope angle and the direction it faces. The Analyzer needs these.</li>
+      <li>Leave it. To collect, type <code>dump</code> in the Serial Monitor and save the text as a <code>.csv</code> file, or use the kit's Python tool: <code>slopeshift.py read --port /dev/ttyUSB0 -o wind.csv</code>. Then load the file into the <a href="analyzer.html">Analyzer</a>.</li>
+    </ol>
+  </section>
+
+  <section id="trouble">
+    <h2>11. Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Problem</th><th>Likely cause</th><th>Try</th></tr></thead>
+      <tbody>
+        <tr><td>Nothing in the Serial Monitor</td><td>Wrong baud, asleep, or TX/RX swapped</td><td>9600 baud, press Enter, check the adapter wiring</td></tr>
+        <tr><td>Upload fails</td><td>Wrong board or processor</td><td>Pro Mini, ATmega328P <b>3.3V, 8 MHz</b></td></tr>
+        <tr><td>Direction always <code>?</code></td><td>No switch closed (adc above 1000) or a short (adc below 20)</td><td>Check the A0 and ground wires, the D4 pull-up, the magnet gap</td></tr>
+        <tr><td>Direction jumps between neighbours</td><td>Magnet too far or too close, or a 5% resistor</td><td>Adjust the gap; measure the resistors</td></tr>
+        <tr><td>Directions rotated (east reads as south)</td><td>Magnet arm not lined up with the pointer, or switches in the wrong order</td><td>Re-check the ring labels clockwise from above</td></tr>
+        <tr><td>One direction never shows</td><td>A cracked reed or cold joint</td><td>Continuity test that switch</td></tr>
+        <tr><td>Hz always 0</td><td>Cups reed too far from the magnet, or not on D2</td><td>Spin by hand with the multimeter on continuity</td></tr>
+        <tr><td>Speed reads double</td><td>Two closures per turn</td><td>Use one magnet; move the reed so it closes once</td></tr>
+        <tr><td>5 fast blinks every time</td><td>Clock lost power (dead CR2032)</td><td>New coin cell, then <code>time</code></td></tr>
+        <tr><td>Log stops early</td><td>Batteries flat or memory full</td><td><code>status</code> shows memory used and days left</td></tr>
+      </tbody>
+    </table></div>
+    <p>Still stuck? Write down what <code>status</code> and <code>live</code> print and ask your teacher.</p>
+  </section>
+
+  <section class="related"><h2>More on SlopeShift</h2><div class="related-grid">
+    <a class="related-card" href="./"><span class="eyebrow">The science</span><b>When does the wind switch at your stand?</b><span>Why slopes make their own wind, and how the logger works.</span></a>
+    <a class="related-card" href="kit.html"><span class="eyebrow">Classroom kit</span><b>SlopeShift for your class</b><span>What's in the box, the lessons, and classroom quotes.</span></a>
+    <a class="related-card" href="analyzer.html"><span class="eyebrow">Analyzer</span><b>Find your thermal switch, then forecast it</b><span>Load a log in your browser and forecast any date.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>SlopeShift is a <a href="../">Fieldhacks</a> kit. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

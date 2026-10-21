@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 440" width="860" height="440" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="860" height="440" fill="#fbfaf6"/>
+  <text x="24" y="32" font-size="19" font-weight="bold" fill="#1d2321">How a PIR sensor sees a deer</text>
+  <text x="24" y="52" fill="#5f6a66">The lens splits the view into zones that land alternately on two crystal halves wired against each other.</text>
+
+  <!-- zones fan -->
+  <g opacity="0.9">
+    <path d="M140 250 L470 90 L470 130 Z" fill="#dbeafe"/>
+    <path d="M140 250 L470 130 L470 170 Z" fill="#fde7d4"/>
+    <path d="M140 250 L470 170 L470 210 Z" fill="#dbeafe"/>
+    <path d="M140 250 L470 210 L470 250 Z" fill="#fde7d4"/>
+    <path d="M140 250 L470 250 L470 290 Z" fill="#dbeafe"/>
+    <path d="M140 250 L470 290 L470 330 Z" fill="#fde7d4"/>
+    <path d="M140 250 L470 330 L470 370 Z" fill="#dbeafe"/>
+    <path d="M140 250 L470 370 L470 410 Z" fill="#fde7d4"/>
+  </g>
+  <text x="480" y="104" fill="#2f6f9f" font-size="12">A</text><text x="480" y="144" fill="#c2410c" font-size="12">B</text>
+  <text x="480" y="184" fill="#2f6f9f" font-size="12">A</text><text x="480" y="224" fill="#c2410c" font-size="12">B</text>
+  <text x="480" y="264" fill="#2f6f9f" font-size="12">A</text><text x="480" y="304" fill="#c2410c" font-size="12">B</text>
+  <text x="480" y="344" fill="#2f6f9f" font-size="12">A</text><text x="480" y="384" fill="#c2410c" font-size="12">B</text>
+
+  <!-- sensor -->
+  <rect x="60" y="215" width="70" height="70" rx="8" fill="#f2f0ea" stroke="#999"/>
+  <path d="M130 222 A40 40 0 0 1 130 278" fill="#fff" stroke="#bbb" stroke-width="2"/>
+  <rect x="80" y="236" width="12" height="28" fill="#2f6f9f"/><rect x="96" y="236" width="12" height="28" fill="#c2410c"/>
+  <text x="95" y="304" text-anchor="middle" fill="#1d2321" font-weight="bold">AM312</text>
+  <text x="95" y="320" text-anchor="middle" fill="#5f6a66" font-size="11.5">crystal halves A | B</text>
+  <text x="95" y="336" text-anchor="middle" fill="#5f6a66" font-size="11.5">behind a Fresnel lens</text>
+
+  <!-- deer path -->
+  <path d="M420 400 C 400 320, 440 220, 400 110" fill="none" stroke="#1d2321" stroke-width="2" stroke-dasharray="5 5"/>
+  <g transform="translate(386,218)">
+    <ellipse cx="18" cy="10" rx="22" ry="11" fill="#8b5a2b"/>
+    <path d="M36 4 l12 -14 l6 2 l-8 16 z" fill="#8b5a2b"/>
+    <path d="M2 18 v16 M10 18 v16 M28 18 v16 M34 18 v16" stroke="#8b5a2b" stroke-width="3"/>
+  </g>
+  <text x="300" y="420" fill="#5f6a66" font-size="12">a warm body walks across the zones</text>
+
+  <!-- signal -->
+  <text x="560" y="100" font-weight="bold" fill="#1d2321">Crystal signal (A − B)</text>
+  <line x1="560" y1="170" x2="840" y2="170" stroke="#e3e1d8"/>
+  <path d="M560 170 H600 C 610 170, 612 120, 622 120 C 632 120, 634 220, 644 220 C 654 220, 656 125, 666 125 C 676 125, 678 215, 688 215 C 698 215, 700 130, 710 130 C 720 130, 722 210, 732 210 C 742 210, 744 170, 754 170 H840" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="560" y="250" fill="#5f6a66" font-size="12">Still scene: A and B see the same heat and cancel.</text>
+  <text x="560" y="266" fill="#5f6a66" font-size="12">Moving body: each zone change swings the difference.</text>
+
+  <text x="560" y="310" font-weight="bold" fill="#1d2321">Module output (to pin D2)</text>
+  <line x1="560" y1="380" x2="840" y2="380" stroke="#e3e1d8"/>
+  <path d="M560 380 H620 V340 H770 V380 H840" fill="none" stroke="#e67e22" stroke-width="2.5"/>
+  <text x="695" y="332" text-anchor="middle" fill="#e67e22" font-size="12">HIGH for about 2 s</text>
+  <text x="560" y="404" fill="#5f6a66" font-size="12">Rising edge wakes the chip: 1 count, 60 s lockout.</text>
+</svg>

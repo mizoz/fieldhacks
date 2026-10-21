@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fieldhacks: DIY Arduino ballistics calculator and cheap hunting electronics</title>
+<meta name="description" content="DIY hunting electronics under $10. HoldPoint is a $5 Arduino Nano ballistics calculator with an OLED range card, validated against py-ballisticcalc. Plus plans for a trail activity counter, a drone game-trail finder and a stand wind logger.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="fieldhacks: $5 DIY Arduino ballistics calculator for hunters">
+<meta property="og:description" content="DIY hunting electronics under $10: a ballistics calculator, trail counter, game-trail finder and wind logger.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="fieldhacks: HoldPoint, Trail Tally, Trail Finder and SlopeShift">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M16 4v8M16 20v8M4 16h8M20 16h8' stroke='%23f59e0b' stroke-width='2.5'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "fieldhacks",
+  "description": "DIY hunting electronics under $10, including HoldPoint, an Arduino Nano ballistics calculator.",
+  "url": "https://lab.zalastack.com/fieldhacks/",
+  "copyrightHolder": {"@type": "Organization", "name": "ZalaStack", "url": "https://www.zalastack.com"},
+  "programmingLanguage": ["C++", "Python"],
+  "runtimePlatform": "Arduino (ATmega328P)",
+  "keywords": "arduino ballistics calculator, DIY range card, hunting electronics, SSD1306, ATmega328P, game trail counter, wind logger, open hardware",
+  "author": {"@type": "Organization", "name": "ZalaStack", "url": "https://www.zalastack.com"}
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="./" aria-current="page">fieldhacks lab</a>
+  <a href="holdpoint/">HoldPoint</a>
+  <a href="trail-tally/">Trail Tally</a>
+  <a href="trail-finder/">Trail Finder</a>
+  <a href="slopeshift/">SlopeShift</a>
+  <a href="legal-light/">Legal Light</a>
+  <a href="calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<header class="index-head">
+  <p class="eyebrow">fieldhacks lab</p>
+  <h1>Cheap, clever electronics for hunters, and the science behind them</h1>
+  <p>Each project answers one question that decides a hunt, for under $10 in parts. Each comes with tested firmware, wiring, and a long-form article on how and why it works.</p>
+  <p class="btns"><a class="btn" href="calculator.html">Try the ballistics calculator</a></p>
+</header>
+
+<main id="projects" class="index">
+  <a class="story" href="holdpoint/">
+    <img src="img/01-holdpoint/screens.svg" width="980" height="700" alt="HoldPoint OLED screens with real solver output">
+    <div><span class="eyebrow">Project 01 · Ballistics · Built, not yet on hardware</span><h2>Where do I hold? The physics inside a $5 ballistics calculator</h2><p>Drag and the ballistic coefficient, G1 vs G7, air density, point-blank range, wind drift, moving animals and steep shots, and how an 8-bit chip solves them in a second.</p><span class="read">Read the article →</span></div>
+  </a>
+  <!-- 02 -->
+  <a class="story" href="trail-tally/">
+    <img src="img/02-trail-counter/deer-clock.svg" alt="Trail Tally deer clock: trail activity by hour of day" loading="lazy">
+    <div><span class="eyebrow">Project 02 · Patterns · Firmware tested, not yet built</span><h2>How a $3 counter learns when deer use a trail</h2><p>A motion counter that sleeps for weeks and records which hours a trail gets used, and with a second $1 sensor, which way each animal went. Plus the timekeeping and storage tricks that make it work on two AA cells.</p><span class="read">Read the article →</span></div>
+  </a>
+  <!-- /02 -->
+  <!-- 03 -->
+  <a class="story" href="trail-finder/">
+    <img src="img/03-trail-finder/pipeline.png" alt="Trail Finder pipeline from drone image to map lines" loading="lazy">
+    <div><span class="eyebrow">Project 03 · Mapping · Software, synthetic tests</span><h2>Finding game trails from the air, without AI</h2><p>Classic image processing that pulls thin, winding trails out of off-season drone images, then suggests stand sites whose scent stays off the trails for each wind of the day.</p><span class="read">Read the article →</span></div>
+  </a>
+  <!-- /03 -->
+  <a class="story" href="slopeshift/">
+    <img src="img/04-slopeshift/thermals.svg" width="1100" height="560" alt="Slope winds through the day on a ridge" loading="lazy">
+    <div><span class="eyebrow">Project 04 · Wind and scent · Firmware tested, not yet built</span><h2>When does the wind switch at your stand?</h2><p>Why hills make their own wind, what moves the morning and evening switch, what it does to your scent, and a $5 logger that measures it where you sit.</p><span class="read">Read the article →</span></div>
+  </a>
+  <!-- 05 -->
+  <a class="story" href="legal-light/">
+    <img src="img/05-legal-light/season-latitude.svg" alt="Legal shooting hours through the season at different latitudes" loading="lazy">
+    <div><span class="eyebrow">Project 05 · Regulations · Web tool</span><h2>Legal shooting hours, for your exact stand</h2><p>Legal light for your exact stand with your rule's offsets, plus when direct sun actually reaches the stand over the real skyline. Printable season table.</p><span class="read">Open the tool →</span></div>
+  </a>
+  <!-- /05 -->
+  <!-- more projects: add story blocks here -->
+
+  <div class="article index-faq">
+<h2>Frequently asked questions</h2>
+<details><summary>Can an Arduino really run a ballistics calculator?</summary><p>Yes. An ATmega328P can step a point-mass trajectory with G1/G7 drag tables. HoldPoint builds a full 25–1000 yard table in about 1.1 seconds at 16 MHz, then scrolling is instant.</p></details>
+<details><summary>How is this different from a ballistic rangefinder or a phone app?</summary><p>Ballistic rangefinders and weather meters with built-in solvers cost hundreds of dollars, and phone apps mean a phone in the cold with gloves on. HoldPoint is a single-purpose device that costs about $5 in parts and can be checked against an independent solver.</p></details>
+<details><summary>Which bullets and drag models does it support?</summary><p>Any bullet with a published G1 or G7 ballistic coefficient. Use G7 when the maker publishes it, which most long boat-tail bullets do.</p></details>
+<details><summary>Is it legal to use when hunting?</summary><p>Rules on electronic aids vary by state and province. Check your local hunting regulations. Drone scouting in particular is restricted in many places, which is why Trail Finder is designed for off-season mapping.</p></details>
+
+  </div>
+</main>
+<footer class="site-foot"><p>fieldhacks is a ZalaStack project. Hobby electronics fail: confirm your holds on paper, carry a backup card, and know your local regulations. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

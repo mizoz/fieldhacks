@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trail Tally: How a $3 Game Trail Counter Works · fieldhacks lab</title>
+<meta name="description" content="How a $3 Arduino game trail counter works: PIR motion sensors, sleeping for months on 2×AA, keeping time without a clock chip by calibrating the watchdog, six weeks of hourly counts in 1 KB of EEPROM, and reading the log as a deer-activity clock.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/trail-tally/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Trail Tally: how a $3 game trail counter works">
+<meta property="og:description" content="PIR sensing, micro-amp sleep, a self-calibrating watchdog clock and six weeks of hourly counts in 1 KB.">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/trail-tally/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M16 9v7l5 3' stroke='%23f59e0b' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Trail Tally: how a $3 game trail counter works",
+ "datePublished":"2026-10-21","about":["game trail counter","PIR motion sensor","low-power Arduino","watchdog timer calibration"],
+ "url":"https://lab.zalastack.com/fieldhacks/trail-tally/","image":"https://lab.zalastack.com/fieldhacks/social-preview.png",
+ "isPartOf":{"@type":"WebSite","name":"fieldhacks","url":"https://lab.zalastack.com/fieldhacks/"},
+ "author":{"@type":"Organization","name":"ZalaStack","url":"https://www.zalastack.com"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/" aria-current="page">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="../slopeshift/">SlopeShift</a>
+  <a href="../legal-light/">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">Project 02 · Low-power electronics</p>
+    <h1>How a $3 counter learns when deer use a trail</h1>
+    <p class="dek">A motion sensor, a sleeping chip and one byte per hour. Here's how to count trail traffic for six weeks on two AA batteries, and keep time to within minutes without a clock chip.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026 · 16 min read</p>
+    
+  </header>
+
+  <figure class="lead"><img src="../img/02-trail-counter/deer-clock.svg" width="760" height="420" alt="Deer clock chart: a 24-hour radial bar chart with peaks at dawn and dusk, and a heat map of 41 days by 24 hours showing the same two bands of activity"><figcaption><b>Figure 1.</b> Six simulated weeks of trail traffic, as Trail Tally's chart tool draws it. Left: passes by hour of day. Right: every hour of every day. A real log produces the same picture.</figcaption></figure>
+
+  <aside class="keypoints"><h2>Key points</h2><ul>
+    <li>A trail camera tells you <i>what</i> walked by. For most stand decisions you only need <i>when</i>, and that's much cheaper to measure.</li>
+    <li>The chip sleeps at a few microamps and wakes only when the motion sensor fires, so 2×AA outlast the 42 days of log space many times over.</li>
+    <li>The cheap watchdog clock can drift by days over six weeks. Timing it against the board's 8 MHz resonator once an hour cuts that to minutes.</li>
+    <li>One byte per hour in the chip's own 1 KB memory holds six weeks, and every count is saved the moment it happens.</li>
+    <li>A second $1 sensor a metre down the trail adds <b>direction of travel</b>: bedding to food at dusk, back at dawn. Paired with a SlopeShift log, each pass is tagged with the wind measured at the trail.</li>
+    <li>It's tested in simulation, on a desktop and on a simulated chip, but hasn't run on a real board yet.</li>
+  </ul></aside>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#why">Why count instead of photograph</a></li>
+    <li><a href="#build">What's in the pill bottle</a></li>
+    <li><a href="#pir">How a PIR sensor sees a deer</a></li>
+    <li><a href="#sleep">Sleeping for months on 2×AA</a></li>
+    <li><a href="#clock">Keeping time without a clock chip</a></li>
+    <li><a href="#lockout">One deer, one count</a></li>
+    <li><a href="#storage">Six weeks in 1,024 bytes</a></li>
+    <li><a href="#reading-it">Reading the log</a></li>
+    <li><a href="#direction">Which way did it go?</a></li>
+    <li><a href="#tested">How it was tested</a></li>
+    <li><a href="#field">Hanging it and using the data</a></li>
+    <li><a href="#limits">Limits and next steps</a></li>
+  </ol></nav>
+
+  <section id="why">
+    <h2>Why count instead of photograph</h2>
+    <p>A trail camera is a remarkable thing for $80: a sensor, a camera, an infrared flash, a memory card and enough battery to run them for months. It answers the question <i>what walked by</i>. The price is a few hundred photos of grass and branches to scroll through, and a box valuable enough to steal.</p>
+    <p>Many stand decisions don't need the photo. They need the timing. Does this trail get used at first light, or only after dark? Do the deer come down off the ridge in the evening, or go up it? Did the traffic shift into daylight when the rut started, or out of it after the opener? A count of passes per hour answers all of those, and it needs a tiny fraction of the power, the money and your attention.</p>
+    <blockquote class="pull">At about $3 each, you can hang five counters on five trails for the price of one camera, and compare them.</blockquote>
+    <p>That comparison is the real point. One camera on one trail tells you about that trail. A handful of counters tells you which trail carries the daylight traffic, and that's where the stand goes.</p>
+  </section>
+
+  <section id="build">
+    <h2>What's in the pill bottle</h2>
+    <p>Four parts and six wires. The brain is a Pro Mini, a thumbnail-sized Arduino board with an ATmega328P chip running at 8 MHz on 3.3 V. Clones cost about $2.<sup class="ref"><a href="#n1" id="r1">1</a></sup> The motion sensor is an AM312, a PIR module the size of a sugar cube that costs under a dollar. Add a button, an LED and a 2×AA holder.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/wiring.svg" width="900" height="520" loading="lazy" alt="Wiring diagram: 2×AA battery to the Pro Mini's VCC and GND, the AM312 PIR output to pin D2, a button from D3 to ground and an LED with a 330 ohm resistor on D13"><figcaption><b>Figure 2.</b> The whole circuit. The batteries go straight to VCC, bypassing the board's voltage regulator.</figcaption></figure>
+    <p>The button does two jobs. Hold it for three seconds to start a new log; the moment you let go becomes 06:00 (or whatever start hour you set). Tap it in the field and the LED blinks out the busiest hour so far. A $2 USB-serial adapter, the same one used to load the firmware, reads the full log at home.</p>
+  </section>
+
+  <section id="pir">
+    <h2>How a PIR sensor sees a deer</h2>
+    <p>A passive infrared sensor doesn't send anything out. Everything warm gives off infrared light, and a PIR watches for changes in it. Inside is a <b>pyroelectric</b> crystal: a material that produces a tiny voltage when its temperature <i>changes</i>, not when it's simply warm.</p>
+    <p>The clever part is that the crystal is split into two halves wired against each other, and the plastic dome in front is a Fresnel lens that chops the view into many narrow zones. The zones are focused alternately onto one half and then the other.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/pir.svg" width="860" height="440" loading="lazy" alt="Diagram: the PIR sensor's lens fans out into alternating A and B zones; a deer crossing them makes the difference signal between the two crystal halves swing up and down, and the module turns that into a two-second high pulse on its output"><figcaption><b>Figure 3.</b> A still scene lands equally on both halves and cancels out. A warm body crossing the zones warms one half and then the other, and the module turns that swing into a clean two-second pulse.</figcaption></figure>
+    <p>That differential design is why PIRs are good at animals and people, which are warm and moving, and fairly good at ignoring weather, which changes everything at once. It also explains their main failure: <b>sun on vegetation</b>. A branch that sways between sunlight and shade looks exactly like a warm body moving between zones.</p>
+    <p>The AM312 was chosen for the power supply. It runs directly from 2.7 to 12 V and draws very little standing by.<sup class="ref"><a href="#n2" id="r2">2</a></sup> The common, larger HC-SR501 board is a better sensor on paper but wants about 5 V, which two AA cells can't give it.</p>
+  </section>
+
+  <section id="sleep">
+    <h2>Sleeping for months on 2×AA</h2>
+    <p>A microcontroller running flat out at 8 MHz draws a few milliamps. That sounds small, but it would empty a pair of AA cells in a few weeks. The trick is that Trail Tally is almost never awake. The firmware is built around four habits.</p>
+    <h3>Power-down sleep</h3>
+    <p>In its deepest sleep, the ATmega328P stops its main clock entirely. With only the watchdog timer running, it draws about 4 to 5 microamps at 3 V.<sup class="ref"><a href="#n3" id="r3">3</a></sup></p>
+    <h3>Waking on a pin change, not INT0</h3>
+    <p>The chip has two dedicated external interrupt pins, and the obvious move is to put the sensor on INT0 and wake on its rising edge. But the datasheet has a catch: in power-down, INT0 can only wake the chip on a <i>low level</i>. Edge detection needs a clock that's no longer running. The PIR's output goes <i>high</i>.</p>
+    <p>So the firmware uses a <b>pin-change interrupt</b> instead. Pin-change interrupts are asynchronous and wake the chip on any change. The interrupt routine checks whether the sensor pin is now high, counts it if so, and ignores the falling edge two seconds later.</p>
+    <h3>Brown-out detector off while asleep</h3>
+    <p>The brown-out detector resets the chip if the supply sags, which protects the EEPROM from half-finished writes. It also costs around 20 µA, several times the sleeping chip itself. The ATmega328P can switch it off just for the duration of sleep, and the firmware does that every time.</p>
+    <h3>No regulator, no power LED</h3>
+    <p>The Pro Mini's regulator and its always-on power LED would use more current than everything else combined. The batteries feed VCC directly, which suits the chip: at 8 MHz it's rated down to 2.7 V, about where two alkaline cells are nearly spent. The LED comes off with a soldering iron.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>What</th><th>Current</th><th>How long</th></tr></thead>
+      <tbody>
+        <tr><td>Chip asleep, watchdog running</td><td>~4–5 µA</td><td>almost always</td></tr>
+        <tr><td>AM312 standing by</td><td>datasheet max 100 µA; usually far less</td><td>always</td></tr>
+        <tr><td>Watchdog wake, update the clock</td><td>~3 mA</td><td>a fraction of a millisecond, every 8 s</td></tr>
+        <tr><td>Hourly calibration</td><td>~1 mA</td><td>1 s per hour</td></tr>
+      </tbody>
+    </table></div>
+    <p>Add it up and the average is somewhere between 15 and 105 µA, depending mostly on the sensor. Even at the worst case, 2,000 mAh of AA cells lasts over a year on paper. These are estimates, not measurements. In practice the cold and the batteries' own shelf life run out first, and the firmware's real limit is the 42 days of log space.</p>
+    <div class="callout"><p><b>First-build check.</b> Put a multimeter in series with the batteries and look at the sleep current. Expect tens of microamps. If you see a milliamp or more, the power LED is still on or the batteries are going through the regulator.</p></div>
+  </section>
+
+  <section id="clock">
+    <h2>Keeping time without a clock chip</h2>
+    <p>To sort counts into hours, the counter has to know what time it is. The usual answer is a real-time clock module like the DS3231, which keeps time to a minute a year. It also costs more than everything else in the box combined.</p>
+    <p>Trail Tally uses the <b>watchdog timer</b> instead. Its job is normally to reset a crashed program, but it runs off its own little 128 kHz oscillator, keeps going in power-down sleep, and can be set to wake the chip with an interrupt every 8 seconds. Count the wakes and you have a clock.</p>
+    <p>The catch is accuracy. That oscillator isn't trimmed to a precise frequency. It's often 5 to 15 percent off, and it moves with supply voltage and temperature.<sup class="ref"><a href="#n3" id="r3b">3</a></sup> A 9 percent error is over two hours a day. After six weeks the counter would be filing dawn traffic under the middle of the night.</p>
+    <blockquote class="pull">The board already has an accurate clock. It just can't run while the chip sleeps.</blockquote>
+    <p>That accurate clock is the 8 MHz ceramic resonator that drives the CPU, typically good to a fraction of a percent. So once an hour the firmware borrows it to measure the watchdog:</p>
+    <ol>
+      <li>Switch the watchdog to its 1-second setting and restart it, so a full period begins now.</li>
+      <li>Start Timer1 counting the CPU clock divided by 1024. At 8 MHz that's 7,812.5 counts per true second.</li>
+      <li>Drop into idle sleep, which keeps Timer1 running, until the watchdog fires.</li>
+      <li>Read Timer1. The count says how long one "watchdog second" really lasted.</li>
+      <li>The 8-second setting divides the <i>same</i> oscillator by exactly eight times more, so every 8 s tick lasts eight times what was just measured. Use that for the next hour.</li>
+    </ol>
+    <div class="eq">tick length (ms) = 8 × (Timer1 count + ½) × 1024 / F_CPU × 1000
+
+the + ½ corrects for Timer1 always rounding its count down</div>
+    <p>The clock itself is kept in milliseconds × 256, so the fractions of a millisecond from every tick add up properly over six weeks instead of being thrown away. A sanity check ignores any measurement more than 25 percent from nominal, so a glitch can't wreck the clock.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/clock-drift.svg" width="860" height="420" loading="lazy" alt="Chart of clock error over 41 days: the watchdog alone drifts to 3.4 days slow, calibrated with a 0.3 percent resonator error drifts 3 hours fast, calibrated with a perfect resonator stays within 2 minutes"><figcaption><b>Figure 4.</b> Clock error in the six-week simulation, using the firmware's own clock code. Alone, the watchdog ends up 3.4 days slow. Calibrated, it's within 2 minutes, or 3 hours if the resonator itself is 0.3 percent off.</figcaption></figure>
+    <p>Calibration makes the watchdog as good as the resonator, and no better. A resonator can be up to about 0.3 percent off, which is about 3 hours over six weeks. But that error is <i>steady</i>, and a steady error is easy to remove after the fact. Note the time on your phone when you start the log and again when you read it. The chart tool then stretches the device's hours to fit the real ones. That's <b>two-point synchronization</b>, a standard trick for cheap data loggers.</p>
+  </section>
+
+  <section id="lockout">
+    <h2>One deer, one count</h2>
+    <p>A deer that stops on the trail to browse can set off the sensor a dozen times in a minute. Counting every pulse would turn one browsing doe into a stampede. So after each count, the firmware ignores the sensor for <b>60 seconds</b>.</p>
+    <p>The trade-off is deliberate: a group of five walking through together counts as one. That's usually what you want. The question Trail Tally answers is <i>when the trail is used</i>, not how many animals use it. If head counts matter, that's a job for the camera.</p>
+    <p>Two smaller guards keep bad data visible. A count can't wrap around from 255 back to zero; it stops at 255. And because of the lockout, a sensor stuck firing all the time can't count more than 59 an hour, which stands out on the chart instead of quietly filling the log.</p>
+  </section>
+
+  <section id="storage">
+    <h2>Six weeks in 1,024 bytes</h2>
+    <p>The ATmega328P has 1 KB of EEPROM: memory that keeps its contents with the power off, and can be rewritten byte by byte. That's tiny, but an hourly count fits in one byte, and 1,008 hours is six weeks.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/eeprom-ring.svg" width="860" height="330" loading="lazy" alt="Diagram of the EEPROM layout: a 16-byte header followed by 1,008 one-byte hourly counts; after hour 1007 the next hour wraps around and overwrites the first count"><figcaption><b>Figure 5.</b> The log is a ring. After 42 days, each new hour overwrites the oldest one, so the counter always holds the most recent six weeks.</figcaption></figure>
+    <ul>
+      <li><b>Every count is written immediately.</b> If the batteries die on day 30, days 1 to 30 are still there.</li>
+      <li><b>Wear is a non-issue.</b> EEPROM cells are rated for about 100,000 writes. The busiest byte, the hour counter in the header, gets about 1,000 writes in six weeks.</li>
+      <li><b>Resets are flagged.</b> A battery swap or a brown-out keeps the log, but the chip can't know how long the power was off, so the clock restarts from the last saved hour. The header records that a reset happened, and the chart tool warns you that later hours may be shifted.</li>
+    </ul>
+  </section>
+
+  <section id="reading-it">
+    <h2>Reading the log</h2>
+    <p>Plugging the USB-serial adapter into the board resets it, a side effect of how Arduino uploads work. Trail Tally turns that into a feature: the first thing it does after any reset is print the whole log as CSV, one line per hour, at 38,400 baud. Open any serial monitor, save the text, and run the chart tool:</p>
+    <div class="eq">python3 tools/plot.py log.csv --start "2026-10-24 06:00" --read "2026-12-04 17:42"</div>
+    <p>The result is Figure 1: a 24-hour "deer clock" showing which hours carry the traffic, and a day-by-hour heat map that shows how the pattern changes over the weeks. With the start and read times, the hours are corrected for clock drift. Without them, days are simply numbered.</p>
+    <p>In the field, without a laptop, tap the button. The LED blinks the busiest hour so far: tens as long blinks, then ones as short. One long and seven short means 17:00. Five short means 05:00.</p>
+  </section>
+
+  <section id="direction">
+    <h2>Which way did it go?</h2>
+    <p>A count by hour says <i>when</i> a trail is used. It doesn't say <i>which way</i>. On a trail between bedding cover and a field, that's the more useful half: traffic heading out to feed at dusk and back to bed at dawn tells you which end of the trail to hunt at which time of day. A camera answers it only if you sit and read the direction off every photo.</p>
+    <p>Trail Tally gets it from a second sensor, for about a dollar. Mount two AM312s a metre apart along the trail, each looking <i>across</i> it through a short tube, a few centimetres of drinking straw or plastic pipe. The tube narrows each sensor's wide view down to a thin curtain across the trail.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/direction-setup.svg" width="860" height="400" loading="lazy" alt="Top view of a trail with two sensors on a board, each looking across the trail through a tube, making two narrow curtains about a metre apart; a timing diagram shows sensor B rising while sensor A is still high"><figcaption><b>Figure 6.</b> Two sensors, two curtains. The order they fire in gives the direction.</figcaption></figure>
+    <p>The trick is that no timer is needed. Each AM312 holds its output high for about two seconds after it fires. A deer walking at about a metre a second crosses the gap in about a second, so when the second sensor fires, the first is still high. The firmware's interrupt reads both pins at that moment: whichever was already high fired first, and that's the direction. A deer that stops between the curtains for longer than two seconds is still counted, just without a direction.</p>
+    <blockquote class="pull">Whichever sensor is already high fired first. That's the whole direction algorithm.</blockquote>
+    <p>Direction needs more room in memory. Each hour gets a second byte holding two four-bit counts, one per direction, so the log covers 21 days instead of 42, and each direction tops out at 15 passes an hour. That's plenty with a 60-second lockout.</p>
+    <figure class="wide"><img src="../img/02-trail-counter/direction.svg" width="760" height="650" loading="lazy" alt="Chart from a simulated two-sensor log: the usual deer clock and heat map, plus a diverging bar chart by hour showing passes from bedding to field peaking at dusk and passes from field to bedding peaking at dawn"><figcaption><b>Figure 7.</b> Twenty simulated days with two sensors. Upward bars head to the field, downward bars back to bed. In the simulation, as in the typical pattern, dusk traffic heads out and dawn traffic comes back.</figcaption></figure>
+    <p>In the simulation, 125 of 163 passes got a direction, and every one of those was right. The rest are deer that stopped between the curtains, or passes where one sensor missed the animal. The two-sensor firmware runs on the simulated chip too, with passes in both directions, a single-sensor pass and a deer that stops halfway.</p>
+    <h3>Which winds do they use the trail under?</h3>
+    <p>Deer use the wind, and many hunters believe a given trail gets used more under some winds than others. With a <a href="../slopeshift/">SlopeShift</a> logging at the same spot, the chart tool answers that from your own data. Give it the SlopeShift log and it tags each hour of the counter's log with the wind measured there that hour. Then it shows passes by wind direction, and passes per hour that each wind actually blew, so a wind that simply blew more often doesn't look busier than it is.</p>
+    <div class="eq">python3 tools/plot.py tally.csv --start "2026-10-24 06:00" --wind slopeshift.csv</div>
+    <p><b>What already exists.</b> Counters that report direction are common for people: Eco-Counter's PYRO, for instance, counts hikers in both directions, but it's tuned to human body heat.<sup class="ref"><a href="#n5" id="r5">5</a></sup> We didn't find a game-trail counter that logs direction, or one that ties passes to wind measured at the trail.</p>
+  </section>
+
+  <section id="tested">
+    <h2>How it was tested</h2>
+    <p>No board has been on a tree yet, so every claim on this page comes from simulation, in two layers. Both run automatically on every change to the code.</p>
+    <h3>The counting code on a desktop</h3>
+    <p>The file the chip runs, <code>tally.cpp</code>, has no hardware in it: the clock, the lockout and the log only see numbers. So the same file compiles on a PC, where a test feeds it 41.5 simulated days. The simulated watchdog runs 9 percent slow and drifts ±4 percent with the daily temperature, and gets calibrated hourly through the same math as the firmware. Deer arrive mostly around dawn and dusk and linger in front of the sensor for up to 40 seconds, setting it off repeatedly.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Check</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Passes counted</td><td>366 of 366, each exactly once</td></tr>
+        <tr><td>Hourly bins exactly right</td><td>984 of 996; the rest are passes within a minute or two of an hour boundary</td></tr>
+        <tr><td>Clock after six weeks, calibrated</td><td>2 minutes off</td></tr>
+        <tr><td>Same, watchdog alone</td><td>3.4 days off</td></tr>
+        <tr><td>Ring wrap, reset survival, lockout edges, 255 cap</td><td>pass</td></tr>
+        <tr><td>Direction, 20 days, two sensors 1 m apart</td><td>125 of 163 passes directed, all correctly</td></tr>
+      </tbody>
+    </table></div>
+    <h3>The real firmware on a simulated chip</h3>
+    <p>The second layer runs the actual compiled program in simavr, an open-source simulator of the ATmega328P.<sup class="ref"><a href="#n4" id="r4">4</a></sup> A small test harness plays the outside world. It holds the button to start a log, walks "deer" past the sensor pin over three simulated hours, including one that lingers and one that triggers inside the lockout, then taps the button. It checks the CSV that comes out of the serial pin and counts the LED blinks. Finally it resets the chip twice to make sure the log survives and gets flagged.</p>
+    <p>The simulator found real issues and a few of its own. Its watchdog runs eight times too fast, and the firmware's sanity check rightly rejected the impossible calibration until the harness corrected the simulated period. It clears the watchdog's interrupt-enable bit after every tick, so the firmware now sets it again each time, which is harmless on a real chip. And it revealed that the Arduino core leaves a PWM timer running, which a counter doesn't need, so the firmware switches it off.</p>
+  </section>
+
+  <section id="field">
+    <h2>Hanging it and using the data</h2>
+    <h3>Placement</h3>
+    <ul>
+      <li><b>Height:</b> about knee to waist height, roughly the height of a deer's body.</li>
+      <li><b>Angle:</b> aim <i>along</i> the trail at a slight angle, not straight across it. Animals walking along the trail then cross several zones, which gives a stronger signal.</li>
+      <li><b>Distance:</b> a few metres from where animals pass. Small PIR modules like the AM312 have a short range.</li>
+      <li><b>Shade:</b> keep the sensor's view out of direct sun on moving branches. A short tube over the lens narrows its view to the trail.</li>
+      <li><b>Start time:</b> start the log when you hang it, at a known time, and note it on your phone.</li>
+    </ul>
+    <h3>Reading the patterns</h3>
+    <ul>
+      <li><b>Pick the sit, not just the spot.</b> If a trail's traffic is all after dark, an evening sit on it is wasted. Hunt the end of the trail that gets used in daylight, or a different trail.</li>
+      <li><b>Compare trails.</b> Several counters show which route carries the daylight traffic.</li>
+      <li><b>Watch it change.</b> Run one from early fall into the rut and the heat map shows whether activity moves into daylight.</li>
+      <li><b>Check pressure.</b> A trail that goes quiet or turns nocturnal after the opener is telling you something too.</li>
+      <li><b>Combine it.</b> Feed in a <a href="../slopeshift/">SlopeShift</a> log to see which winds the trail gets used under, and check <a href="../legal-light/">Legal Light</a> for whether the busy hour is even legal.</li>
+    </ul>
+    <div class="callout"><p><b>Check the rules.</b> Some jurisdictions restrict leaving devices on public land, or using electronic scouting aids during the season. Know yours before you hang anything.</p></div>
+  </section>
+
+  <section id="limits">
+    <h2>Limits and next steps</h2>
+    <ul>
+      <li><b>It counts warm, moving things.</b> Coyotes, cattle, hikers and your own visits all count. Visit at a known time and you'll find yourself in the data.</li>
+      <li><b>Direction depends on the curtains.</b> If the two sensors' views overlap, both fire together and the pass has no direction. The tubes matter, and the first real build should check them by walking through both ways.</li>
+      <li><b>The power numbers are on paper.</b> The first real build needs a meter in series to confirm them.</li>
+      <li><b>A stricter count</b> is possible with an infrared break-beam pair, about $1, which only fires when something crosses one line.</li>
+    </ul>
+    <p>If you build one, the most useful thing you can send back is a week of data next to a trail camera on the same trail: counts against photos, hour by hour.</p>
+  </section>
+
+  <section class="notes"><h2>Notes</h2><ol>
+    <li id="n1">SparkFun's <a href="https://www.sparkfun.com/products/11114">Pro Mini 328, 3.3 V/8 MHz (DEV-11114)</a> is the reference design. Clones of it are widely sold for about $2. <a href="#r1" aria-label="back to text">↩</a></li>
+    <li id="n2">Adafruit sells a comparable mini PIR as <a href="https://www.adafruit.com/product/4871">product 4871</a>, rated 3–12 V. Datasheets for AM312 modules list standby current under 0.1 mA. <a href="#r2" aria-label="back to text">↩</a></li>
+    <li id="n3"><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf">ATmega328P datasheet</a>, Microchip: sleep modes and wake-up sources, the watchdog timer and its oscillator, software brown-out disable, and typical power-down current. Nick Gammon's <a href="https://www.gammon.com.au/power">power-saving guide</a> measures these numbers on real boards. <a href="#r3" aria-label="back to text">↩</a> <a href="#r3b" aria-label="back to text">↩</a></li>
+    <li id="n4"><a href="https://github.com/buserror/simavr">simavr</a>, a lean AVR simulator. The harness is tests/fw_sim.c. <a href="#r4" aria-label="back to text">↩</a></li>
+    <li id="n5"><a href="https://eco-counter.com/">Eco-Counter</a> makes the PYRO passive-infrared counters widely used on hiking trails, with direction detection. <a href="#r5" aria-label="back to text">↩</a></li>
+  </ol></section>
+
+  <section class="related"><h2>More from the lab</h2><div class="related-grid">
+    <a class="related-card" href="../slopeshift/"><span class="eyebrow">Project 04</span><b>SlopeShift</b><span>When the morning thermals switch at your stand.</span></a>
+    <a class="related-card" href="../trail-finder/"><span class="eyebrow">Project 03</span><b>Trail Finder</b><span>Finding game trails in drone imagery.</span></a>
+    <a class="related-card" href="../legal-light/"><span class="eyebrow">Project 05</span><b>Legal Light</b><span>Legal shooting hours for your exact stand.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>Part of the <a href="../">fieldhacks lab</a>, hunting electronics by ZalaStack. Know your local regulations on electronic scouting aids. © 2026 ZalaStack. All rights reserved.</p></footer>
+</body>
+</html>

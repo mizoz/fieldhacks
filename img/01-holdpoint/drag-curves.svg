@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Drag coefficient vs speed</text>
+<text x="78" y="54" fill="#5f6a66">The G1 shape (flat base) and G7 shape (long boat-tail). Drag jumps as the bullet nears the speed of sound.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="355.7" y2="355.7" stroke="#e3e1d8"/>
+<text x="70" y="359.7" text-anchor="end" fill="#5f6a66">0.1</text>
+<line x1="78" x2="630" y1="309.4" y2="309.4" stroke="#e3e1d8"/>
+<text x="70" y="313.4" text-anchor="end" fill="#5f6a66">0.2</text>
+<line x1="78" x2="630" y1="263.1" y2="263.1" stroke="#e3e1d8"/>
+<text x="70" y="267.1" text-anchor="end" fill="#5f6a66">0.3</text>
+<line x1="78" x2="630" y1="216.9" y2="216.9" stroke="#e3e1d8"/>
+<text x="70" y="220.9" text-anchor="end" fill="#5f6a66">0.4</text>
+<line x1="78" x2="630" y1="170.6" y2="170.6" stroke="#e3e1d8"/>
+<text x="70" y="174.6" text-anchor="end" fill="#5f6a66">0.5</text>
+<line x1="78" x2="630" y1="124.3" y2="124.3" stroke="#e3e1d8"/>
+<text x="70" y="128.3" text-anchor="end" fill="#5f6a66">0.6</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">0.7</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="147.0" y="422" text-anchor="middle" fill="#5f6a66">0.5</text>
+<text x="216.0" y="422" text-anchor="middle" fill="#5f6a66">1</text>
+<text x="285.0" y="422" text-anchor="middle" fill="#5f6a66">1.5</text>
+<text x="354.0" y="422" text-anchor="middle" fill="#5f6a66">2</text>
+<text x="423.0" y="422" text-anchor="middle" fill="#5f6a66">2.5</text>
+<text x="492.0" y="422" text-anchor="middle" fill="#5f6a66">3</text>
+<text x="561.0" y="422" text-anchor="middle" fill="#5f6a66">3.5</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">4</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">Mach number (speed ÷ speed of sound)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">drag coefficient Cd</text>
+<rect x="188.4" y="78" width="55.2" height="324" fill="#c2410c" opacity="0.07"/><text x="216.0" y="94" text-anchor="middle" fill="#9a3412">transonic</text><line x1="216.0" x2="216.0" y1="78" y2="402" stroke="#9a3412" stroke-dasharray="3 4"/>
+<path d="M78.0 280.3 L84.9 283.6 L91.8 286.9 L98.7 290.3 L105.6 293.5 L112.5 296.6 L119.4 299.5 L126.3 302.3 L133.2 304.6 L140.1 306.6 L147.0 307.9 L153.9 308.5 L160.8 307.9 L174.6 301.8 L178.1 298.8 L181.5 294.9 L184.9 290.1 L188.4 284.2 L191.8 276.8 L195.3 267.7 L198.8 256.8 L202.2 243.9 L205.7 229.2 L209.1 213.0 L212.5 196.1 L216.0 179.6 L219.4 164.3 L222.9 150.8 L226.3 139.2 L229.8 129.7 L233.2 121.8 L236.7 115.4 L243.6 106.1 L250.5 100.3 L257.4 97.0 L264.3 95.5 L271.2 95.4 L278.1 96.2 L285.0 97.8 L291.9 99.8 L298.8 102.3 L305.7 105.2 L312.6 108.2 L319.5 111.3 L326.4 114.6 L333.3 117.8 L340.2 121.0 L347.1 124.1 L354.0 127.3 L360.9 130.4 L367.8 133.4 L374.7 136.2 L381.6 138.9 L388.5 141.4 L395.4 143.9 L402.3 146.2 L409.2 148.3 L416.1 150.3 L423.0 152.2 L436.8 155.5 L450.6 158.4 L464.4 160.8 L478.2 162.8 L492.0 164.4 L505.8 165.7 L519.6 166.7 L533.4 167.5 L547.2 168.1 L561.0 168.7 L574.8 169.2 L588.6 169.6 L602.4 169.8 L616.2 170.1 L630.0 170.3 L657.6 170.7 L685.2 170.8 L712.8 170.9 L740.4 171.0 L768.0 171.1" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">G1 standard projectile</text>
+<path d="M78.0 346.5 L84.9 346.6 L91.8 346.6 L98.7 346.7 L105.6 346.8 L112.5 346.7 L119.4 346.7 L126.3 346.7 L133.2 346.8 L140.1 346.8 L147.0 346.7 L153.9 346.8 L160.8 346.7 L167.7 346.6 L174.6 346.4 L178.1 346.1 L181.5 345.8 L184.9 345.3 L188.4 344.5 L191.8 343.4 L195.3 341.6 L198.8 338.7 L202.2 334.2 L205.7 325.2 L209.1 306.9 L212.5 263.5 L216.0 226.0 L219.4 216.2 L222.9 214.9 L226.3 215.3 L229.8 216.2 L233.2 217.5 L236.7 218.9 L243.6 222.2 L250.5 225.7 L257.4 229.3 L264.3 232.7 L271.2 236.3 L285.0 242.8 L291.9 245.7 L298.8 248.6 L305.7 251.1 L312.6 253.5 L319.5 255.7 L326.4 257.7 L333.3 259.5 L340.2 261.2 L347.1 262.7 L354.0 264.1 L360.9 265.4 L367.8 266.8 L374.7 268.1 L381.6 269.4 L388.5 270.8 L395.4 272.1 L402.3 273.4 L409.2 274.6 L416.1 275.9 L423.0 277.2 L429.9 278.4 L436.8 279.7 L443.7 281.0 L450.6 282.2 L457.5 283.5 L464.4 284.8 L471.3 286.0 L478.2 287.3 L485.1 288.6 L492.0 289.8 L505.8 292.4 L519.6 294.9 L533.4 297.5 L547.2 299.9 L561.0 302.3 L574.8 304.5 L588.6 306.7 L602.4 308.6 L616.2 310.6 L630.0 312.4 L657.6 315.9 L685.2 319.0 L712.8 321.9 L740.4 324.6 L768.0 327.1" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">G7 standard projectile</text>
+</svg>

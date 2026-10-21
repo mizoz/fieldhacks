@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 330" width="860" height="330" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="860" height="330" fill="#fbfaf6"/>
+  <text x="24" y="32" font-size="19" font-weight="bold" fill="#1d2321">Six weeks in 1,024 bytes</text>
+  <text x="24" y="52" fill="#5f6a66">A 16-byte header, then a ring of 1,008 one-byte hourly counts. Hour h lives at byte 16 + (h mod 1008).</text>
+
+  <!-- header -->
+  <rect x="24" y="80" width="150" height="56" rx="4" fill="#1d2321"/>
+  <text x="99" y="104" text-anchor="middle" fill="#f5f1e6" font-weight="bold">header · 16 B</text>
+  <text x="99" y="120" text-anchor="middle" fill="#b9c2bd" font-size="10.5">"TT" · version · start hour</text>
+  <text x="99" y="132" text-anchor="middle" fill="#b9c2bd" font-size="10.5">hour number · reset flag</text>
+
+  <!-- ring cells -->
+  <g font-size="11" text-anchor="middle">
+    <rect x="180" y="80" width="40" height="56" fill="#e3e1d8"/><text x="200" y="104" fill="#5f6a66">h 0</text><text x="200" y="122" fill="#1d2321">0</text>
+    <rect x="222" y="80" width="40" height="56" fill="#f6e3c4"/><text x="242" y="104" fill="#5f6a66">h 1</text><text x="242" y="122" fill="#1d2321">3</text>
+    <rect x="264" y="80" width="40" height="56" fill="#e9a35a"/><text x="284" y="104" fill="#5f6a66">h 2</text><text x="284" y="122" fill="#1d2321">7</text>
+    <rect x="306" y="80" width="40" height="56" fill="#f2c88f"/><text x="326" y="104" fill="#5f6a66">h 3</text><text x="326" y="122" fill="#1d2321">5</text>
+    <rect x="348" y="80" width="40" height="56" fill="#e3e1d8"/><text x="368" y="104" fill="#5f6a66">h 4</text><text x="368" y="122" fill="#1d2321">0</text>
+    <text x="440" y="114" fill="#5f6a66" font-size="18">· · ·</text>
+    <rect x="490" y="80" width="40" height="56" fill="#f6e3c4"/><text x="510" y="100" fill="#5f6a66">h</text><text x="510" y="112" fill="#5f6a66">1006</text><text x="510" y="128" fill="#1d2321">1</text>
+    <rect x="532" y="80" width="40" height="56" fill="#fff" stroke="#c2410c" stroke-width="2.5"/><text x="552" y="100" fill="#c2410c">h</text><text x="552" y="112" fill="#c2410c">1007</text><text x="552" y="128" fill="#c2410c" font-weight="bold">now</text>
+  </g>
+  <text x="600" y="104" fill="#1d2321" font-weight="bold">byte 1023</text>
+  <text x="600" y="122" fill="#5f6a66" font-size="12">= 42 days × 24 h</text>
+
+  <!-- wrap arrow -->
+  <path d="M552 140 C 552 200, 200 200, 200 142" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar)"/>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#c2410c"/></marker></defs>
+  <text x="376" y="214" text-anchor="middle" fill="#c2410c" font-size="12.5">hour 1008 clears and reuses byte 16: the oldest hour is overwritten</text>
+
+  <g font-size="13">
+    <text x="24" y="252" fill="#1d2321" font-weight="bold">Each count</text>
+    <text x="24" y="272" fill="#5f6a66">Read the byte, add 1 (stop at 255), write it back.</text>
+    <text x="470" y="252" fill="#1d2321" font-weight="bold">Each new hour</text>
+    <text x="470" y="272" fill="#5f6a66">Hour number + 1 in the header; clear the next byte.</text>
+    <text x="24" y="304" fill="#1d2321" font-weight="bold">Wear</text>
+    <text x="70" y="304" fill="#5f6a66">EEPROM is rated for 100,000 writes per byte. The busiest byte gets about 1,000 in six weeks.</text>
+  </g>
+</svg>

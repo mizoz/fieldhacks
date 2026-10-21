@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">How much energy is left</text>
+<text x="78" y="54" fill="#5f6a66">Set your own minimum in HoldPoint; ranges below it show LOW on the screen.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="355.7" y2="355.7" stroke="#e3e1d8"/>
+<text x="70" y="359.7" text-anchor="end" fill="#5f6a66">500</text>
+<line x1="78" x2="630" y1="309.4" y2="309.4" stroke="#e3e1d8"/>
+<text x="70" y="313.4" text-anchor="end" fill="#5f6a66">1000</text>
+<line x1="78" x2="630" y1="263.1" y2="263.1" stroke="#e3e1d8"/>
+<text x="70" y="267.1" text-anchor="end" fill="#5f6a66">1500</text>
+<line x1="78" x2="630" y1="216.9" y2="216.9" stroke="#e3e1d8"/>
+<text x="70" y="220.9" text-anchor="end" fill="#5f6a66">2000</text>
+<line x1="78" x2="630" y1="170.6" y2="170.6" stroke="#e3e1d8"/>
+<text x="70" y="174.6" text-anchor="end" fill="#5f6a66">2500</text>
+<line x1="78" x2="630" y1="124.3" y2="124.3" stroke="#e3e1d8"/>
+<text x="70" y="128.3" text-anchor="end" fill="#5f6a66">3000</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">3500</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="170.0" y="422" text-anchor="middle" fill="#5f6a66">100</text>
+<text x="262.0" y="422" text-anchor="middle" fill="#5f6a66">200</text>
+<text x="354.0" y="422" text-anchor="middle" fill="#5f6a66">300</text>
+<text x="446.0" y="422" text-anchor="middle" fill="#5f6a66">400</text>
+<text x="538.0" y="422" text-anchor="middle" fill="#5f6a66">500</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">600</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">range (yards)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">energy (ft·lb)</text>
+<line x1="78" x2="630" y1="309.4" y2="309.4" stroke="#b91c1c" stroke-dasharray="6 4"/><text x="640" y="313.4" fill="#b91c1c">1000 ft·lb: common deer guideline</text><line x1="78" x2="630" y1="263.1" y2="263.1" stroke="#b91c1c" stroke-dasharray="6 4"/><text x="640" y="267.1" fill="#b91c1c">1500 ft·lb: common elk guideline</text>
+<path d="M101.0 222.3 L124.0 230.0 L147.0 237.3 L170.0 244.4 L193.0 251.3 L216.0 257.9 L239.0 264.3 L262.0 270.4 L285.0 276.3 L308.0 282.0 L331.0 287.6 L354.0 292.9 L377.0 297.9 L400.0 302.9 L423.0 307.7 L446.0 312.2 L469.0 316.6 L492.0 320.8 L515.0 324.9 L538.0 328.8 L561.0 332.5 L584.0 336.1 L607.0 339.5 L630.0 342.8" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">.243 Win 95 gr</text>
+<path d="M101.0 193.5 L124.0 199.2 L147.0 204.7 L170.0 210.1 L193.0 215.5 L216.0 220.7 L239.0 225.7 L262.0 230.7 L285.0 235.6 L308.0 240.3 L331.0 244.9 L354.0 249.4 L377.0 253.9 L400.0 258.1 L423.0 262.4 L446.0 266.6 L469.0 270.5 L492.0 274.4 L515.0 278.3 L538.0 282.0 L561.0 285.7 L584.0 289.3 L607.0 292.8 L630.0 296.2" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">6.5 CM 143 gr (G7)</text>
+<path d="M101.0 168.4 L124.0 177.1 L147.0 185.5 L170.0 193.6 L193.0 201.5 L216.0 209.2 L239.0 216.6 L262.0 223.8 L285.0 230.8 L308.0 237.6 L331.0 244.2 L354.0 250.6 L377.0 256.7 L400.0 262.7 L423.0 268.4 L446.0 274.0 L469.0 279.3 L492.0 284.5 L515.0 289.5 L538.0 294.3 L561.0 299.1 L584.0 303.5 L607.0 307.8 L630.0 311.9" fill="none" stroke="#4d7c0f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="127" width="14" height="4" rx="2" fill="#4d7c0f"/>
+<text x="670" y="134" fill="#1d2321">.308 Win 168 gr</text>
+<path d="M101.0 141.8 L124.0 150.9 L147.0 159.9 L170.0 168.6 L193.0 177.1 L216.0 185.3 L239.0 193.3 L262.0 200.9 L285.0 208.4 L308.0 215.7 L331.0 222.9 L354.0 229.7 L377.0 236.4 L400.0 242.9 L423.0 249.1 L446.0 255.2 L469.0 261.0 L492.0 266.7 L515.0 272.2 L538.0 277.5 L561.0 282.6 L584.0 287.6 L607.0 292.3 L630.0 296.9" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="149" width="14" height="4" rx="2" fill="#7c3aed"/>
+<text x="670" y="156" fill="#1d2321">.30-06 180 gr</text>
+</svg>

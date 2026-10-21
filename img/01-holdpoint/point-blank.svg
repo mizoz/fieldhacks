@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Maximum point-blank range</text>
+<text x="78" y="54" fill="#5f6a66">.308 Win 168 gr zeroed at 245 yd: hold dead-on from the muzzle to about 290 yd and stay inside an 8 in vital zone.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">-12</text>
+<line x1="78" x2="630" y1="366.0" y2="366.0" stroke="#e3e1d8"/>
+<text x="70" y="370.0" text-anchor="end" fill="#5f6a66">-10</text>
+<line x1="78" x2="630" y1="330.0" y2="330.0" stroke="#e3e1d8"/>
+<text x="70" y="334.0" text-anchor="end" fill="#5f6a66">-8</text>
+<line x1="78" x2="630" y1="294.0" y2="294.0" stroke="#e3e1d8"/>
+<text x="70" y="298.0" text-anchor="end" fill="#5f6a66">-6</text>
+<line x1="78" x2="630" y1="258.0" y2="258.0" stroke="#e3e1d8"/>
+<text x="70" y="262.0" text-anchor="end" fill="#5f6a66">-4</text>
+<line x1="78" x2="630" y1="222.0" y2="222.0" stroke="#e3e1d8"/>
+<text x="70" y="226.0" text-anchor="end" fill="#5f6a66">-2</text>
+<line x1="78" x2="630" y1="186.0" y2="186.0" stroke="#e3e1d8"/>
+<text x="70" y="190.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="150.0" y2="150.0" stroke="#e3e1d8"/>
+<text x="70" y="154.0" text-anchor="end" fill="#5f6a66">2</text>
+<line x1="78" x2="630" y1="114.0" y2="114.0" stroke="#e3e1d8"/>
+<text x="70" y="118.0" text-anchor="end" fill="#5f6a66">4</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">6</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="156.9" y="422" text-anchor="middle" fill="#5f6a66">50</text>
+<text x="235.7" y="422" text-anchor="middle" fill="#5f6a66">100</text>
+<text x="314.6" y="422" text-anchor="middle" fill="#5f6a66">150</text>
+<text x="393.4" y="422" text-anchor="middle" fill="#5f6a66">200</text>
+<text x="472.3" y="422" text-anchor="middle" fill="#5f6a66">250</text>
+<text x="551.1" y="422" text-anchor="middle" fill="#5f6a66">300</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">350</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">range (yards)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">inches above / below crosshair</text>
+<rect x="78" y="114.0" width="552" height="144.0" fill="#4d7c0f" opacity="0.10"/><text x="86" y="130.0" fill="#3f6212">8 in vital zone (±4 in)</text><line x1="78" x2="630" y1="186.0" y2="186.0" stroke="#1d2321" stroke-dasharray="6 4"/><line x1="535.4" x2="535.4" y1="78" y2="402" stroke="#c2410c" stroke-dasharray="4 4"/><text x="529.4" y="94" text-anchor="end" fill="#9a3412">point-blank range ≈ 290 yd</text>
+<path d="M78.0 213.0 L85.9 206.3 L93.8 199.9 L101.7 193.7 L109.5 187.8 L117.4 182.0 L125.3 176.6 L133.2 171.2 L141.1 166.2 L149.0 161.5 L156.9 156.8 L164.7 152.5 L172.6 148.6 L180.5 144.6 L188.4 141.0 L196.3 137.8 L204.2 134.7 L212.1 131.8 L219.9 129.1 L227.8 127.0 L235.7 124.8 L243.6 123.0 L251.5 121.4 L259.4 120.1 L267.3 119.0 L275.1 118.3 L283.0 117.8 L290.9 117.6 L298.8 117.8 L306.7 118.0 L314.6 118.7 L322.5 119.6 L330.3 120.7 L338.2 122.1 L346.1 123.9 L354.0 125.9 L361.9 128.2 L369.8 130.9 L377.7 133.8 L385.5 137.0 L393.4 140.5 L401.3 144.2 L409.2 148.4 L417.1 152.9 L425.0 157.6 L432.9 162.6 L440.7 168.0 L448.6 173.8 L456.5 179.7 L464.4 186.0 L472.3 192.7 L480.2 199.7 L488.1 206.9 L495.9 214.6 L503.8 222.5 L511.7 230.8 L519.6 239.6 L527.5 248.6 L535.4 258.0 L543.3 267.5 L551.1 277.6 L559.0 288.1 L566.9 298.9 L574.8 310.0 L582.7 321.5 L590.6 333.4 L598.5 345.7 L606.3 358.3 L614.2 371.2 L622.1 384.7 L630.0 398.4" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">.308 Win 168 gr path</text>
+</svg>

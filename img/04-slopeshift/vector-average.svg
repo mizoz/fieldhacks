@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#5f6a66"/></marker></defs>
+<rect width="1100" height="420" fill="#fbfaf6"/>
+<text x="40" y="38" font-size="21" font-weight="bold" fill="#1d2321">Why direction is averaged as arrows</text>
+<text x="40" y="60" fill="#5f6a66">Two readings, NNW and NNE. Averaging the numbers gives due south, the opposite of the truth. Adding them as arrows gives north.</text>
+<circle cx="250" cy="220" r="120" fill="#fff" stroke="#e3e1d8" stroke-width="2"/>
+<text x="250" y="88" text-anchor="middle" fill="#5f6a66" font-weight="bold">N</text>
+<text x="250" y="362" text-anchor="middle" fill="#5f6a66" font-weight="bold">S</text>
+<text x="382" y="224" fill="#5f6a66" font-weight="bold">E</text>
+<text x="108" y="224" fill="#5f6a66" font-weight="bold">W</text>
+<text x="250" y="396" text-anchor="middle" fill="#1d2321" font-weight="bold">Average the numbers: (337.5 + 22.5) / 2 = 180° = S</text>
+<path d="M250 220 L207.9 118.4" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<path d="M250 220 L292.1 118.4" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<path d="M250 220 L250.0 330.0" stroke="#b91c1c" stroke-width="5" marker-end="url(#a)"/>
+<text x="250" y="310" text-anchor="middle" fill="#b91c1c" font-size="22" font-weight="bold">✗</text>
+<circle cx="780" cy="220" r="120" fill="#fff" stroke="#e3e1d8" stroke-width="2"/>
+<text x="780" y="88" text-anchor="middle" fill="#5f6a66" font-weight="bold">N</text>
+<text x="780" y="362" text-anchor="middle" fill="#5f6a66" font-weight="bold">S</text>
+<text x="912" y="224" fill="#5f6a66" font-weight="bold">E</text>
+<text x="638" y="224" fill="#5f6a66" font-weight="bold">W</text>
+<text x="780" y="396" text-anchor="middle" fill="#1d2321" font-weight="bold">Add the arrows: points N, length = steadiness</text>
+<path d="M780 220 L737.9 118.4" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<path d="M780 220 L822.1 118.4" stroke="#2f6f9f" stroke-width="3" marker-end="url(#a)"/>
+<path d="M780 220 L780.0 118.4" stroke="#3f6212" stroke-width="5" marker-end="url(#a)"/>
+<text x="790" y="196" fill="#3f6212" font-weight="bold" font-size="12">mean arrow</text>
+<text x="470" y="300" fill="#1d2321" font-weight="bold">R = length of the mean arrow</text>
+<text x="470" y="320" fill="#5f6a66" font-size="12">1 = all readings agree</text>
+<text x="470" y="338" fill="#5f6a66" font-size="12">0 = completely mixed</text>
+<text x="470" y="356" fill="#5f6a66" font-size="12">Here R = cos 22.5° ≈ 0.92</text>
+</svg>

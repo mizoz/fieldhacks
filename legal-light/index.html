@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal Shooting Hours Calculator · Legal Light</title>
+<meta name="description" content="Free legal shooting hours calculator for hunters: legal light for your exact stand with your own offsets, plus when direct sun actually reaches the stand from the real skyline and slope. Printable season table; location stays on your device.">
+<link rel="canonical" href="https://lab.zalastack.com/fieldhacks/legal-light/">
+<meta name="theme-color" content="#faf9f5">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fieldhacks">
+<meta property="og:title" content="Legal shooting hours for your exact stand">
+<meta property="og:description" content="Sunrise and sunset for your coordinates, turned into legal light with your local offsets. Printable season table. ">
+<meta property="og:url" content="https://lab.zalastack.com/fieldhacks/legal-light/">
+<meta property="og:image" content="https://lab.zalastack.com/fieldhacks/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2321'/%3E%3Cpath d='M4 22h24' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M9 22a7 7 0 0 1 14 0' fill='%23f59e0b'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Legal Light: legal shooting hours calculator",
+  "url": "https://lab.zalastack.com/fieldhacks/legal-light/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "description": "Sunrise, sunset, civil twilight and legal shooting hours for any coordinates and date, with configurable offsets and a printable season table."
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../style.css">
+<style>
+/* the calculator, inside the article column */
+#tool .tool{margin:8px calc(50% - min(480px, 50vw - 16px)) 0;font:16px/1.5 var(--sans,Inter,system-ui,sans-serif)}
+#tool form{background:var(--card,#fff);border:1px solid var(--line,#e3e1d8);border-radius:12px;padding:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:720px){#tool form{grid-template-columns:1fr}}
+#tool fieldset{border:0;margin:0;padding:0;min-width:0}
+#tool legend{font-weight:700;margin-bottom:6px;font-size:14px}
+#tool .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tool label{display:block;font-size:13px;color:var(--muted,#5f6a66);min-width:0}
+#tool input,#tool select{width:100%;min-width:0;margin-top:3px;padding:7px 8px;font:inherit;font-size:15px;color:var(--fg,#1d2321);background:var(--bg,#fbfaf6);border:1px solid var(--line,#e3e1d8);border-radius:6px}
+#tool input:focus,#tool select:focus{outline:2px solid var(--accent,#b45309);outline-offset:1px}
+#tool .hint{font-size:12px;line-height:1.45;color:var(--muted,#5f6a66);margin:4px 0 0}
+#tool .actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+#tool button{font:inherit;font-size:14px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--line,#e3e1d8);background:var(--card,#fff);color:var(--fg,#1d2321);cursor:pointer}
+#tool button:hover{border-color:var(--accent,#b45309)}
+#tool .today{background:var(--card,#fff);border:1px solid var(--line,#e3e1d8);border-radius:12px;padding:16px 18px;margin:16px 0}
+#tool .today h3{margin:0 0 2px;font-size:15px;color:var(--muted,#5f6a66);font-weight:600}
+#tool .window{font-size:clamp(32px,7vw,48px);font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;letter-spacing:-.01em}
+#tool .status{display:inline-block;margin:8px 0 14px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--accent-bg,#fdecd3);color:var(--accent,#b45309);font-size:13px}
+#tool .status.open{background:#dcfce7;color:#166534}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #tool .status.open{background:#14361f;color:#86efac}}
+:root[data-theme="dark"] #tool .status.open{background:#14361f;color:#86efac}
+#tool .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:12px}
+#tool .stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+#tool .stat span{font-size:12px;color:var(--muted,#5f6a66)}
+#tool details{margin:8px 0}
+#tool summary{cursor:pointer;font-weight:600;font-size:15px;padding:6px 0}
+#season{font-family:Inter,system-ui,sans-serif;font-size:14px}
+#season td,#season th{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding:5px 8px}
+#season td:first-child,#season th:first-child{text-align:left}
+#season tr.now td{font-weight:700;background:var(--accent-bg,#fdecd3)}
+#season tr.wk td:first-child{color:var(--accent,#b45309)}
+#chart{width:100%;height:auto;border:1px solid var(--line,#e3e1d8);border-radius:10px;background:var(--card,#fff);margin:0 0 6px;font-family:Inter,system-ui,sans-serif}
+#tool .err{color:#b91c1c;font-weight:600}
+#tool fieldset.stand{grid-column:1/-1;border-top:1px solid var(--line,#e3e1d8);padding-top:14px}
+#tool .row4{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;align-items:end}
+@media (max-width:720px){#tool .row4{grid-template-columns:1fr 1fr}#tool .row4>div{grid-column:1/-1}}
+#tool .opt{font-weight:400;font-size:12px;color:var(--muted,#5f6a66);margin-left:6px}
+#tool .standline{border-top:1px solid var(--line,#e3e1d8);margin-top:14px;padding-top:12px}
+#pano{width:100%;height:auto;margin-top:10px;border-radius:8px;background:var(--bg,#fbfaf6)}
+#season .sc{display:none}
+#season.stand .sc{display:table-cell}
+.print-head{display:none;font-size:12px;margin-bottom:6px}
+@media print{
+  body *{visibility:hidden}
+  #seasonBox,#seasonBox *{visibility:visible}
+  #seasonBox{position:absolute;left:0;top:0;width:100%}
+  #seasonBox summary{display:none}
+  .print-head{display:block!important}
+  #season{font-size:10.5px}
+  #season th,#season td{padding:2px 6px}
+}
+</style>
+</head>
+<body class="article-page">
+<nav class="nav" aria-label="Site"><div class="in">
+  <a class="brand" href="../">fieldhacks lab</a>
+  <a href="../holdpoint/">HoldPoint</a>
+  <a href="../trail-tally/">Trail Tally</a>
+  <a href="../trail-finder/">Trail Finder</a>
+  <a href="../slopeshift/">SlopeShift</a>
+  <a href="../legal-light/" aria-current="page">Legal Light</a>
+  <a href="../calculator.html">Calculator</a>
+  <a href="https://www.zalastack.com">ZalaStack</a>
+</div></nav>
+
+<main class="article">
+  <header class="article-head">
+    <p class="eyebrow">Project 05 · Web tool</p>
+    <h1>Legal shooting hours, for your exact stand</h1>
+    <p class="dek">Sunrise and sunset for your coordinates, not the nearest city, turned into legal light with your regulation's offsets, plus the time direct sun actually reaches your stand once the hills and the slope are counted. Print the whole season.</p>
+    <p class="byline">fieldhacks lab · October 21, 2026 · 11 min read</p>
+    <p class="actions"><a class="btn" href="#tool">Open the calculator</a></p>
+  </header>
+
+  <aside class="keypoints"><h2>Key points</h2><ul>
+    <li>Legal light is usually defined from sunrise and sunset, which shift about 4 minutes for every degree of longitude and, in late fall, by several minutes per degree of latitude.</li>
+    <li>Across Alberta on 14 November, legal start runs from 08:05 in Medicine Hat to 09:07 in High Level, on the same clock.</li>
+    <li>Alberta isn't falling back this November. Devices with old time-zone data will show times an hour early, so the calculator shows the UTC offset beside every time.</li>
+    <li>Legal light assumes flat ground. The calculator can also work out when direct sun actually reaches your stand, from the real skyline and the slope you're on. That's when the morning thermals start to turn.</li>
+    <li>The calculation runs in your browser and works offline once loaded. The only thing ever fetched is public elevation data, and only if you ask for it.</li>
+    <li>Checked against an independent library: the worst sunrise or sunset difference in 508 cases is 49 seconds.</li>
+  </ul></aside>
+
+  <section id="tool">
+    <h2>The calculator</h2>
+    <div class="tool">
+    <form id="f" autocomplete="off">
+      <fieldset>
+        <legend>Where</legend>
+        <label>Quick pick
+          <select id="preset">
+            <option value="">Choose a town…</option>
+          </select>
+        </label>
+        <div class="row" style="margin-top:8px">
+          <label>Latitude <input id="lat" inputmode="decimal" value="53.5461"></label>
+          <label>Longitude <input id="lon" inputmode="decimal" value="-113.4938"></label>
+        </div>
+        <p class="hint">Decimal degrees, west and south negative.</p>
+        <div class="actions"><button type="button" id="geo">Use my location</button></div>
+        <label>Time zone <select id="tz"></select></label>
+        <p class="hint">Times show their UTC offset. If it doesn't match your clock, your device's time-zone data may be out of date: pick the fixed offset that matches.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Your rule</legend>
+        <div class="row">
+          <label>Before sunrise (min) <input id="before" type="number" min="0" max="120" value="30"></label>
+          <label>After sunset (min) <input id="after" type="number" min="0" max="120" value="30"></label>
+        </div>
+        <p class="hint">Many rules are 30 / 30. Some end at sunset (0). Check your regulations.</p>
+      </fieldset>
+      <fieldset>
+        <legend>When</legend>
+        <label>Day <input id="day" type="date"></label>
+        <div class="row" style="margin-top:8px">
+          <label>Season from <input id="from" type="date"></label>
+          <label>to <input id="to" type="date"></label>
+        </div>
+      </fieldset>
+      <fieldset class="stand">
+        <legend>Sun on your stand <span class="opt">optional</span></legend>
+        <div class="row4">
+          <div><button type="button" id="terrain">Get terrain for this spot</button></div>
+          <label>Eye height (m) <input id="eye" type="number" min="0" max="40" step="0.5" value="2"></label>
+          <label>Slope (°) <input id="slope" type="number" min="0" max="60" step="1" placeholder="0 = flat"></label>
+          <label>Slope faces (° from N) <input id="aspect" type="number" min="0" max="359" step="1" placeholder="180 = south"></label>
+        </div>
+        <label style="margin-top:8px">Or type the horizon (azimuth:elevation, degrees) <input id="horizon" placeholder="e.g. 90:8, 135:5, 270:3"></label>
+        <p class="hint" id="terrainNote">Legal light ignores hills; real sunlight doesn't. <b>Get terrain</b> downloads free public elevation tiles (Amazon's open Terrain Tiles) for about 10 km around the spot and works out the skyline, slope and the way the slope faces. That tells Amazon roughly which area you're looking at; nothing else is sent. Trees and buildings aren't in the data.</p>
+      </fieldset>
+    </form>
+    <div class="today" aria-live="polite">
+        <h3 id="dayLabel">Legal light</h3>
+        <p class="hint" id="zoneLabel" style="margin:0 0 4px"></p>
+        <div class="window" id="window">—</div>
+        <div class="status" id="status">—</div>
+        <div class="stats">
+          <div class="stat"><b id="sRise">—</b><span>Sunrise</span></div>
+          <div class="stat"><b id="sSet">—</b><span>Sunset</span></div>
+          <div class="stat"><b id="sDawn">—</b><span>Civil dawn</span></div>
+          <div class="stat"><b id="sDusk">—</b><span>Civil dusk</span></div>
+          <div class="stat"><b id="sLen">—</b><span>Legal hours</span></div>
+          <div class="stat"><b id="sMoon">—</b><span id="sMoonName">Moon</span></div>
+        </div>
+        <div class="standline" id="standLine" hidden>
+          <div class="stats">
+            <div class="stat"><b id="sStand">—</b><span>Direct sun on stand</span></div>
+            <div class="stat"><b id="sStandLen">—</b><span>Hours of direct sun</span></div>
+            <div class="stat"><b id="sStandLag">—</b><span>After flat sunrise</span></div>
+          </div>
+          <svg id="pano" viewBox="0 0 640 200" role="img" aria-label="Skyline around the stand with today's sun path"></svg>
+          <p class="hint" id="standNote"></p>
+        </div>
+        <p id="err" class="err" hidden></p>
+      </div>
+
+      <svg id="chart" viewBox="0 0 640 220" role="img" aria-label="Legal shooting window across the season"></svg>
+
+      <div class="actions noprint">
+        <button type="button" id="print">Print season table</button>
+        <button type="button" id="csv">Download CSV</button>
+      </div>
+      <details id="seasonBox"><summary>Show the season table, day by day</summary>
+      <div class="print-head" id="printHead"></div>
+      <div class="table-wrap">
+        <table id="season">
+          <thead><tr><th>Date</th><th>Legal start</th><th>Sunrise</th><th>Sunset</th><th>Legal end</th><th>Hours</th><th>Moon</th><th class="sc">Stand sun</th><th>UTC</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      </details>
+    
+    </div>
+    <div class="callout"><p><b>The regulations are the law, not this page.</b> Rules differ by province, state, zone, species and season. Set the offsets to match yours, and check the official tables when in doubt.</p></div>
+  </section>
+
+  <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+    <li><a href="#where">Why your exact spot matters</a></li>
+    <li><a href="#season">How the window shrinks through the season</a></li>
+    <li><a href="#sunrise">What "sunrise" actually means</a></li>
+    <li><a href="#standsun">When the sun actually reaches your stand</a></li>
+    <li><a href="#math">How the calculation works</a></li>
+    <li><a href="#clocks">Time zones, and Alberta's fall 2026</a></li>
+    <li><a href="#checked">How it was checked</a></li>
+    <li><a href="#field">Using it in the field</a></li>
+  </ol></nav>
+
+  <section id="where">
+    <h2>Why your exact spot matters</h2>
+    <p>Most hunters get sunrise from a weather app or a newspaper, which gives it for the nearest town. That's often good enough, and sometimes it's off by more than you'd guess.</p>
+    <p>The sun crosses the sky from east to west at 15 degrees of longitude per hour, or <b>4 minutes per degree</b>. A time zone is about 15 degrees wide, but everyone in it shares one clock. So on any given day, sunrise comes earlier on the east side of a zone than on the west side. Alberta spans almost nine degrees of longitude, from Lloydminster at 110° W to the BC border near 120° W. That's over half an hour of sunrise difference on the same clock.</p>
+    <p>Latitude matters too, and it matters more as winter approaches. In November, the further north you go, the later the sun comes up and the earlier it sets.</p>
+    <figure class="wide"><img src="../img/05-legal-light/alberta-start.svg" width="860" height="440" loading="lazy" alt="Dot chart of legal shooting start on 14 November 2026 for twelve Alberta towns, from 08:05 in Medicine Hat to 09:07 in High Level"><figcaption><b>Figure 1.</b> Legal start on 14 November across Alberta, same clock and same 30-minute rule. Medicine Hat opens at 08:05, Edmonton at 08:29, High Level at 09:07. Both longitude and latitude push it around.</figcaption></figure>
+    <blockquote class="pull">Same province, same clock, same rule: legal light opens an hour apart.</blockquote>
+    <p>Fort McMurray's legal start is 20 minutes later than Lloydminster's. The two towns are only 1.4 degrees apart in longitude, worth under 6 minutes; the rest comes from Fort McMurray being 3.5 degrees further north. For a stand an hour's drive from town, the difference from the town's published time is usually a few minutes. That's small, but it's exactly the margin that matters at first light.</p>
+  </section>
+
+  <section id="season">
+    <h2>How the window shrinks through the season</h2>
+    <p>From early September to the winter solstice, the legal window shrinks fast, and the further north you are, the faster it shrinks. At Lethbridge's latitude it drops from about 14.4 hours on 1 September to 9.1 on 21 December. At Yellowknife's latitude it goes from 15.3 hours to 6.0.</p>
+    <figure class="wide"><img src="../img/05-legal-light/season-latitude.svg" width="860" height="460" loading="lazy" alt="Line chart of legal start and end times from September to December at four latitudes; the window narrows through the fall, much faster at higher latitudes"><figcaption><b>Figure 2.</b> Legal start (upper curves) and end (lower curves) from September to December at four latitudes on the same meridian. Further north, the mornings get later and the evenings earlier.</figcaption></figure>
+    <p>Notice that the curves aren't symmetrical. In December the evenings stop getting earlier well before the mornings stop getting later. That's the <b>equation of time</b>: Earth's tilted axis and elliptical orbit make solar noon itself drift by several minutes over the year. The calculator includes it, which a "half the day length either side of noon" shortcut would miss.</p>
+  </section>
+
+  <section id="sunrise">
+    <h2>What "sunrise" actually means</h2>
+    <p>Sunrise sounds obvious, but it needs a precise definition to be calculable, and the standard one has two subtleties.<sup class="ref"><a href="#n1" id="r1">1</a></sup></p>
+    <ul>
+      <li><b>It's the top edge of the sun, not the middle.</b> Sunrise is the moment the upper rim appears, when the sun's centre is still about 16 arcminutes, its radius, below the horizon.</li>
+      <li><b>The air bends the light.</b> Near the horizon, the atmosphere refracts sunlight upward by about 34 arcminutes, more than the sun's whole diameter. When you see the sun sitting just on the horizon, it is actually just below it.</li>
+    </ul>
+    <p>Add those together and sunrise and sunset are defined as the moments the sun's centre is <b>0.833 degrees below</b> a flat, sea-level horizon. <b>Civil twilight</b>, roughly the period when there's enough light to see outdoors without artificial light, runs until the centre is 6 degrees below. Many legal-hour rules land close to civil twilight in practice, because 30 minutes before sunrise is near civil dawn at Alberta's latitudes in the fall.</p>
+    <div class="callout"><p><b>Hills don't move legal time.</b> A ridge to the east delays when <i>you</i> see the sun, and a valley floor gets light late. Legal times still use the flat-horizon definition, so the calculator does too.</p></div>
+  </section>
+
+  <section id="standsun">
+    <h2>When the sun actually reaches your stand</h2>
+    <p>Legal light is deliberately simple: one flat horizon for everyone. The sun that matters for <i>hunting</i> the stand is different. On a west-facing slope, under a ridge, or in a coulee, direct sunlight can arrive an hour or more after legal light opens, and leave well before it closes.</p>
+    <p>That moment matters because of <b>thermals</b>. Overnight, cooling air slides downhill, carrying your scent down the slope. Once direct sun warms the ground, the air above it warms and starts to rise, and the flow turns upslope. The switch follows the sun on <i>that</i> slope, not the clock, and not sunrise in town. <a href="../slopeshift/">SlopeShift</a> measures the switch at a stand and learns how long after first direct sun it happens there; this calculator supplies the first-sun time anywhere.</p>
+    <blockquote class="pull">Thermals follow the sun on your slope, not sunrise in town.</blockquote>
+    <h3>How it works</h3>
+    <ol>
+      <li><b>The skyline.</b> Tap <i>Get terrain for this spot</i> and the page downloads free, public elevation tiles for about 10 km around the stand.<sup class="ref"><a href="#n5" id="r5">5</a></sup> In Alberta each pixel covers about 23 metres. For 72 compass directions it walks outward, keeping the steepest angle up to the ground, and allows for the curve of the Earth and the bending of light near the ground.</li>
+      <li><b>The slope.</b> From the elevation around the stand it works out how steep the ground is and which way it faces. You can override both, or skip the download and type the skyline yourself, for example <code>90:8, 135:5</code> for 8° up in the east and 5° in the southeast.</li>
+      <li><b>Direct sun.</b> Minute by minute, the stand is in direct sun when the top edge of the sun clears the skyline in its direction <i>and</i> the sun is on the face of the slope. A steep north-facing slope in December gets none at all.</li>
+    </ol>
+    <div class="eq">sun on the slope when  cos i = cos s · sin h + sin s · cos h · cos(A − a)  &gt; 0
+
+h = sun altitude, A = sun azimuth, s = slope, a = direction the slope faces</div>
+    <p>The result shows up beside the legal times, as a panorama of the skyline with today's sun path drawn over it, and as a gold band inside each day's bar on the season chart. The season table and CSV gain a "stand sun" column.</p>
+    <div class="callout"><p><b>What it can't see.</b> The elevation data is bare earth: no trees, no buildings. In timber, the canopy decides when sunlight reaches the ground, and that's usually later than this. Peaks more than 10 km away are ignored. Treat the time as when the slope <i>could</i> get sun.</p></div>
+    <p><b>How it was checked.</b> A synthetic ridge 200 m high and 1 km east gives the expected 11.9° skyline and pushes first sun 75 minutes past sunrise without changing sunset. A 30° north-facing slope at 53.5° N gets no direct sun at the winter solstice, and an east-facing slope loses the sun before a west-facing one. The elevation tiles agree with an independent elevation service to within 7 m at three test points.</p>
+    <p><b>What already exists.</b> The idea of terrain-shaded sun isn't new. HuntingNZ's map shows hours of direct sun with ridge shadows as a map layer for New Zealand,<sup class="ref"><a href="#n6" id="r6">6</a></sup> and photography apps draw the sun's path over the real skyline. We didn't find a hunting tool that puts first and last direct sun for a single stand next to that day's legal hours, anywhere with elevation data.</p>
+  </section>
+
+  <section id="math">
+    <h2>How the calculation works</h2>
+    <p>The calculator uses the same equations as the US National Oceanic and Atmospheric Administration's solar calculator, which come from Jean Meeus's <i>Astronomical Algorithms</i>.<sup class="ref"><a href="#n2" id="r2">2</a></sup> For each date it works out where the sun is in the sky, then solves for when it crosses the required angle.</p>
+    <ol>
+      <li><b>Sun's position.</b> From the date, compute the sun's <i>declination</i> (how far north or south of the equator it is overhead) and the <i>equation of time</i> (how far solar noon runs ahead of or behind clock noon).</li>
+      <li><b>Hour angle.</b> The hour angle is how far the sun is from its highest point, in degrees. For an event at a given depth below the horizon:</li>
+    </ol>
+    <div class="eq">cos H = cos(zenith) / (cos φ · cos δ) − tan φ · tan δ
+
+φ = latitude, δ = declination, zenith = 90.833° (sunrise) or 96° (civil)
+sunrise = solar noon − 4·H minutes,   sunset = solar noon + 4·H minutes</div>
+    <ol start="3">
+      <li><b>Refine.</b> The sun's declination changes a little between noon and sunrise, so the calculation is repeated twice at the newly estimated time.</li>
+      <li><b>Offsets and clock time.</b> Apply your before and after minutes, then format the result in your chosen time zone with the browser's built-in time-zone support.</li>
+    </ol>
+    <p>If the cosine comes out above 1 or below −1, the sun never reaches that angle that day: polar night or midnight sun. The calculator says so instead of inventing a time. The whole thing is one small, dependency-free file, <a href="legallight.js">legallight.js</a>.</p>
+  </section>
+
+  <section id="clocks">
+    <h2>Time zones, and Alberta's fall 2026</h2>
+    <p>The calculation produces an exact moment. Turning that into the time on your watch is the job of the <b>time-zone database</b>: the worldwide record of every region's UTC offset and daylight-saving rules, which every phone, computer and browser carries a copy of.</p>
+    <p>In 2026 Alberta moved to permanent daylight time, so clocks don't fall back on 1 November.<sup class="ref"><a href="#n3" id="r3">3</a></sup> Alberta is now on UTC−6 all year. The current database release, 2026e, includes the change. A device or browser that hasn't updated still thinks Alberta switches to UTC−7 on 1 November, and will show every time from then on <b>one hour early</b>.</p>
+    <div class="callout"><p><b>How to check.</b> The calculator prints the UTC offset next to the times and in the last column of the season table. In Alberta after 1 November 2026 it should say UTC−6. If it says −7, pick "UTC−6 (fixed)" in the time-zone list.</p></div>
+    <p>The same trick works anywhere: if the offset on the page doesn't match the offset your clock is actually using, choose the fixed offset that does.</p>
+  </section>
+
+  <section id="checked">
+    <h2>How it was checked</h2>
+    <p>The test suite compares 508 sunrise, sunset and civil twilight times against astral, an independent open-source Python implementation.<sup class="ref"><a href="#n4" id="r4">4</a></sup> The 16 places run from Austin, Texas, to Yellowknife, plus Wellington, Cape Town and Uppsala. The eight dates cover both solstices, both equinoxes and the core of hunting season.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Check</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Worst sunrise or sunset difference</td><td>49 seconds</td></tr>
+        <tr><td>Civil twilight</td><td>within 1 minute, or 3 minutes near midsummer above 58° N, where the sun barely dips below 6°</td></tr>
+        <tr><td>Events land on the right local date</td><td>Edmonton, Honolulu and New Zealand</td></tr>
+        <tr><td>Offsets, and rules that end at sunset</td><td>applied exactly</td></tr>
+        <tr><td>Midnight sun and polar night</td><td>reported, not invented</td></tr>
+        <tr><td>Moon phase</td><td>matches published full and new moons, November 2026</td></tr>
+      </tbody>
+    </table></div>
+    <p>The moon figure is the phase only, estimated from the average lunar month. It's good to about half a day, which is fine for judging how bright a night will be. It doesn't give moonrise or moonset.</p>
+  </section>
+
+  <section id="field">
+    <h2>Using it in the field</h2>
+    <ul>
+      <li><b>Set it up at home.</b> Enter your stand coordinates and your rule, and load the terrain while you have a connection. The page remembers them on that device, and only there. They're never put in the address bar, so sharing the link doesn't share your stand.</li>
+      <li><b>Print the season.</b> The printout is just the table, with your coordinates, rule and time zone in the heading. It folds into a licence holder and doesn't need a battery.</li>
+      <li><b>Offline.</b> Once loaded, the page doesn't need a connection to recalculate.</li>
+      <li><b>Pair it with your scouting.</b> If <a href="../trail-tally/">Trail Tally</a> says the deer move at 07:40 and legal light opens at 08:29, that trail is a dawn sit only late in the season, or not at all.</li>
+    </ul>
+  </section>
+
+  <section class="notes"><h2>Notes</h2><ol>
+    <li id="n1">For the definitions of sunrise, sunset and twilight, and the refraction and semi-diameter values, see the US Naval Observatory's explanation of <a href="https://aa.usno.navy.mil/faq/RST_defs">rise, set and twilight definitions</a>. <a href="#r1" aria-label="back to text">↩</a></li>
+    <li id="n2">NOAA Global Monitoring Laboratory, <a href="https://gml.noaa.gov/grad/solcalc/calcdetails.html">solar calculation details</a>; Jean Meeus, <i>Astronomical Algorithms</i>, 2nd ed., Willmann-Bell, 1998. <a href="#r2" aria-label="back to text">↩</a></li>
+    <li id="n3">Reporting on the change: <a href="https://www.insurancebusinessmag.com/ca/business-strategy/alberta-to-make-daylight-saving-time-permanent-572723.aspx">"Alberta to make daylight saving time permanent"</a>. The change is in the IANA time-zone database release 2026e. <a href="#r3" aria-label="back to text">↩</a></li>
+    <li id="n4"><a href="https://github.com/sffjunkie/astral">astral</a>, a Python library for sun and moon calculations. The reference data and the test are in the project's tests folder. <a href="#r4" aria-label="back to text">↩</a></li>
+    <li id="n5">Terrain Tiles on the <a href="https://registry.opendata.aws/terrain-tiles/">Registry of Open Data on AWS</a>, assembled by Mapzen from public sources including SRTM, the Canadian Digital Elevation Model and USGS 3DEP (<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md">full attribution</a>). Only the tiles' map grid numbers are requested, which reveal the area at about the scale of a town. <a href="#r5" aria-label="back to text">↩</a></li>
+    <li id="n6">"<a href="https://mapscaping.com/solar-analysis-hunting-slopes/">Solar analysis for hunting slopes</a>," MapScaping, describing HuntingNZ's sun and shade tool. <a href="#r6" aria-label="back to text">↩</a></li>
+  </ol></section>
+
+  <section class="related"><h2>More from the lab</h2><div class="related-grid">
+    <a class="related-card" href="../trail-tally/"><span class="eyebrow">Project 02</span><b>Trail Tally</b><span>A $3 counter that learns when deer use a trail.</span></a>
+    <a class="related-card" href="../slopeshift/"><span class="eyebrow">Project 04</span><b>SlopeShift</b><span>When the morning thermals switch at your stand.</span></a>
+    <a class="related-card" href="../holdpoint/"><span class="eyebrow">Project 01</span><b>HoldPoint</b><span>How a $5 ballistics calculator works.</span></a>
+  </div></section>
+</main>
+<footer class="site-foot"><p>Part of the <a href="../">fieldhacks lab</a>, tools for hunters by ZalaStack. Always confirm legal hours against your official regulations. © 2026 ZalaStack. All rights reserved.</p></footer>
+
+<script type="module">
+import { legalHours, moon, hhmm, directSun, sunPosition, horizonAt, parseHorizon, horizonFromElevation, slopeAspect } from "./legallight.js";
+
+const $ = (id) => document.getElementById(id);
+const PLACES = [
+  ["Edmonton, AB", 53.5461, -113.4938, "America/Edmonton"], ["Calgary, AB", 51.0447, -114.0719, "America/Edmonton"],
+  ["Red Deer, AB", 52.2690, -113.8116, "America/Edmonton"], ["Lethbridge, AB", 49.6956, -112.8451, "America/Edmonton"],
+  ["Medicine Hat, AB", 50.0405, -110.6766, "America/Edmonton"], ["Grande Prairie, AB", 55.1707, -118.7947, "America/Edmonton"],
+  ["Peace River, AB", 56.2370, -117.2900, "America/Edmonton"], ["Fort McMurray, AB", 56.7267, -111.3790, "America/Edmonton"],
+  ["Lloydminster, AB/SK", 53.2779, -110.0058, "America/Edmonton"], ["Saskatoon, SK", 52.1332, -106.6700, "America/Regina"],
+  ["Regina, SK", 50.4452, -104.6189, "America/Regina"], ["Winnipeg, MB", 49.8951, -97.1384, "America/Winnipeg"],
+  ["Prince George, BC", 53.9171, -122.7497, "America/Vancouver"], ["Kamloops, BC", 50.6745, -120.3273, "America/Vancouver"],
+  ["Whitehorse, YT", 60.7212, -135.0568, "America/Whitehorse"], ["Bozeman, MT", 45.6770, -111.0429, "America/Denver"],
+];
+const ZONES = ["America/Edmonton", "America/Regina", "America/Winnipeg", "America/Vancouver", "America/Whitehorse",
+  "America/Toronto", "America/Halifax", "America/St_Johns", "America/Denver", "America/Chicago", "America/New_York",
+  "America/Los_Angeles", "America/Anchorage", "Europe/London", "Europe/Stockholm", "Pacific/Auckland", "Africa/Johannesburg"];
+// Fixed offsets, for when a device's time-zone data is out of date (IANA "Etc/GMT+6" means UTC-6).
+const FIXED = [5, 6, 7, 8].map((h) => [`Etc/GMT+${h}`, `UTC−${h} (fixed, no daylight saving)`]);
+
+const here = Intl.DateTimeFormat().resolvedOptions().timeZone;
+for (const z of [here, ...ZONES.filter((z) => z !== here)]) $("tz").add(new Option(z === here ? `${z} (this device)` : z, z));
+for (const [z, label] of FIXED) $("tz").add(new Option(label, z));
+PLACES.forEach((p, i) => $("preset").add(new Option(p[0], i)));
+
+// Dates in the chosen zone: "today" and its parts.
+const partsIn = (date, tz) => {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" })
+    .formatToParts(date).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
+};
+const ymd = (s) => s.split("-").map(Number);
+const iso = (y, m, d) => new Date(Date.UTC(y, m - 1, d)).toISOString().slice(0, 10);
+
+// Remember settings on this device only (not in the URL: a shared link would give away your stand).
+const KEY = "legal-light";
+const FIELDS = ["lat", "lon", "tz", "before", "after", "from", "to", "eye", "slope", "aspect", "horizon"];
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+  for (const k of FIELDS) if (saved[k] !== undefined && $(k)) $(k).value = saved[k];
+} catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(Object.fromEntries(FIELDS.map((k) => [k, $(k).value])))); } catch {} };
+
+const today = partsIn(new Date(), $("tz").value);
+$("day").value = today;
+if (!$("from").value || !$("to").value) {
+  const y = ymd(today)[0];
+  $("from").value = `${y}-09-01`;
+  $("to").value = `${y}-11-30`;
+}
+
+let rows = [];
+
+// ---- terrain: free Terrain Tiles (Terrarium PNG: metres = R*256 + G + B/256 - 32768), fetched only on request
+let terrain = null;   // { lat, lon, elev, profile, elevation, eye }
+try { const t = JSON.parse(localStorage.getItem(KEY + "-terrain") || "null"); if (t && t.profile) terrain = t; } catch {}
+const TZ = 12, TILE = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium";
+async function loadElevation(lat, lon, radius) {
+  const n = 2 ** TZ, tx = (lo) => (lo + 180) / 360 * n, ty = (la) => (1 - Math.log(Math.tan(la * Math.PI / 180) + 1 / Math.cos(la * Math.PI / 180)) / Math.PI) / 2 * n;
+  const dLat = radius / 111320, dLon = radius / (111320 * Math.cos(lat * Math.PI / 180));
+  const x0 = Math.floor(tx(lon - dLon)), x1 = Math.floor(tx(lon + dLon)), y0 = Math.floor(ty(lat + dLat)), y1 = Math.floor(ty(lat - dLat));
+  const tiles = new Map(), jobs = [];
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) jobs.push((async () => {
+    const r = await fetch(`${TILE}/${TZ}/${x}/${y}.png`);
+    if (!r.ok) throw new Error(`elevation tile ${x},${y}: HTTP ${r.status}`);
+    const bmp = await createImageBitmap(await r.blob());
+    const c = new OffscreenCanvas(256, 256), g = c.getContext("2d");
+    g.drawImage(bmp, 0, 0);
+    const px = g.getImageData(0, 0, 256, 256).data, e = new Float32Array(65536);
+    for (let i = 0; i < 65536; i++) e[i] = px[4 * i] * 256 + px[4 * i + 1] + px[4 * i + 2] / 256 - 32768;
+    tiles.set(`${x},${y}`, e);
+  })());
+  await Promise.all(jobs);
+  const at = (gx, gy) => { const t = tiles.get(`${Math.floor(gx / 256)},${Math.floor(gy / 256)}`); return t ? t[(gy & 255) * 256 + (gx & 255)] : NaN; };
+  return (la, lo) => {   // bilinear
+    const fx = tx(lo) * 256 - 0.5, fy = ty(la) * 256 - 0.5, ix = Math.floor(fx), iy = Math.floor(fy), u = fx - ix, v = fy - iy;
+    return at(ix, iy) * (1 - u) * (1 - v) + at(ix + 1, iy) * u * (1 - v) + at(ix, iy + 1) * (1 - u) * v + at(ix + 1, iy + 1) * u * v;
+  };
+}
+const near = (t, lat, lon) => t && Math.abs(t.lat - lat) < 0.0005 && Math.abs(t.lon - lon) < 0.0008;   // ~50 m
+function standSetup(o) {
+  const typed = parseHorizon($("horizon").value);
+  const eye = Math.max(0, +$("eye").value || 0);
+  if (terrain && terrain.elev && near(terrain, o.lat, o.lon) && terrain.eye !== eye) {
+    Object.assign(terrain, horizonFromElevation(terrain.elev, o.lat, o.lon, { eyeHeight: eye }), { eye });
+    try { localStorage.setItem(KEY + "-terrain", JSON.stringify({ ...terrain, elev: undefined })); } catch {}
+  }
+  const fromDem = !typed && near(terrain, o.lat, o.lon) ? terrain.profile : null;
+  const slope = +$("slope").value || 0, aspect = +$("aspect").value || 0;
+  if (!typed && !fromDem && !slope) return null;
+  return { horizon: typed || fromDem, slope, aspect, source: typed ? "typed" : fromDem ? "terrain" : "slope" };
+}
+
+function read() {
+  const lat = parseFloat($("lat").value), lon = parseFloat($("lon").value);
+  const before = Math.max(0, +$("before").value || 0), after = Math.max(0, +$("after").value || 0);
+  if (!(Math.abs(lat) <= 90) || !(Math.abs(lon) <= 180)) throw new Error("Enter a latitude between -90 and 90 and a longitude between -180 and 180.");
+  return { lat, lon, before, after, tz: $("tz").value };
+}
+
+function offsetName(date, tz) {
+  const p = new Intl.DateTimeFormat("en-CA", { timeZone: tz, timeZoneName: "longOffset" }).formatToParts(date).find((x) => x.type === "timeZoneName");
+  return (p ? p.value : "").replace("GMT", "UTC").replace("-", "−") || "UTC";
+}
+
+function fmtLen(min) { return min === null ? "—" : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, "0")}`; }
+
+function render() {
+  let o;
+  try { o = read(); $("err").hidden = true; }
+  catch (e) { $("err").textContent = e.message; $("err").hidden = false; return; }
+  save();
+  const [y, m, d] = ymd($("day").value || today);
+  const L = legalHours(y, m, d, o.lat, o.lon, o);
+  const mo = moon(L.noon);
+  const label = new Intl.DateTimeFormat("en-CA", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
+  $("dayLabel").textContent = `Legal light · ${label}`;
+  $("zoneLabel").textContent = `Times in ${o.tz} (${offsetName(L.noon, o.tz)})`;
+  $("window").textContent = L.start ? `${hhmm(L.start, o.tz)} – ${hhmm(L.end, o.tz)}` : (L.polar === "up" ? "Sun never sets" : "Sun never rises");
+  $("sRise").textContent = hhmm(L.sunrise, o.tz);
+  $("sSet").textContent = hhmm(L.sunset, o.tz);
+  $("sDawn").textContent = hhmm(L.civilDawn, o.tz);
+  $("sDusk").textContent = hhmm(L.civilDusk, o.tz);
+  $("sLen").textContent = fmtLen(L.minutes);
+  $("sMoon").textContent = `${Math.round(mo.lit * 100)}%`;
+  $("sMoonName").textContent = mo.name;
+
+  const stand = standSetup(o);
+  $("standLine").hidden = !stand;
+  $("season").classList.toggle("stand", !!stand);
+  if (stand) {
+    const D = directSun(y, m, d, o.lat, o.lon, stand);
+    $("sStand").textContent = D.first ? `${hhmm(D.first, o.tz)} – ${hhmm(D.last, o.tz)}` : "none";
+    $("sStandLen").textContent = fmtLen(D.minutes);
+    $("sStandLag").textContent = D.first && L.sunrise ? `${Math.round((D.first - L.sunrise) / 60000)} min` : "—";
+    pano(o, stand, L, D, y, m, d);
+    const src = stand.source === "terrain" ? `Skyline from elevation data (ground ${Math.round(terrain.elevation)} m, eye ${terrain.eye} m)` : stand.source === "typed" ? "Skyline as typed" : "Flat skyline";
+    $("standNote").textContent = `${src}${stand.slope ? `; ground slopes ${stand.slope}° facing ${Math.round(stand.aspect)}°` : ""}. Direct sun means the sun's upper edge clears the skyline${stand.slope ? " and shines on the slope" : ""}. Trees aren't included.`;
+  }
+
+  const st = $("status");
+  const now = Date.now();
+  st.className = "status";
+  if (iso(y, m, d) !== partsIn(new Date(), o.tz) || !L.start) st.textContent = L.start ? `${o.before} min before sunrise to ${o.after} min after sunset` : "No legal hours by sunrise/sunset rules";
+  else if (now < L.start) st.textContent = `Opens in ${fmtLen(Math.ceil((L.start - now) / 60000))}`;
+  else if (now < L.end) { st.textContent = `Open now · closes in ${fmtLen(Math.ceil((L.end - now) / 60000))}`; st.className = "status open"; }
+  else st.textContent = "Closed for today";
+
+  // season
+  const [fy, fm, fd] = ymd($("from").value), [ty, tm, td] = ymd($("to").value);
+  rows = [];
+  for (let t = Date.UTC(fy, fm - 1, fd), n = 0; t <= Date.UTC(ty, tm - 1, td) && n < 400; t += 86400000, n++) {
+    const dt = new Date(t);
+    const S = legalHours(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate(), o.lat, o.lon, o);
+    const D = stand ? directSun(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate(), o.lat, o.lon, { ...stand, stepMin: 2 }) : null;
+    rows.push({ date: dt.toISOString().slice(0, 10), wd: dt.getUTCDay(), S, D, lit: Math.round(moon(S.noon).lit * 100) });
+  }
+  const body = $("season").tBodies[0];
+  body.replaceChildren(...rows.map((r) => {
+    const tr = document.createElement("tr");
+    if (r.date === iso(y, m, d)) tr.className = "now";
+    else if (r.wd === 0 || r.wd === 6) tr.className = "wk";
+    const short = new Intl.DateTimeFormat("en-CA", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(r.date + "T00:00:00Z"));
+    for (const v of [short, hhmm(r.S.start, o.tz), hhmm(r.S.sunrise, o.tz), hhmm(r.S.sunset, o.tz), hhmm(r.S.end, o.tz), fmtLen(r.S.minutes), `${r.lit}%`, r.D ? (r.D.first ? `${hhmm(r.D.first, o.tz)}–${hhmm(r.D.last, o.tz)}` : "none") : "", offsetName(r.S.noon, o.tz).replace("UTC", "").replace(":00", "") || "0"]) {
+      const td = document.createElement("td"); td.textContent = v; if (tr.children.length === 7) td.className = "sc"; tr.append(td);
+    }
+    return tr;
+  }));
+  $("printHead").textContent = `Legal shooting hours · ${o.lat.toFixed(4)}, ${o.lon.toFixed(4)} · ${o.tz} (${offsetName(new Date(), o.tz)} today) · ${o.before} min before sunrise to ${o.after} min after sunset · lab.zalastack.com/fieldhacks/legal-light · Check your regulations.`;
+  chart(o);
+}
+
+function minutesOfDay(date, tz) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: tz, hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(date).map((x) => [x.type, x.value]));
+  return +p.hour * 60 + +p.minute;
+}
+
+function chart(o) {
+  const svg = $("chart"), W = 640, H = 220, x0 = 44, x1 = W - 12, y0 = 14, y1 = H - 28;
+  const ok = rows.filter((r) => r.S.start);
+  if (!ok.length) { svg.innerHTML = ""; return; }
+  const starts = ok.map((r) => minutesOfDay(r.S.start, o.tz)), ends = ok.map((r) => minutesOfDay(r.S.end, o.tz));
+  const lo = Math.floor((Math.min(...starts) - 30) / 60) * 60, hi = Math.ceil((Math.max(...ends) + 30) / 60) * 60;
+  const X = (i) => x0 + (x1 - x0) * (i + 0.5) / rows.length, Y = (min) => y0 + (y1 - y0) * (min - lo) / (hi - lo);
+  const bw = Math.max(1, (x1 - x0) / rows.length - 0.6);
+  let s = "";
+  const step = hi - lo > 600 ? 120 : 60;
+  for (let h = lo; h <= hi; h += step) {
+    s += `<line x1="${x0}" x2="${x1}" y1="${Y(h)}" y2="${Y(h)}" stroke="var(--line)"/>`;
+    s += `<text x="${x0 - 6}" y="${Y(h) + 4}" font-size="11" text-anchor="end" fill="var(--muted)">${String(h / 60).padStart(2, "0")}:00</text>`;
+  }
+  rows.forEach((r, i) => {
+    if (!r.S.start) return;
+    const a = minutesOfDay(r.S.start, o.tz), b = minutesOfDay(r.S.end, o.tz);
+    s += `<rect x="${X(i) - bw / 2}" y="${Y(a)}" width="${bw}" height="${Y(b) - Y(a)}" fill="${r.date === $("day").value ? "var(--fg)" : "var(--accent)"}" opacity="${r.date === $("day").value ? 1 : 0.75}"><title>${r.date}: ${hhmm(r.S.start, o.tz)}–${hhmm(r.S.end, o.tz)}</title></rect>`;
+    if (r.D && r.D.first) {
+      const f = minutesOfDay(r.D.first, o.tz), l = minutesOfDay(r.D.last, o.tz);
+      s += `<rect x="${X(i) - bw / 2}" y="${Y(f)}" width="${bw}" height="${Math.max(1, Y(l) - Y(f))}" fill="#f5c542" opacity="0.9"><title>${r.date}: direct sun ${hhmm(r.D.first, o.tz)}–${hhmm(r.D.last, o.tz)}</title></rect>`;
+    }
+    if (r.date.endsWith("-01")) s += `<text x="${X(i)}" y="${H - 10}" font-size="11" fill="var(--muted)">${new Intl.DateTimeFormat("en-CA", { month: "short", timeZone: "UTC" }).format(new Date(r.date + "T00:00:00Z"))}</text>`;
+  });
+  svg.innerHTML = s;
+}
+
+function pano(o, stand, L, D, y, m, d) {
+  const svg = $("pano"), W = 640, H = 200, x0 = 30, x1 = W - 10, y0 = 12, y1 = H - 26;
+  const azLo = 30, azHi = 330;
+  let hMax = 10;
+  for (let a = azLo; a <= azHi; a += 5) hMax = Math.max(hMax, horizonAt(stand.horizon, a) + 2);
+  const t0 = (L.civilDawn || L.sunrise || L.noon).getTime() - 3600000, t1 = (L.civilDusk || L.sunset || L.noon).getTime() + 3600000;
+  const path = [];
+  for (let t = t0; t <= t1; t += 300000) { const p = sunPosition(new Date(t), o.lat, o.lon); path.push([p.azimuth, p.altitude, t]); hMax = Math.max(hMax, p.altitude + 3); }
+  hMax = Math.min(Math.ceil(hMax / 5) * 5, 70);
+  const X = (a) => x0 + (x1 - x0) * (a - azLo) / (azHi - azLo), Y = (e) => y1 - (y1 - y0) * (e + 3) / (hMax + 3);
+  let s = "";
+  for (let e = 0; e <= hMax; e += hMax > 30 ? 10 : 5) s += `<line x1="${x0}" x2="${x1}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--line)"/><text x="${x0 - 4}" y="${Y(e) + 4}" font-size="10" text-anchor="end" fill="var(--muted)">${e}°</text>`;
+  for (const [a, lbl] of [[45, "NE"], [90, "E"], [135, "SE"], [180, "S"], [225, "SW"], [270, "W"], [315, "NW"]]) s += `<text x="${X(a)}" y="${H - 8}" font-size="11" text-anchor="middle" fill="var(--muted)">${lbl}</text>`;
+  let sky = `M${X(azLo)},${Y(-3)}`;
+  for (let a = azLo; a <= azHi; a += 1) sky += ` L${X(a).toFixed(1)},${Y(Math.max(-3, stand.horizon ? horizonAt(stand.horizon, a) : 0)).toFixed(1)}`;
+  s += `<path d="${sky} L${X(azHi)},${Y(-3)} Z" fill="#7b8b6f" opacity="0.55"/>`;
+  const seg = path.filter((p) => p[0] >= azLo && p[0] <= azHi).map((p) => `${X(p[0]).toFixed(1)},${Y(Math.max(-3, p[1])).toFixed(1)}`).join(" ");
+  s += `<polyline points="${seg}" fill="none" stroke="#e0a800" stroke-width="2.5" stroke-dasharray="1 0"/>`;
+  const dot = (t, color, label, dy, left) => { if (!t) return; const p = sunPosition(t, o.lat, o.lon); if (p.azimuth < azLo || p.azimuth > azHi) return;
+    const cx = X(p.azimuth), cy = Y(Math.max(-3, p.altitude));
+    s += `<circle cx="${cx}" cy="${cy}" r="${left ? 3.5 : 5}" fill="${color}"/><text x="${left ? cx - 8 : cx + 8}" y="${cy + dy}" font-size="11" fill="${color}" text-anchor="${left ? "end" : "start"}">${label} ${hhmm(t, o.tz)}</text>`; };
+  dot(L.sunrise, "#6b7280", "flat sunrise", 14, true);
+  dot(D.first, "#c2410c", "sun on stand", -8);
+  dot(D.last, "#c2410c", "sun leaves", -8);
+  svg.innerHTML = s;
+}
+
+$("terrain").addEventListener("click", async () => {
+  let o; try { o = read(); } catch (e) { return; }
+  const b = $("terrain"); b.disabled = true; b.textContent = "Downloading terrain…";
+  try {
+    const elev = await loadElevation(o.lat, o.lon, 10000);
+    const eye = Math.max(0, +$("eye").value || 0);
+    const hz = horizonFromElevation(elev, o.lat, o.lon, { eyeHeight: eye });
+    const sa = slopeAspect(elev, o.lat, o.lon, 30);
+    if (!Number.isFinite(hz.elevation)) throw new Error("no elevation data here");
+    terrain = { lat: o.lat, lon: o.lon, elev, eye, ...hz };
+    try { localStorage.setItem(KEY + "-terrain", JSON.stringify({ ...terrain, elev: undefined })); } catch {}
+    $("slope").value = sa.slope < 1 ? "" : Math.round(sa.slope);
+    $("aspect").value = sa.slope < 1 ? "" : Math.round(sa.aspect);
+    $("horizon").value = "";
+    b.textContent = "Terrain loaded ✓";
+  } catch (e) {
+    b.textContent = "Get terrain for this spot";
+    $("err").textContent = `Couldn't load terrain (${e.message}). You can type the horizon instead.`; $("err").hidden = false;
+  }
+  b.disabled = false;
+  render();
+});
+
+$("preset").addEventListener("change", (e) => {
+  const p = PLACES[+e.target.value];
+  if (!p) return;
+  $("lat").value = p[1]; $("lon").value = p[2]; $("tz").value = p[3];
+  render();
+});
+$("geo").addEventListener("click", () => {
+  if (!navigator.geolocation) { $("err").textContent = "This browser can't share its location; type coordinates instead."; $("err").hidden = false; return; }
+  $("geo").textContent = "Locating…";
+  navigator.geolocation.getCurrentPosition((pos) => {
+    $("lat").value = pos.coords.latitude.toFixed(4); $("lon").value = pos.coords.longitude.toFixed(4);
+    $("tz").value = here; $("geo").textContent = "Use my location"; render();
+  }, () => { $("geo").textContent = "Use my location"; $("err").textContent = "Location not available; type coordinates instead."; $("err").hidden = false; },
+  { enableHighAccuracy: false, timeout: 10000 });
+});
+$("f").addEventListener("input", render);
+$("print").addEventListener("click", () => { $("seasonBox").open = true; window.print(); });
+$("csv").addEventListener("click", () => {
+  const o = read();
+  const lines = ["date,legal_start,sunrise,sunset,legal_end,legal_minutes,moon_lit_pct,stand_sun_first,stand_sun_last,utc_offset",
+    ...rows.map((r) => [r.date, hhmm(r.S.start, o.tz), hhmm(r.S.sunrise, o.tz), hhmm(r.S.sunset, o.tz), hhmm(r.S.end, o.tz), r.S.minutes ?? "", r.lit,
+      r.D && r.D.first ? hhmm(r.D.first, o.tz) : "", r.D && r.D.last ? hhmm(r.D.last, o.tz) : "", offsetName(r.S.noon, o.tz).replace("−", "-")].join(","))];
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/csv" }));
+  a.download = `legal-light-${$("from").value}-to-${$("to").value}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+render();
+setInterval(render, 60000);
+</script>
+</body>
+</html>

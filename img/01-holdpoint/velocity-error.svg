@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 460" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="860" height="460" fill="#fbfaf6"/>
+<text x="78" y="32" font-size="19" font-weight="bold" fill="#1d2321">Why measured velocity matters</text>
+<text x="78" y="54" fill="#5f6a66">.308 Win 168 gr, 100 yd zero. Where the bullet lands if the real velocity is 50 fps off from what you entered.</text>
+<line x1="78" x2="630" y1="402.0" y2="402.0" stroke="#e3e1d8"/>
+<text x="70" y="406.0" text-anchor="end" fill="#5f6a66">-10</text>
+<line x1="78" x2="630" y1="369.6" y2="369.6" stroke="#e3e1d8"/>
+<text x="70" y="373.6" text-anchor="end" fill="#5f6a66">-8</text>
+<line x1="78" x2="630" y1="337.2" y2="337.2" stroke="#e3e1d8"/>
+<text x="70" y="341.2" text-anchor="end" fill="#5f6a66">-6</text>
+<line x1="78" x2="630" y1="304.8" y2="304.8" stroke="#e3e1d8"/>
+<text x="70" y="308.8" text-anchor="end" fill="#5f6a66">-4</text>
+<line x1="78" x2="630" y1="272.4" y2="272.4" stroke="#e3e1d8"/>
+<text x="70" y="276.4" text-anchor="end" fill="#5f6a66">-2</text>
+<line x1="78" x2="630" y1="240.0" y2="240.0" stroke="#e3e1d8"/>
+<text x="70" y="244.0" text-anchor="end" fill="#5f6a66">0</text>
+<line x1="78" x2="630" y1="207.6" y2="207.6" stroke="#e3e1d8"/>
+<text x="70" y="211.6" text-anchor="end" fill="#5f6a66">2</text>
+<line x1="78" x2="630" y1="175.2" y2="175.2" stroke="#e3e1d8"/>
+<text x="70" y="179.2" text-anchor="end" fill="#5f6a66">4</text>
+<line x1="78" x2="630" y1="142.8" y2="142.8" stroke="#e3e1d8"/>
+<text x="70" y="146.8" text-anchor="end" fill="#5f6a66">6</text>
+<line x1="78" x2="630" y1="110.4" y2="110.4" stroke="#e3e1d8"/>
+<text x="70" y="114.4" text-anchor="end" fill="#5f6a66">8</text>
+<line x1="78" x2="630" y1="78.0" y2="78.0" stroke="#e3e1d8"/>
+<text x="70" y="82.0" text-anchor="end" fill="#5f6a66">10</text>
+<text x="78.0" y="422" text-anchor="middle" fill="#5f6a66">0</text>
+<text x="170.0" y="422" text-anchor="middle" fill="#5f6a66">100</text>
+<text x="262.0" y="422" text-anchor="middle" fill="#5f6a66">200</text>
+<text x="354.0" y="422" text-anchor="middle" fill="#5f6a66">300</text>
+<text x="446.0" y="422" text-anchor="middle" fill="#5f6a66">400</text>
+<text x="538.0" y="422" text-anchor="middle" fill="#5f6a66">500</text>
+<text x="630.0" y="422" text-anchor="middle" fill="#5f6a66">600</text>
+<line x1="78" x2="630" y1="402" y2="402" stroke="#5f6a66"/>
+<text x="354.0" y="446" text-anchor="middle" fill="#1d2321">range (yards)</text>
+<text transform="translate(20 240.0) rotate(-90)" text-anchor="middle" fill="#1d2321">impact shift (inches)</text>
+<line x1="78" x2="630" y1="240.0" y2="240.0" stroke="#1d2321"/>
+<path d="M101.0 239.7 L124.0 239.7 L147.0 239.7 L170.0 240.0 L193.0 240.6 L216.0 241.3 L239.0 242.4 L262.0 243.7 L285.0 245.3 L308.0 247.3 L331.0 249.6 L354.0 252.2 L377.0 254.9 L400.0 258.3 L423.0 261.9 L446.0 265.9 L469.0 270.3 L492.0 275.5 L515.0 280.8 L538.0 286.5 L561.0 293.0 L584.0 299.9 L607.0 307.4 L630.0 315.7" fill="none" stroke="#2f6f9f" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="83" width="14" height="4" rx="2" fill="#2f6f9f"/>
+<text x="670" y="90" fill="#1d2321">velocity -50 fps</text>
+<path d="M101.0 240.3 L124.0 240.5 L147.0 240.3 L170.0 240.0 L193.0 239.5 L216.0 238.7 L239.0 237.7 L262.0 236.4 L285.0 235.0 L308.0 233.2 L331.0 231.1 L354.0 228.7 L377.0 225.9 L400.0 222.8 L423.0 219.4 L446.0 215.5 L469.0 211.3 L492.0 206.8 L515.0 201.6 L538.0 196.1 L561.0 190.1 L584.0 183.5 L607.0 176.5 L630.0 168.9" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="648" y="105" width="14" height="4" rx="2" fill="#c2410c"/>
+<text x="670" y="112" fill="#1d2321">velocity +50 fps</text>
+</svg>

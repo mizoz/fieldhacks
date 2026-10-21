@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" width="860" height="400" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="860" height="400" fill="#fbfaf6"/>
+  <text x="24" y="32" font-size="19" font-weight="bold" fill="#1d2321">Direction of travel: two sensors, two curtains</text>
+  <text x="24" y="52" fill="#5f6a66">Seen from above. Each PIR looks across the trail through a short tube, so it only sees a narrow strip.</text>
+
+  <!-- trail -->
+  <path d="M40 250 C 200 230, 330 270, 470 250 S 700 230, 820 250" fill="none" stroke="#d9c7a3" stroke-width="44" stroke-linecap="round"/>
+  <text x="60" y="300" fill="#8a6d3b" font-size="12">toward bedding (A side)</text>
+  <text x="820" y="300" fill="#8a6d3b" font-size="12" text-anchor="end">toward the field (B side)</text>
+
+  <!-- curtains -->
+  <path d="M370 140 L360 330 L384 330 L392 140 Z" fill="#2f6f9f" opacity="0.18"/>
+  <path d="M480 140 L470 330 L494 330 L502 140 Z" fill="#c2410c" opacity="0.18"/>
+  <!-- sensors on a board -->
+  <rect x="350" y="110" width="170" height="16" rx="3" fill="#8b6b4a"/>
+  <rect x="368" y="118" width="26" height="30" rx="4" fill="#2f6f9f"/>
+  <rect x="478" y="118" width="26" height="30" rx="4" fill="#c2410c"/>
+  <text x="381" y="104" text-anchor="middle" font-weight="bold" fill="#2f6f9f">A</text>
+  <text x="491" y="104" text-anchor="middle" font-weight="bold" fill="#c2410c">B</text>
+  <path d="M381 80 H491" stroke="#1d2321" stroke-width="1.2" marker-start="url(#t)" marker-end="url(#t)"/>
+  <text x="436" y="74" text-anchor="middle" fill="#1d2321" font-size="12">about 1 m</text>
+  <defs><marker id="t" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M5 0 V10" stroke="#1d2321" stroke-width="2"/></marker>
+  <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#1d2321"/></marker></defs>
+
+  <!-- deer moving -->
+  <g transform="translate(250,232)">
+    <ellipse cx="18" cy="10" rx="22" ry="10" fill="#8b5a2b"/>
+    <path d="M36 4 l12 -10 l5 3 l-8 12 z" fill="#8b5a2b"/>
+  </g>
+  <path d="M300 222 H350" stroke="#1d2321" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- timing -->
+  <g font-size="12">
+    <text x="560" y="96" font-weight="bold" fill="#1d2321">Outputs as the deer walks A → B</text>
+    <text x="560" y="124" fill="#2f6f9f">A</text>
+    <path d="M580 128 H610 V112 H700 V128 H830" fill="none" stroke="#2f6f9f" stroke-width="2.5"/>
+    <text x="560" y="164" fill="#c2410c">B</text>
+    <path d="M580 168 H650 V152 H740 V168 H830" fill="none" stroke="#c2410c" stroke-width="2.5"/>
+    <line x1="650" y1="104" x2="650" y2="176" stroke="#1d2321" stroke-dasharray="3 3"/>
+    <text x="656" y="190" fill="#1d2321">B rises while A is still HIGH: A → B</text>
+  </g>
+
+  <g font-size="12.5" fill="#5f6a66">
+    <text x="24" y="352">Each AM312 holds its output HIGH for about 2 s. At walking pace a deer crosses 1 m in under 2 s,</text>
+    <text x="24" y="370">so the second sensor rises while the first is still HIGH. If it stops in between, the pass is counted without a direction.</text>
+    <text x="24" y="388">Wiring: sensor B's OUT goes to D4, VCC and GND shared with sensor A. Set DIRECTION 1 in config.h.</text>
+  </g>
+</svg>
